@@ -55,7 +55,7 @@ Los módulos que se documentarán son usuarios y roles, menú, mesas, pedidos, i
 
 La distribución de la programación entre las siguientes entregas se actualizará cuando se confirme el cronograma con la docente.
 
-## Organización de carpetas del primer corte
+## Organización de carpetas
 
 Organizaremos la documentación siguiendo los cuatro apartados del documento del proyecto. El `README.md` principal estará en la raíz del repositorio, junto a estas carpetas:
 
