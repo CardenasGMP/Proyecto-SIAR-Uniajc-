@@ -14,7 +14,7 @@ Desarrollar una aplicación web que permita gestionar los principales procesos d
 
 ## Funcionalidades previstas
 
-| Módulo | Funciones principales 
+| Módulo | Funciones principales | 
 
 
 | Usuarios y roles | Registrar, editar y eliminar usuarios; iniciar sesión, recuperar contraseña y controlar permisos.
