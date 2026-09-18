@@ -15,15 +15,24 @@ Desarrollar una aplicación web que permita gestionar los principales procesos d
 ## Funcionalidades previstas
 
 | Módulo | Funciones principales 
-| Usuarios y roles | Registrar, editar y eliminar usuarios; iniciar sesión, recuperar contraseña y controlar permisos. |
-| Menú | Crear, modificar, eliminar y categorizar productos; gestionar su disponibilidad. |
-| Mesas | Crear y modificar mesas, consultar su estado, reservarlas y liberarlas. |
-| Pedidos | Crear, modificar y cancelar pedidos, agregar productos, enviarlos a cocina y consultar su estado. |
-| Inventario | Controlar el inventario del restaurante; los requisitos detallados están pendientes de completar. |
-| Facturación | Generar facturas, calcular impuestos, aplicar descuentos, registrar pagos y emitir comprobantes. |
-| Reportes | Consultar ventas por periodo, productos más vendidos, consumo de inventario, ocupación de mesas e indicadores financieros. |
-| Reservas | Gestionar las reservas, coordinadas con la disponibilidad de mesas. |
-| Dashboard | Mostrar información general e indicadores para la administración. |
+| Usuarios y roles | Registrar, editar y eliminar usuarios; iniciar sesión, recuperar contraseña y controlar permisos.
+|
+| Menú | Crear, modificar, eliminar y categorizar productos; gestionar su disponibilidad.
+|
+| Mesas | Crear y modificar mesas, consultar su estado, reservarlas y liberarlas.
+|
+| Pedidos | Crear, modificar y cancelar pedidos, agregar productos, enviarlos a cocina y consultar su estado. 
+|
+| Inventario | Controlar el inventario del restaurante; los requisitos detallados están pendientes de completar. 
+|
+| Facturación | Generar facturas, calcular impuestos, aplicar descuentos, registrar pagos y emitir comprobantes.
+|
+| Reportes | Consultar ventas por periodo, productos más vendidos, consumo de inventario, ocupación de mesas e indicadores financieros.
+|
+| Reservas | Gestionar las reservas, coordinadas con la disponibilidad de mesas. 
+|
+| Dashboard | Mostrar información general e indicadores para la administración. 
+|
 
 Los roles establecidos son administrador, cajero, mesero y cocinero. Los permisos de cada rol se detallarán en los documentos de requerimientos.
 
