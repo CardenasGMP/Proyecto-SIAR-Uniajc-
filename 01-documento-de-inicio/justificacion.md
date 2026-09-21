@@ -1,6 +1,6 @@
 # Justificación
 
-Entonces nuestro proyecto SIAR propone como herramienta facilitar la organizacion de las actividades de un restaurante. Al reunir toda la informacion del menu, las mesas, pedidos, reservar y la facturacion en una aplicacion web, con esto buscamos reducir las dificultades que pueden surgir en el momento que estos procesos se hagan por separado.
+Nuestro proyecto SIAR propone como herramienta facilitar la organizacion de las actividades de un restaurante. Al reunir toda la informacion del menu, las mesas, pedidos, reservar y la facturacion en una aplicacion web, con esto buscamos reducir las dificultades que pueden surgir en el momento que estos procesos se hagan por separado.
 
 Nuestro sistema permitira que cada trabajador consulte y gestione la informacion correspondiente con su funcion, los meseros podran registrar pedidos y consultar el estado de las mesas.
 Los cocineros, podran revisar los pedidos que deben preparar.
