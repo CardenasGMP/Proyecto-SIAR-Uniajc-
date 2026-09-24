@@ -6,7 +6,7 @@ Esta versión cubre todos los módulos y corresponde únicamente a documentació
 
 ## Prioridad propuesta
 
-Alta: operación, acceso y cobro; Media: consultas de gestión, alertas y resumen. La prioridad sirve para ordenar el trabajo futuro y no excluye ningún módulo de la documentación del primer corte.
+Alta: operación, acceso y cobro; Media: consultas de gestión, alertas y resumen. La prioridad sirve para ordenar el trabajo futuro.
 
 ## HU01 — Administrar cuentas
 
