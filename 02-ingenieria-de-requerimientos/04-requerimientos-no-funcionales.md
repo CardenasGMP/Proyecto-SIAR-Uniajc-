@@ -1,90 +1,110 @@
 # Requerimientos no funcionales
 
-Estos requisitos describen las condiciones de calidad, seguridad y organización del proyecto SIAR. Se conservan los diez identificadores de la guía. Los umbrales 95 %, menos de 3 segundos y 70 % proceden de ella; los métodos de medición, cargas y reglas detalladas son propuestas para acordar con la docente.
+Estos requisitos explican cómo debe funcionar SIAR: qué tan rápido debe responder, cómo cuidará los datos y cómo organizaremos el trabajo.
 
-**Estado:** definidos para revisión. En el primer corte se documentan; no se afirma que existan una aplicación desplegada, pruebas ejecutadas o métricas alcanzadas.
+Conservamos los diez códigos de la guía. El 95 % de disponibilidad, el tiempo menor a 3 segundos y el 70 % de cobertura de pruebas vienen de ella. Las formas de comprobarlos son propuestas que debemos revisar con la docente. Todavía no son resultados alcanzados.
 
-## RNF01 — Sistema web responsivo
+## RNF01 — Adaptarse a distintas pantallas
 
-- **Requisito:** La interfaz debe adaptarse a celular, tableta y computador.
-- **Forma propuesta de verificación:** Propuesta de prueba: anchos de 360, 768 y 1366 píxeles. Revisar acceso, menú, mesas, pedidos y cobro; todos los controles deben poder utilizarse sin superposición ni pérdida de contenido. Las tablas extensas pueden tener desplazamiento interno.
-- **Evidencia esperada:** Capturas y lista de verificación por pantalla y ancho.
+**Qué necesitamos:** La aplicación debe poder usarse desde un celular, una tableta y un computador.
+
+**Cómo lo revisaremos:** Proponemos revisar pantallas de 360, 768 y 1366 píxeles de ancho. Deben verse los textos y botones completos, sin quedar unos encima de otros. Revisaremos ingreso, menú, mesas, pedidos y cobro. Una tabla grande puede tener su propio desplazamiento.
+
+**Qué guardaremos como evidencia:** Capturas y una lista con lo revisado en cada pantalla.
 
 ## RNF02 — Disponibilidad mínima del 95 %
 
-- **Requisito:** La aplicación desplegada debe estar disponible al menos el 95 % del periodo evaluado.
-- **Forma propuesta de verificación:** Propuesta: medir durante 30 días continuos con una consulta de salud cada 5 minutos. Disponibilidad = verificaciones exitosas / verificaciones programadas × 100. Contar mantenimientos como indisponibilidad y reportar aparte las fallas del monitor. Esta medición es una aproximación por muestreo.
-- **Evidencia esperada:** Registro del monitor, intervalo observado y cálculo; antes del despliegue se registra como pendiente, no como cumplido.
+**Qué necesitamos:** El sistema debe estar disponible al menos el 95 % del tiempo que acordemos revisar.
 
-## RNF03 — Respuesta menor a 3 segundos
+**Cómo lo revisaremos:** Proponemos observarlo durante 30 días, comprobando cada 5 minutos si responde. Calcularemos: comprobaciones correctas / comprobaciones programadas × 100. El tiempo de mantenimiento contará como caída; si falla la herramienta que comprueba, lo anotaremos aparte. Esta revisión da una aproximación, porque no observa cada segundo.
 
-- **Requisito:** Las operaciones habituales deben responder en menos de 3 segundos bajo la carga acordada.
-- **Forma propuesta de verificación:** Propuesta inicial: 10 usuarios simultáneos, 100 productos, 20 mesas y 1000 pedidos históricos. Medir al menos 100 ejecuciones por operación de login, consulta de menú, mesas, guardar pedido y consulta de ventas. Informar mínimo, promedio, percentil 95 y máximo. Para aprobar, ninguna operación medida debe alcanzar 3 segundos; la carga debe confirmarse con la docente.
-- **Evidencia esperada:** Resultados de tiempos, tasa de error, datos de prueba, equipo, red y entorno usados.
+**Qué guardaremos como evidencia:** El registro de las comprobaciones y el cálculo. Solo podremos hacerlo cuando la aplicación esté publicada.
 
-## RNF04 — Protección de contraseñas
+## RNF03 — Responder en menos de 3 segundos
 
-- **Requisito:** Las contraseñas no deben almacenarse ni registrarse en texto legible.
-- **Forma propuesta de verificación:** La guía usa la expresión «contraseñas cifradas». Se propone precisar almacenamiento mediante hash de contraseña con sal individual y función apropiada, sin recuperación del valor original. Revisar base de datos, respuestas y logs para verificar que no exponen contraseñas. La contraseña se restablece, no se envía la anterior.
-- **Evidencia esperada:** Revisión técnica del almacenamiento y pruebas de acceso y recuperación; función y parámetros se definirán en Diseño.
+**Qué necesitamos:** Las tareas habituales deben responder en menos de 3 segundos con la carga de prueba acordada.
 
-## RNF05 — Control de acceso por roles
+**Cómo lo revisaremos:** Proponemos probar con 10 usuarios al mismo tiempo, 100 productos, 20 mesas y 1000 pedidos anteriores. Haremos al menos 100 repeticiones de ingreso, consulta de menú y mesas, guardar pedidos y consultar ventas. Anotaremos el menor tiempo, el promedio, el mayor y el percentil 95, que indica el tiempo dentro del que quedó el 95 % de las respuestas. Para aprobar esta prueba, ninguna respuesta medida debe llegar a 3 segundos.
 
-- **Requisito:** La autorización debe comprobarse en el servidor para cada operación protegida.
-- **Forma propuesta de verificación:** Probar cada permiso de la matriz funcional con el rol autorizado, uno no autorizado y sin sesión, incluyendo solicitudes directas. El acceso indebido debe rechazarse y no modificar datos.
-- **Evidencia esperada:** Matriz rol/operación/resultado y evidencias de pruebas negativas.
+**Qué guardaremos como evidencia:** Resultados de tiempos y errores, junto con el equipo, la conexión, el entorno y los datos usados. La carga propuesta debe acordarse con la docente.
 
-## RNF06 — Registro de auditoría
+## RNF04 — Proteger las contraseñas
 
-- **Requisito:** Las operaciones relevantes deben conservar quién actuó, cuándo, sobre qué registro y con qué resultado.
-- **Forma propuesta de verificación:** Verificar creación, edición y baja de usuarios; cambios de rol, menú y mesas; pedidos, reservas, inventario, descuentos y pagos. Registrar identificador del responsable, fecha y hora, acción, entidad y resultado; no guardar contraseñas ni enlaces de recuperación. Los roles operativos no pueden editar o borrar la auditoría.
-- **Evidencia esperada:** Muestras de eventos relacionadas con operaciones de prueba y verificación de permisos.
+**Qué necesitamos:** Las contraseñas no deben quedar guardadas como texto que alguien pueda leer.
 
-## RNF07 — Arquitectura en capas
+**Cómo lo revisaremos:** La guía habla de contraseñas cifradas. Para aclararlo, proponemos usar un hash: un resultado calculado a partir de la contraseña que sirve para comprobarla sin guardar su texto original. Se usa una sal diferente en cada contraseña para protegerla mejor. Revisaremos la base de datos, las respuestas y los registros del sistema para evitar que aparezcan contraseñas. Si se olvida una, se cambia por otra; no se envía la anterior.
 
-- **Requisito:** El diseño debe separar presentación, lógica de negocio y acceso a datos.
-- **Forma propuesta de verificación:** Revisar un flujo completo de pedido a pago y comprobar que la presentación no consulta directamente la base de datos y que las reglas de negocio están en la capa correspondiente. En el primer corte se evalúa el diseño; después, la implementación.
-- **Evidencia esperada:** Diagrama de arquitectura y revisión de responsabilidades; posteriormente, revisión del código.
+**Qué guardaremos como evidencia:** Revisión del almacenamiento y pruebas de ingreso y recuperación. La herramienta y sus opciones se elegirán en el diseño.
 
-## RNF08 — Uso obligatorio de Git
+## RNF05 — Respetar los permisos de cada rol
 
-- **Requisito:** La documentación y el código deben conservar su historial en el repositorio Git.
-- **Forma propuesta de verificación:** Verificar commits con mensajes que describan el cambio, ramas y revisiones de integración. Cada integrante debe realizar sus propios aportes; un cambio hecho mediante asistencia no se atribuye como trabajo individual de otra persona.
-- **Evidencia esperada:** Historial de commits, diferencias y Pull Requests.
+**Qué necesitamos:** Cada persona debe poder hacer solo las tareas permitidas para su rol.
 
-## RNF09 — Cobertura mínima de pruebas del 70 %
+**Cómo lo revisaremos:** Probaremos cada función con el rol correcto, uno que no tenga permiso y sin iniciar sesión. También intentaremos enviar la solicitud directamente al servidor. Si no hay permiso, la acción debe rechazarse sin cambiar datos.
 
-- **Requisito:** La implementación debe alcanzar al menos 70 % de cobertura automatizada.
-- **Forma propuesta de verificación:** La guía no especifica la métrica. Se propone cobertura de líneas del código de aplicación, excluyendo dependencias y código generado, con exclusiones visibles. La herramienta se elegirá con las tecnologías. La cobertura no reemplaza la revisión de casos ni demuestra ausencia de errores.
-- **Evidencia esperada:** Reporte de cobertura y resultados de pruebas unitarias, de integración y funcionales. No aplica como resultado ejecutado mientras solo exista documentación.
+**Qué guardaremos como evidencia:** Una tabla con rol, acción, resultado y evidencia.
 
-## RNF10 — Documentación técnica completa
+## RNF06 — Guardar quién hace los cambios
 
-- **Requisito:** La documentación debe permitir comprender, instalar, utilizar y mantener el sistema según la etapa.
-- **Forma propuesta de verificación:** En este corte: revisar documento de inicio, requisitos, historias, casos de uso, diagramas, arquitectura y patrones. En entregas posteriores: agregar instalación, configuración, API, base de datos, pruebas, despliegue y manuales. Cada enlace e identificador debe corresponder a un documento vigente.
-- **Evidencia esperada:** Lista de entregables y revisión de coherencia; el cronograma se completará al final por acuerdo del equipo.
+**Qué necesitamos:** Debe quedar registro de quién hizo una operación importante, cuándo la hizo y sobre qué dato.
 
-## Aplicación a los módulos
+**Cómo lo revisaremos:** Revisaremos cambios de usuarios, roles, menú, mesas, pedidos, reservas, inventario, descuentos y pagos. Cada registro tendrá responsable, fecha, acción, dato afectado y resultado. No guardará contraseñas ni enlaces de recuperación. Los usuarios que atienden el restaurante no podrán editar ni borrar estos registros.
 
-| Condición | Módulos donde se verifica |
+**Qué guardaremos como evidencia:** Ejemplos de operaciones y sus registros, además de la revisión de permisos.
+
+## RNF07 — Separar las partes del sistema
+
+**Qué necesitamos:** Las pantallas, las reglas del negocio y el acceso a los datos deben tener responsabilidades separadas. Esto se llama arquitectura en capas.
+
+**Cómo lo revisaremos:** Primero revisaremos los diagramas y qué hace cada parte. Cuando haya código, seguiremos un pedido hasta el pago para comprobar que las pantallas no accedan directamente a la base de datos y que las reglas estén en la parte que les corresponde.
+
+**Qué guardaremos como evidencia:** El diagrama de arquitectura, la explicación de responsabilidades y después la revisión del código.
+
+## RNF08 — Usar Git
+
+**Qué necesitamos:** Los documentos y el código deben tener un historial de cambios en el repositorio.
+
+**Cómo lo revisaremos:** Revisaremos que los cambios se guarden con mensajes claros, ramas y solicitudes de revisión. Cada integrante debe registrar sus propios aportes. No se presentará el trabajo de otra persona o de una herramienta como si fuera el aporte individual de un compañero.
+
+**Qué guardaremos como evidencia:** Historial de commits, diferencias entre versiones y Pull Requests.
+
+## RNF09 — Alcanzar al menos 70 % de cobertura de pruebas
+
+**Qué necesitamos:** Las pruebas automáticas deben recorrer al menos el 70 % del código que se defina para medir.
+
+**Cómo lo revisaremos:** La guía no indica qué tipo de cobertura usar. Proponemos medir líneas de código de la aplicación, dejando fuera las librerías externas y el código generado automáticamente. Se deben mostrar esas exclusiones. Tener cobertura no significa que el programa esté libre de errores, por eso también revisaremos los resultados de las pruebas.
+
+**Qué guardaremos como evidencia:** Un reporte de cobertura y los resultados de pruebas unitarias, de integración y funcionales. La herramienta se escogerá cuando definamos las tecnologías.
+
+## RNF10 — Mantener la documentación
+
+**Qué necesitamos:** Los documentos deben explicar qué hace el sistema, cómo está organizado y cómo se usa.
+
+**Cómo lo revisaremos:** Revisaremos problema, justificación, objetivos, alcance, cronograma, requisitos, historias, casos de uso y diagramas. También deben explicarse la arquitectura y los patrones elegidos. Cuando exista la aplicación, agregaremos instalación, configuración, API, base de datos, pruebas, publicación y manuales. Comprobaremos que los enlaces y códigos correspondan a los documentos correctos.
+
+**Qué guardaremos como evidencia:** Una lista de los documentos y su revisión. El cronograma sigue pendiente y lo haremos al final.
+
+## Dónde se revisa cada requisito
+
+| Requisitos | Dónde los revisaremos |
 | --- | --- |
-| RNF01–RNF03 | Todos los módulos con interfaz u operaciones, usando los escenarios y la carga acordados. |
-| RNF04 | Usuarios, inicio de sesión y recuperación de acceso. |
-| RNF05 | Todas las operaciones según la matriz de roles. |
-| RNF06 | Operaciones que cambian información; consultas de auditoría solo para personal autorizado. |
-| RNF07–RNF10 | Proyecto completo y entregables de cada etapa. |
+| RNF01–RNF03 | En las pantallas y tareas de los módulos, con las condiciones de prueba que acordemos. |
+| RNF04 | En las cuentas, el ingreso y la recuperación de contraseña. |
+| RNF05 | En todas las funciones según los permisos de cada rol. |
+| RNF06 | En las operaciones que cambian datos. Solo personal autorizado podrá consultar esos registros. |
+| RNF07–RNF10 | En el proyecto completo. |
 
-## Escenarios críticos para las futuras pruebas
+## Situaciones que debemos probar
 
-- Dos usuarios intentan reservar la misma mesa en un intervalo superpuesto: solo una reserva puede confirmarse.
-- Dos solicitudes intentan consumir el último saldo de un insumo: ninguna combinación deja saldo negativo.
-- Se repite la confirmación de pago: queda un único pago y un único cambio a Facturado.
-- Un mesero intenta una operación exclusiva del administrador mediante una solicitud directa: se rechaza.
-- Cocina inicia preparación mientras el mesero intenta editar: se conserva una versión coherente y se rechaza el cambio incompatible.
-- Falla una operación de llegada, cobro o inventario: no quedan estados o saldos parcialmente actualizados.
+- Dos personas reservan la misma mesa en horarios que se cruzan: solo una reserva debe confirmarse.
+- Dos solicitudes intentan sacar las últimas unidades de un insumo: no debe quedar una cantidad negativa.
+- Se confirma dos veces un pago: se guarda uno solo y el pedido pasa una sola vez a Facturado.
+- Un mesero intenta hacer una tarea del administrador directamente desde una solicitud: el sistema la rechaza.
+- Cocina empieza a preparar mientras el mesero cambia el pedido: no se aceptan dos cambios que se contradigan.
+- Falla el registro de una llegada, un pago o un movimiento de inventario: no queda solo una parte del cambio guardada.
 
-Estos escenarios complementan los [criterios funcionales](03-requerimientos-funcionales.md); todavía no son resultados de pruebas.
+Estas situaciones complementan los [criterios de los requisitos funcionales](03-requerimientos-funcionales.md). Las pruebas se realizarán cuando tengamos el sistema.
 
-## Pendientes de validación
+## Por acordar
 
-Confirmar el periodo de disponibilidad, la carga para rendimiento, la métrica de cobertura, el mecanismo de recuperación de cuenta y el alcance de auditoría. Las tecnologías y herramientas se escogerán en Diseño. El cronograma se realizará al final.
+Debemos confirmar cuánto tiempo mediremos la disponibilidad, cuántos usuarios usaremos para medir rendimiento, qué cobertura de pruebas se tomará y cómo funcionarán la recuperación de contraseña y el registro de cambios. Las herramientas se elegirán en el diseño.

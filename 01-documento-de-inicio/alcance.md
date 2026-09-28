@@ -1,150 +1,54 @@
 # Alcance
 
-## Alcance general
+SIAR será una aplicación web para organizar la información de un restaurante. Queremos reunir los datos de sus actividades para que cada trabajador pueda consultar y actualizar lo que le corresponde.
 
-El proyecto contempla el desarrollo de un Sistema Integral de Administración para Restaurantes (SIAR), orientado a mejorar la organización y control de las actividades operativas y administrativas de un restaurante mediante una aplicación web.
+Por ahora estamos preparando la documentación y el diseño. Las funciones que describimos son las que esperamos desarrollar.
 
-El sistema permitirá integrar la información generada en las diferentes áreas del establecimiento, evitando el manejo separado de datos y facilitando que cada trabajador pueda consultar y gestionar la información necesaria de acuerdo con sus funciones.
+## Usuarios y roles
 
-SIAR busca proporcionar una herramienta que permita mejorar la comunicación entre los diferentes roles del restaurante, reducir errores en el manejo de información y apoyar la toma de decisiones mediante datos organizados sobre la operación del negocio.
+El sistema tendrá cuatro roles:
 
----
+| Rol | Qué podrá hacer |
+| --- | --- |
+| Administrador | Manejar usuarios y permisos, revisar la información del restaurante y consultar reportes. |
+| Mesero | Registrar pedidos, consultar mesas y revisar cómo va la atención. |
+| Cocinero | Ver los pedidos enviados a cocina y actualizar su preparación. |
+| Cajero | Preparar facturas, registrar pagos y entregar comprobantes. |
 
-# Alcance funcional
+Los permisos de cada función se explican en los [requerimientos funcionales](../02-ingenieria-de-requerimientos/03-requerimientos-funcionales.md).
 
-## Gestión de usuarios y roles
+## Menú
 
-El sistema permitirá administrar los usuarios del restaurante y asignar permisos según las funciones que desempeñan dentro del establecimiento.
+Permitirá registrar productos, cambiar sus datos, organizarlos por categorías y señalar cuáles están disponibles. Los productos que dejen de ofrecerse se podrán desactivar, conservando sus ventas anteriores.
 
-### Administrador
+## Mesas y reservas
 
-Funciones:
+Permitirá registrar mesas, consultar su capacidad y saber si están libres, ocupadas o reservadas. También se podrán registrar, modificar y cancelar reservas, y marcar la llegada de los clientes.
 
-- Gestionar usuarios del sistema.
-- Administrar roles.
-- Consultar información general del restaurante.
-- Revisar reportes e indicadores del negocio.
+## Pedidos
 
-### Mesero
+Permitirá registrar lo que solicita una mesa, agregar productos, corregir el pedido cuando siga pendiente y enviarlo a cocina. Se podrá consultar su estado: Pendiente, En preparación, Listo, Entregado o Facturado.
 
-Funciones:
+También se propone el estado Cancelado para dejar registro de los pedidos que no continúen. Las condiciones para modificarlos o cancelarlos están en los requerimientos.
 
-- Registrar pedidos.
-- Consultar disponibilidad de mesas.
-- Consultar el estado de los pedidos realizados.
+## Inventario
 
-### Cocinero
+Permitirá registrar insumos, anotar entradas y salidas, consultar las cantidades disponibles y revisar cuáles están por debajo del mínimo. El consumo se registrará manualmente; por ahora no se calculará a partir de recetas.
 
-Funciones:
+## Facturación
 
-- Visualizar pedidos pendientes.
-- Consultar los productos solicitados.
-- Actualizar el estado de preparación de los pedidos.
+Permitirá generar la factura de un pedido, calcular impuestos, aplicar descuentos autorizados y registrar el pago. Se podrá consultar o imprimir el comprobante. La propuesta maneja una factura por pedido y un pago completo por factura.
 
-### Cajero
+## Reportes y dashboard
 
-Funciones:
+El administrador podrá consultar las ventas, los productos más vendidos, el consumo de insumos y la ocupación de las mesas. El dashboard será una pantalla de resumen con información del restaurante, como pedidos activos, reservas y alertas del inventario.
 
-- Gestionar procesos de facturación.
-- Registrar pagos.
-- Generar comprobantes de venta.
+## Lo que no incluiremos por ahora
 
----
+- Conexión con plataformas externas de pago.
+- Una aplicación móvil independiente.
+- Conexión con sistemas contables externos.
+- Domicilios a través de plataformas externas.
+- Funciones de inteligencia artificial.
 
-# Gestión del menú
-
-El sistema permitirá administrar la información de los productos disponibles en el restaurante.
-
-Incluye:
-
-- Registro de productos.
-- Modificación de productos.
-- Consulta del menú.
-- Organización por categorías.
-- Actualización de disponibilidad de productos.
-
----
-
-# Gestión de mesas y reservas
-
-El sistema permitirá controlar la información relacionada con las mesas disponibles del restaurante.
-
-Incluye:
-
-- Registro de mesas.
-- Consulta del estado de las mesas.
-- Gestión de reservas.
-- Actualización de disponibilidad.
-- Control de ocupación.
-
----
-
-# Gestión de pedidos
-
-El sistema permitirá realizar seguimiento a los pedidos desde su creación hasta la entrega al cliente.
-
-Incluye:
-
-- Registro de pedidos.
-- Asociación de productos al pedido.
-- Envío de información al área de cocina.
-- Consulta del estado del pedido.
-
-Estados contemplados:
-
-- Pendiente.
-- En preparación.
-- Listo.
-- Entregado.
-- Facturado.
-
----
-
-# Gestión de inventario
-
-El sistema permitirá organizar y controlar la información relacionada con los productos e insumos disponibles.
-
-Incluye:
-
-- Registro de productos del inventario.
-- Consulta de disponibilidad.
-- Seguimiento de consumo de productos.
-- Apoyo al control de existencias.
-
----
-
-# Gestión de facturación
-
-El sistema permitirá administrar el proceso de cobro del restaurante.
-
-Incluye:
-
-- Registro de ventas.
-- Generación de facturas.
-- Registro de pagos.
-- Consulta de información relacionada con las transacciones realizadas.
-
----
-
-# Reportes administrativos
-
-El sistema permitirá generar información organizada para apoyar la administración del restaurante.
-
-Incluye:
-
-- Consulta de ventas realizadas.
-- Seguimiento del inventario.
-- Identificación de productos con mayor demanda.
-- Visualización de indicadores generales del funcionamiento del restaurante.
-
----
-
-# Limitaciones del alcance
-
-El proyecto inicialmente no contempla:
-
-- Integración con plataformas externas de pago.
-- Desarrollo de una aplicación móvil independiente.
-- Integración con sistemas contables externos.
-- Gestión de domicilios mediante plataformas externas.
-- Automatización mediante inteligencia artificial.
+Algunas reglas de inventario y reservas todavía se deben revisar con la docente. Las dejamos señaladas en los documentos para ajustarlas cuando se definan.

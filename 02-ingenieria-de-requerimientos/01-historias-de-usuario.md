@@ -1,16 +1,14 @@
 # Historias de usuario
 
-Las historias expresan qué necesita una persona del sistema y para qué. Los criterios de aceptación describen resultados observables para revisarlos y convertirlos en pruebas más adelante.
+Aquí escribimos lo que necesita cada persona que usará SIAR. Usamos la forma «Como..., quiero..., para...» para explicar quién necesita una función, qué quiere hacer y para qué le sirve.
 
-Esta versión cubre todos los módulos y corresponde únicamente a documentación. Las reglas son propuestas para revisión; los identificadores RF remiten al [catálogo funcional](03-requerimientos-funcionales.md), que detalla su origen y las decisiones pendientes.
+Debajo de cada historia están sus criterios de aceptación: los resultados que debemos comprobar para saber si esa función quedó bien. Los códigos RF y CU permiten encontrar el requisito y el caso de uso relacionado.
 
-## Prioridad propuesta
-
-Alta: operación, acceso y cobro; Media: consultas de gestión, alertas y resumen. La prioridad sirve para ordenar el trabajo futuro.
+La prioridad Alta corresponde al acceso, la atención y el cobro. La prioridad Media corresponde a consultas, avisos y resúmenes. Es una propuesta para organizar el trabajo, pero todas las historias forman parte de la documentación.
 
 ## HU01 — Administrar cuentas
 
-Como **administrador**, quiero **registrar, actualizar y desactivar las cuentas del personal**, para **mantener el acceso de cada trabajador de acuerdo con su vinculación al restaurante**.
+Como administrador, quiero crear, actualizar y desactivar las cuentas del personal para que cada trabajador tenga el acceso que necesita.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF01, RF02, RF03, RF04.
@@ -18,14 +16,14 @@ Como **administrador**, quiero **registrar, actualizar y desactivar las cuentas 
 
 ### Criterios de aceptación
 
-1. **RF01:** Con datos válidos se crea una sola cuenta; si falta un dato o el correo ya existe, se informa el error sin guardar.
-2. **RF02:** Los cambios se conservan al consultar nuevamente; se rechaza un correo perteneciente a otra cuenta.
-3. **RF03:** Se propone baja lógica: la cuenta queda inactiva y no puede acceder; sus pedidos y registros conservan la referencia al responsable. No se permite desactivar el último administrador activo.
-4. **RF04:** Un mesero no puede gestionar cuentas ni facturar, tampoco mediante una solicitud directa; un cambio de rol aplica en la siguiente operación protegida.
+1. **RF01:** Si los datos están completos, se guarda la cuenta. Si falta algo o el correo ya está registrado, se muestra el error y no se crea otra cuenta.
+2. **RF02:** Al volver a consultar el usuario deben aparecer los cambios. No se acepta un correo que ya use otra persona.
+3. **RF03:** Se conserva quién hizo los pedidos y otras operaciones anteriores. No se permite dejar el sistema sin un administrador activo.
+4. **RF04:** Un mesero no puede administrar cuentas ni cobrar, aunque intente saltarse las pantallas. Si cambia el rol, los nuevos permisos se aplican desde la siguiente acción.
 
 ## HU02 — Iniciar sesión
 
-Como **usuario del restaurante**, quiero **ingresar con mi cuenta**, para **acceder a las funciones de mi rol**.
+Como usuario del restaurante, quiero ingresar con mi cuenta para usar las funciones de mi rol.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF05.
@@ -33,11 +31,11 @@ Como **usuario del restaurante**, quiero **ingresar con mi cuenta**, para **acce
 
 ### Criterios de aceptación
 
-1. **RF05:** Las credenciales válidas permiten entrar; las incorrectas o de una cuenta inactiva no crean sesión ni revelan cuál dato falló.
+1. **RF05:** Una cuenta activa con datos correctos puede entrar. Si hay un error o la cuenta está inactiva, se muestra un aviso general sin indicar cuál dato falló.
 
 ## HU03 — Recuperar acceso
 
-Como **usuario registrado**, quiero **restablecer mi contraseña**, para **recuperar el acceso si la olvido**.
+Como usuario registrado, quiero cambiar mi contraseña si la olvido para volver a entrar al sistema.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF06.
@@ -45,11 +43,11 @@ Como **usuario registrado**, quiero **restablecer mi contraseña**, para **recup
 
 ### Criterios de aceptación
 
-1. **RF06:** Se propone enlace de un solo uso con vigencia de 15 minutos: un enlace usado o vencido se rechaza, y la contraseña anterior deja de funcionar. El mensaje de solicitud no revela si el correo existe.
+1. **RF06:** Proponemos un enlace que dure 15 minutos y se use una sola vez. Si está vencido o ya se usó, no permite el cambio. Al cambiar la contraseña, la anterior deja de funcionar. La respuesta de la solicitud no revela si el correo está registrado.
 
 ## HU04 — Administrar el menú
 
-Como **administrador**, quiero **crear, editar, categorizar y retirar productos del menú**, para **mantener actualizada la oferta del restaurante**.
+Como administrador, quiero agregar, editar, organizar por categorías y retirar productos para mantener el menú al día.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF07, RF08, RF09, RF10.
@@ -57,14 +55,14 @@ Como **administrador**, quiero **crear, editar, categorizar y retirar productos 
 
 ### Criterios de aceptación
 
-1. **RF07:** Un producto válido aparece en el menú; se rechaza un precio negativo o un producto sin nombre ni categoría.
-2. **RF08:** Los cambios aparecen en nuevas consultas; cambiar un precio no altera las líneas de pedidos ya guardadas.
-3. **RF09:** Se propone desactivación: deja de ofrecerse para nuevos pedidos, pero permanece en pedidos y comprobantes anteriores.
-4. **RF10:** Al filtrar por una categoría se muestran únicamente sus productos; no se acepta una categoría inexistente.
+1. **RF07:** El producto aparece en el menú. No se guarda si le falta nombre o categoría, o si su precio es negativo.
+2. **RF08:** Los cambios se ven al consultar el menú. Si cambia el precio, se conservan los precios ya guardados en pedidos anteriores.
+3. **RF09:** El producto se desactiva para nuevos pedidos. Sus datos se conservan en los pedidos y comprobantes anteriores.
+4. **RF10:** Al elegir una categoría, aparecen sus productos. No se puede asignar una categoría que no exista.
 
 ## HU05 — Controlar disponibilidad del menú
 
-Como **administrador**, quiero **indicar cuáles productos están disponibles**, para **evitar que se ofrezcan productos que no pueden prepararse**.
+Como administrador, quiero señalar cuáles productos están disponibles para que no se ofrezcan los que ya se terminaron.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF11.
@@ -72,11 +70,11 @@ Como **administrador**, quiero **indicar cuáles productos están disponibles**,
 
 ### Criterios de aceptación
 
-1. **RF11:** Un producto no disponible no se agrega ni se confirma para envío a cocina; la validación se repite al guardar.
+1. **RF11:** Un producto no disponible no se puede agregar ni confirmar para enviarlo a cocina. Se vuelve a revisar la disponibilidad al guardar.
 
 ## HU06 — Administrar mesas
 
-Como **administrador**, quiero **registrar y actualizar las mesas y su capacidad**, para **organizar los espacios de atención**.
+Como administrador, quiero registrar las mesas y su capacidad para organizar los lugares de atención.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF12, RF13.
@@ -84,12 +82,12 @@ Como **administrador**, quiero **registrar y actualizar las mesas y su capacidad
 
 ### Criterios de aceptación
 
-1. **RF12:** Una mesa válida aparece en la consulta; se rechazan números repetidos y capacidades que no sean enteros positivos.
-2. **RF13:** Se rechaza una capacidad inferior a los comensales de una reserva activa asociada y un número ya usado.
+1. **RF12:** El número no se repite y la capacidad debe ser un número entero mayor que cero. La mesa aparece en la consulta.
+2. **RF13:** No se acepta un número que ya tenga otra mesa. Tampoco se reduce la capacidad por debajo de la cantidad de personas de una reserva activa.
 
 ## HU07 — Consultar y liberar mesas
 
-Como **mesero**, quiero **consultar el estado de las mesas y liberar las que terminaron su atención**, para **asignar correctamente los espacios a los clientes**.
+Como mesero, quiero ver qué mesas están disponibles y liberar las que terminaron su atención para poder recibir otros clientes.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF14, RF16.
@@ -97,12 +95,12 @@ Como **mesero**, quiero **consultar el estado de las mesas y liberar las que ter
 
 ### Criterios de aceptación
 
-1. **RF14:** La consulta coincide con los pedidos activos y las reservas del intervalo consultado; una reserva futura no bloquea todo el día.
-2. **RF16:** Se impide liberar una mesa con pedidos activos sin cancelar o facturar; una reserva futura permanece registrada.
+1. **RF14:** La información debe coincidir con los pedidos y las reservas del horario consultado. Una reserva para más tarde no bloquea la mesa durante todo el día.
+2. **RF16:** No se libera mientras tenga un pedido sin cancelar o facturar. Las reservas para más tarde se conservan.
 
 ## HU08 — Crear y editar pedidos
 
-Como **mesero**, quiero **registrar los productos solicitados por una mesa y corregirlos antes de prepararlos**, para **enviar a cocina un pedido completo**.
+Como mesero, quiero tomar el pedido de una mesa y corregirlo mientras siga pendiente para enviarlo completo a cocina.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF17, RF18, RF19.
@@ -110,13 +108,13 @@ Como **mesero**, quiero **registrar los productos solicitados por una mesa y cor
 
 ### Criterios de aceptación
 
-1. **RF17:** Se asigna un identificador y estado Pendiente; se propone un pedido activo por mesa, rechazando una segunda apertura simultánea.
-2. **RF18:** Solo se aceptan cantidades enteras positivas; cada línea conserva el precio vigente al agregarla y el total coincide con la suma de subtotales.
-3. **RF19:** Se recalcula el total; una modificación de un pedido En preparación, Listo, Entregado o Facturado se rechaza según la regla inicial propuesta.
+1. **RF17:** El pedido recibe un número y queda Pendiente; la mesa pasa a ocupada. Proponemos un pedido activo por mesa. No se abren dos al mismo tiempo para la misma mesa.
+2. **RF18:** Las cantidades deben ser enteros positivos. Cada producto conserva el precio que tenía al agregarlo. El total debe coincidir con la suma de lo pedido.
+3. **RF19:** Se actualiza el total. Si el pedido está En preparación, Listo, Entregado o Facturado, ya no se permite editarlo.
 
 ## HU09 — Cancelar pedidos
 
-Como **mesero**, quiero **cancelar un pedido cuando el cliente desiste**, para **evitar que siga procesándose una solicitud cancelada**.
+Como mesero, quiero cancelar un pedido cuando el cliente desista para que no siga su preparación sin necesidad.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF20.
@@ -124,11 +122,11 @@ Como **mesero**, quiero **cancelar un pedido cuando el cliente desiste**, para *
 
 ### Criterios de aceptación
 
-1. **RF20:** Un pedido Pendiente puede cancelarse; uno iniciado en cocina requiere administrador y motivo. Un pedido Facturado no se cancela por esta función. No se elimina el historial ni se repone automáticamente un consumo ya realizado.
+1. **RF20:** Un pedido Pendiente puede cancelarse. Si cocina ya empezó, se necesita permiso del administrador. Un pedido Facturado no se cancela desde esta función. Se conserva su historial y no se devuelven automáticamente los insumos que ya se usaron.
 
 ## HU10 — Enviar pedidos a cocina
 
-Como **mesero**, quiero **enviar el pedido confirmado al área de cocina**, para **iniciar su preparación sin repetir información**.
+Como mesero, quiero enviar el pedido a cocina para que el cocinero sepa qué debe preparar.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF21.
@@ -136,11 +134,11 @@ Como **mesero**, quiero **enviar el pedido confirmado al área de cocina**, para
 
 ### Criterios de aceptación
 
-1. **RF21:** Un pedido vacío o con producto no disponible se rechaza; repetir el envío no duplica el pedido en cocina. El envío conserva Pendiente hasta que el cocinero acepte su preparación.
+1. **RF21:** No se envía un pedido vacío o con productos no disponibles. Repetir el envío no crea otra copia. Sigue Pendiente hasta que el cocinero empiece a prepararlo.
 
 ## HU11 — Seguir la preparación y entrega
 
-Como **cocinero**, quiero **consultar los pedidos enviados y actualizar su preparación**, para **coordinar con el mesero la entrega al cliente**.
+Como cocinero, quiero ver los pedidos y actualizar su preparación para que el mesero sepa cuándo puede entregarlos.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF22.
@@ -148,11 +146,11 @@ Como **cocinero**, quiero **consultar los pedidos enviados y actualizar su prepa
 
 ### Criterios de aceptación
 
-1. **RF22:** El cocinero cambia un pedido enviado de Pendiente a En preparación y luego a Listo; el mesero lo cambia a Entregado; el cobro lo deja Facturado. Se rechazan saltos y retrocesos no permitidos.
+1. **RF22:** El cocinero pasa un pedido enviado de Pendiente a En preparación y luego a Listo. El mesero lo marca Entregado y el pago lo deja Facturado. No se permiten saltos o retrocesos fuera de ese orden.
 
 ## HU12 — Registrar insumos y entradas
 
-Como **administrador**, quiero **registrar insumos y las cantidades que ingresan**, para **mantener un control de las existencias**.
+Como administrador, quiero registrar los insumos y sus entradas para saber con qué cuenta el restaurante.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF23, RF24.
@@ -160,12 +158,12 @@ Como **administrador**, quiero **registrar insumos y las cantidades que ingresan
 
 ### Criterios de aceptación
 
-1. **RF23:** No se repite el código; el stock mínimo no puede ser negativo y la unidad queda definida antes de registrar movimientos.
-2. **RF24:** El saldo aumenta exactamente en la cantidad registrada y se conserva el movimiento con su referencia.
+1. **RF23:** El código no se repite y la cantidad mínima no puede ser negativa. La unidad se define antes de registrar entradas o salidas.
+2. **RF24:** La cantidad debe ser mayor que cero. Se suma exactamente lo registrado y se conserva el dato de la entrada.
 
 ## HU13 — Registrar consumo de insumos
 
-Como **administrador**, quiero **registrar las salidas y el consumo de insumos**, para **conocer lo utilizado y evitar saldos incorrectos**.
+Como administrador, quiero anotar los insumos que se usan para saber cuánto queda.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF25.
@@ -173,11 +171,11 @@ Como **administrador**, quiero **registrar las salidas y el consumo de insumos**
 
 ### Criterios de aceptación
 
-1. **RF25:** La cantidad positiva se descuenta una sola vez; se rechaza una salida superior a la existencia y se muestra el saldo disponible.
+1. **RF25:** Se descuenta la cantidad una sola vez. No se permite sacar más de lo disponible y se informa cuánto queda.
 
 ## HU14 — Consultar inventario y alertas
 
-Como **administrador**, quiero **consultar existencias, movimientos e insumos con nivel bajo**, para **planear la reposición de insumos**.
+Como administrador, quiero consultar las cantidades y los avisos de nivel bajo para saber qué hace falta reponer.
 
 - **Prioridad propuesta:** Media.
 - **Requisitos relacionados:** RF26, RF27.
@@ -185,12 +183,12 @@ Como **administrador**, quiero **consultar existencias, movimientos e insumos co
 
 ### Criterios de aceptación
 
-1. **RF26:** El saldo corresponde a entradas menos salidas y ajustes registrados; cada movimiento permite identificar a su responsable.
-2. **RF27:** Un insumo bajo el umbral aparece en la consulta de alertas y deja de aparecer cuando su saldo supera el mínimo.
+1. **RF26:** Lo disponible debe coincidir con las entradas menos las salidas y los ajustes registrados. En cada movimiento se puede ver quién lo hizo.
+2. **RF27:** El aviso aparece cuando la cantidad es igual o menor al mínimo y desaparece cuando vuelve a estar por encima.
 
 ## HU15 — Preparar la factura
 
-Como **cajero**, quiero **generar la factura de un pedido entregado con sus impuestos y descuentos autorizados**, para **presentar al cliente un cobro correcto**.
+Como cajero, quiero preparar la factura con sus impuestos y descuentos autorizados para cobrar el valor correcto.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF28, RF29, RF30.
@@ -198,13 +196,13 @@ Como **cajero**, quiero **generar la factura de un pedido entregado con sus impu
 
 ### Criterios de aceptación
 
-1. **RF28:** No se generan dos facturas para el mismo pedido; productos, cantidades y precios coinciden con el pedido. Emitirla por sí solo no marca el pedido como pagado.
-2. **RF29:** Se muestra base, tasa e importe; la misma regla de redondeo a dos decimales se aplica al cálculo y al comprobante. Las tasas deben definirse antes de ejecutar pruebas.
-3. **RF30:** El descuento se registra con motivo y autorización; no supera el subtotal ni deja valores negativos y recalcula la base del impuesto.
+1. **RF28:** Solo se crea una factura por pedido. Los productos, cantidades y precios deben coincidir con lo pedido. Crear la factura no significa que ya se haya pagado.
+2. **RF29:** La factura muestra el valor sobre el que se calcula, la tasa y el impuesto. El cálculo y el comprobante usan el mismo redondeo a dos decimales. La tasa debe definirse antes de hacer las pruebas.
+3. **RF30:** Se guarda el motivo y quién lo autorizó. El descuento no puede superar el subtotal ni dejar valores negativos. Se vuelve a calcular el impuesto sobre el valor con descuento.
 
 ## HU16 — Registrar pago y comprobante
 
-Como **cajero**, quiero **registrar el pago y entregar el comprobante**, para **cerrar la venta y dejar constancia del cobro**.
+Como cajero, quiero guardar el pago y entregar el comprobante para dejar registro de la venta.
 
 - **Prioridad propuesta:** Alta.
 - **Requisitos relacionados:** RF31, RF32.
@@ -212,12 +210,12 @@ Como **cajero**, quiero **registrar el pago y entregar el comprobante**, para **
 
 ### Criterios de aceptación
 
-1. **RF31:** Se propone un solo pago por factura: se rechaza un importe inferior al total; en efectivo se calcula cambio. Repetir la confirmación no duplica el pago y el pedido pasa a Facturado.
-2. **RF32:** El comprobante contiene número, fecha, detalle, subtotal, descuento, impuestos, total y medio de pago; reimprimir no crea otra venta.
+1. **RF31:** Proponemos un pago por factura. No se acepta menos del total; si es efectivo, se calcula el cambio. Confirmar dos veces no registra otro pago. El pedido pasa a Facturado.
+2. **RF32:** Debe mostrar número, fecha, productos, cantidades, subtotal, descuento, impuestos, total y medio de pago. Imprimirlo otra vez no crea otra venta.
 
 ## HU17 — Consultar ventas y productos
 
-Como **administrador**, quiero **consultar las ventas y los productos más vendidos por periodo**, para **reconocer cómo se comporta la demanda**.
+Como administrador, quiero consultar las ventas y los productos más vendidos para conocer qué piden más los clientes.
 
 - **Prioridad propuesta:** Media.
 - **Requisitos relacionados:** RF33, RF34.
@@ -225,12 +223,12 @@ Como **administrador**, quiero **consultar las ventas y los productos más vendi
 
 ### Criterios de aceptación
 
-1. **RF33:** El total coincide con los pagos registrados dentro del intervalo y excluye pedidos cancelados y facturas sin pago; un periodo sin datos devuelve total cero.
-2. **RF34:** Se suman unidades de pedidos pagados y se ordenan de mayor a menor; no se cuentan pedidos cancelados.
+1. **RF33:** El total debe coincidir con los pagos de esas fechas. No se suman pedidos cancelados ni facturas sin pagar. Si no hubo ventas, se muestra cero.
+2. **RF34:** Se suman las unidades de pedidos pagados y se ordenan de mayor a menor. No se cuentan los pedidos cancelados.
 
 ## HU18 — Consultar consumo y ocupación
 
-Como **administrador**, quiero **consultar el consumo de insumos y el uso de las mesas**, para **revisar el aprovechamiento de los recursos**.
+Como administrador, quiero revisar el consumo de insumos y el uso de las mesas para entender cómo se están usando los recursos.
 
 - **Prioridad propuesta:** Media.
 - **Requisitos relacionados:** RF35, RF36.
@@ -238,12 +236,12 @@ Como **administrador**, quiero **consultar el consumo de insumos y el uso de las
 
 ### Criterios de aceptación
 
-1. **RF35:** El resultado coincide con los movimientos de tipo consumo y separa las cantidades por unidad, sin sumar unidades incompatibles.
-2. **RF36:** Se propone medir minutos ocupados entre apertura de pedido y liberación, divididos por minutos habilitados del periodo; se informa el horario usado y se evita dividir por cero.
+1. **RF35:** La cantidad debe coincidir con los movimientos marcados como consumo. Cada insumo se muestra con su unidad; no se mezclan, por ejemplo, kilos con litros.
+2. **RF36:** Proponemos dividir los minutos ocupados, desde que se abre el pedido hasta que se libera la mesa, entre los minutos habilitados del periodo. Se muestra el horario usado. Si no hubo tiempo habilitado, no se hace la división.
 
 ## HU19 — Consultar indicadores financieros
 
-Como **administrador**, quiero **consultar ventas cobradas, cantidad de ventas y ticket promedio**, para **tener un resumen de los ingresos registrados**.
+Como administrador, quiero ver cuánto se ha cobrado y el promedio por venta para tener un resumen de los ingresos.
 
 - **Prioridad propuesta:** Media.
 - **Requisitos relacionados:** RF37.
@@ -251,11 +249,11 @@ Como **administrador**, quiero **consultar ventas cobradas, cantidad de ventas y
 
 ### Criterios de aceptación
 
-1. **RF37:** Se propone mostrar ventas cobradas, cantidad de ventas y ticket promedio; con cero ventas el promedio se muestra como no disponible. No se presenta utilidad sin datos de costos.
+1. **RF37:** Se muestran las ventas cobradas, la cantidad de ventas y el promedio por venta. Si no hubo ventas, el promedio queda sin calcular. No se muestra ganancia si no tenemos los datos de costos.
 
 ## HU20 — Registrar y modificar reservas
 
-Como **mesero**, quiero **registrar reservas y modificar sus datos cuando el cliente lo solicite**, para **organizar la disponibilidad de las mesas**.
+Como mesero, quiero registrar y cambiar reservas para organizar las mesas que necesitarán los clientes.
 
 - **Prioridad propuesta:** Media.
 - **Requisitos relacionados:** RF15, RF38, RF39.
@@ -263,13 +261,13 @@ Como **mesero**, quiero **registrar reservas y modificar sus datos cuando el cli
 
 ### Criterios de aceptación
 
-1. **RF15:** Se comprueba capacidad y ausencia de solapamiento antes de confirmar; dos solicitudes simultáneas no reservan la misma mesa en horarios superpuestos.
-2. **RF38:** Se asigna un identificador y estado Confirmada solo si existe mesa adecuada; se rechaza un intervalo pasado, invertido o solapado. Utiliza RF15 para asignar mesa.
-3. **RF39:** Se vuelve a validar capacidad y disponibilidad; si falla la nueva asignación se conserva íntegra la reserva anterior.
+1. **RF15:** La mesa debe tener capacidad suficiente y no tener otra reserva que se cruce con ese horario. Si dos personas intentan reservarla al mismo tiempo, solo se confirma una.
+2. **RF38:** Queda Confirmada si hay una mesa adecuada. Se rechaza un horario pasado, con el fin antes del inicio o que se cruce con otra reserva. La mesa se asigna mediante RF15.
+3. **RF39:** Se revisan de nuevo capacidad y disponibilidad. Si el cambio no se puede hacer, la reserva conserva sus datos anteriores.
 
 ## HU21 — Consultar, cancelar y atender reservas
 
-Como **mesero**, quiero **consultar las reservas, cancelarlas o registrar la llegada del cliente**, para **mantener organizada la atención prevista**.
+Como mesero, quiero consultar reservas, cancelarlas o marcar la llegada de los clientes para mantener actualizada la atención.
 
 - **Prioridad propuesta:** Media.
 - **Requisitos relacionados:** RF40, RF41, RF42.
@@ -277,13 +275,13 @@ Como **mesero**, quiero **consultar las reservas, cancelarlas o registrar la lle
 
 ### Criterios de aceptación
 
-1. **RF40:** La reserva queda Cancelada y su intervalo se libera sin borrar el historial ni afectar otras reservas.
-2. **RF41:** La lista muestra contacto, personas, intervalo y estado; los filtros solo devuelven coincidencias y los roles no autorizados no acceden a los contactos.
-3. **RF42:** Se valida que la mesa esté libre al momento de llegada; se asocia la reserva con el pedido de atención y no se registra la llegada dos veces.
+1. **RF40:** Queda Cancelada y su horario vuelve a estar disponible. No se borra el historial ni se cambian otras reservas.
+2. **RF41:** Se muestran contacto, personas, horario y estado según los filtros elegidos. Solo los roles autorizados pueden ver los datos de contacto.
+3. **RF42:** La mesa debe estar libre. La reserva se relaciona con el pedido y pasa a Atendida; la mesa queda ocupada. La llegada no se registra dos veces.
 
 ## HU22 — Consultar dashboard
 
-Como **administrador**, quiero **ver un resumen de la operación y filtrar los indicadores**, para **consultar rápidamente el estado del restaurante**.
+Como administrador, quiero ver un resumen del restaurante y consultar sus detalles para revisar rápidamente lo que está pasando.
 
 - **Prioridad propuesta:** Media.
 - **Requisitos relacionados:** RF43, RF44.
@@ -291,9 +289,9 @@ Como **administrador**, quiero **ver un resumen de la operación y filtrar los i
 
 ### Criterios de aceptación
 
-1. **RF43:** Cada indicador coincide con la consulta de su módulo para la misma fecha y muestra la hora de actualización.
-2. **RF44:** Ventas y reservas respetan el periodo; pedidos activos, mesas ocupadas y alertas se identifican como estado actual. El detalle conserva los filtros aplicables.
+1. **RF43:** Cada dato coincide con la consulta de su módulo para la misma fecha. Se muestra cuándo se actualizó la información.
+2. **RF44:** Ventas y reservas cambian según las fechas elegidas. Pedidos activos, mesas ocupadas y avisos se identifican como datos del momento actual. Al abrir el detalle se mantienen los filtros que correspondan.
 
-## Revisión del equipo
+## Por revisar
 
-Las historias que incluyen inventario, reservas y dashboard desarrollan propuestas que deben confirmarse con la docente. No se asignan nombres ni fechas de ejecución hasta que el equipo acuerde responsabilidades y complete el cronograma.
+Las reglas detalladas y las propuestas de inventario, reservas y dashboard se revisarán con la docente. Están señaladas en los [requerimientos funcionales](03-requerimientos-funcionales.md). También falta acordar quién se encargará de cada tarea y sus fechas en el cronograma.

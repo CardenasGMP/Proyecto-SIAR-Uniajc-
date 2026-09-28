@@ -1,9 +1,9 @@
 # Justificación
 
-Nuestro proyecto SIAR propone como herramienta facilitar la organizacion de las actividades de un restaurante. Al reunir toda la informacion del menu, las mesas, pedidos, reservar y la facturacion en una aplicacion web, con esto buscamos reducir las dificultades que pueden surgir en el momento que estos procesos se hagan por separado.
+Queremos realizar el proyecto SIAR porque en un restaurante es importante que todos trabajen con información actualizada. Tener los pedidos, las mesas, el menú, las reservas, el inventario y los cobros en un mismo lugar puede ayudar a reducir confusiones.
 
-Nuestro sistema permitira que cada trabajador consulte y gestione la informacion correspondiente con su funcion, los meseros podran registrar pedidos y consultar el estado de las mesas.
-Los cocineros, podran revisar los pedidos que deben preparar.
-Los cajeros, pudran gestionar la facturacion y los pagos y por ultimo, el administrador podra controlar los usuarios y va poder consultar los reportes e indicadores del negocio.
+Nuestra idea es que cada trabajador encuentre lo que necesita para hacer su trabajo. El mesero podrá registrar los pedidos y consultar las mesas; el cocinero verá lo que debe preparar; el cajero revisará las cuentas y los pagos; y el administrador podrá consultar las ventas y el inventario.
 
-Con esta organizacion buscamos un mejor manejo de comunicaion entre el personal, y en disminuir errores en el manejo de la informacion y apoyar una atencion mas ordenada a los clientes. Tambien se espera facilitar el seguimiento de las ventas y el inventario para apoyar decisiones del administrador.
+Con esto buscamos apoyar la comunicación entre el personal y llevar un mejor orden de las actividades del restaurante. Son beneficios que esperamos conseguir y que tendremos que comprobar cuando el sistema esté funcionando.
+
+El proyecto también nos servirá para practicar lo que estamos aprendiendo en Ingeniería de Software II. Vamos a definir las funciones del sistema, organizar sus datos y preparar los diagramas antes de empezar a programar.

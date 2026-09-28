@@ -2,20 +2,13 @@
 
 ## Objetivo general
 
-Desarrollar un Sistema Integral de Administración para Restaurantes (SIAR) mediante una aplicación web que permita organizar y relacionar la información de los procesos principales del restaurante, como la gestión de mesas, pedidos, menú, inventario, reservas y facturación, facilitando la comunicación entre los diferentes roles del establecimiento y apoyando la administración eficiente del negocio.
-
----
+Desarrollar una aplicación web llamada SIAR que reúna la información de los usuarios, el menú, las mesas, los pedidos, el inventario, las reservas y la facturación de un restaurante, para ayudar al personal a trabajar de forma más organizada.
 
 ## Objetivos específicos
 
-- Identificar las principales dificultades que se presentan en la gestión manual o separada de los procesos administrativos y operativos de un restaurante.
-
-- Diseñar una solución tecnológica que permita centralizar la información generada por las diferentes áreas del restaurante.
-
-- Permitir que cada usuario del sistema gestione la información correspondiente según su rol dentro del establecimiento.
-
-- Facilitar el registro y seguimiento de pedidos, mesas, reservas, productos disponibles y procesos de facturación.
-
-- Mejorar la comunicación entre meseros, cocineros, cajeros y administradores mediante una plataforma que permita consultar información actualizada.
-
-- Proporcionar información organizada sobre ventas e inventario que facilite al administrador el seguimiento de la operación y la toma de decisiones.
+- Identificar las dificultades que pueden aparecer cuando la información de un restaurante se maneja en registros separados.
+- Organizar los datos y definir qué funciones tendrá el sistema.
+- Establecer qué podrá hacer cada trabajador según su rol.
+- Facilitar el registro y la consulta de pedidos, mesas, reservas, productos y cobros.
+- Apoyar la comunicación entre meseros, cocineros, cajeros y administradores con información actualizada.
+- Preparar consultas de ventas e inventario que ayuden al administrador a revisar cómo va el negocio.

@@ -1,28 +1,34 @@
 # Modelo entidad-relación de SIAR
 
-## Propósito y alcance
+En este modelo mostramos qué datos necesitamos guardar y cómo se relacionan. Por ejemplo, un pedido pertenece a una mesa, tiene productos y puede generar una factura.
 
-Este modelo organiza los datos que necesitará el Sistema Integral de Administración para Restaurantes. Muestra qué información se guardará y cómo se relacionarán usuarios, menú, mesas, reservas, pedidos, inventario y facturación. Los reportes y el dashboard se obtendrán mediante consultas sobre esos datos.
+Lo organizamos a partir de los [requerimientos funcionales](../02-ingenieria-de-requerimientos/03-requerimientos-funcionales.md) y los [no funcionales](../02-ingenieria-de-requerimientos/04-requerimientos-no-funcionales.md). Por ahora es el diseño de los datos; todavía no hemos creado la base de datos.
 
-Es una **propuesta de modelo lógico relacional para el primer corte**, basada en los [requerimientos funcionales](../02-ingenieria-de-requerimientos/03-requerimientos-funcionales.md) y [no funcionales](../02-ingenieria-de-requerimientos/04-requerimientos-no-funcionales.md). Todavía no es una base de datos implementada. Se mantienen como propuestas por validar las reglas de inventario, reservas, descuentos y recuperación de acceso indicadas en esos documentos.
+Tenemos **16 entidades**, que se podrán convertir en tablas. Presentamos el mismo modelo en seis partes para que sea más fácil leerlo. Si una entidad aparece otra vez, sigue siendo la misma tabla. En cada parte mostramos sus datos principales; las tablas que solo sirven de referencia muestran únicamente su identificador.
 
-El modelo contiene **16 entidades**. Se presenta en seis vistas del mismo modelo para facilitar su lectura; una entidad repetida no representa otra tabla. En cada vista se muestran completos los atributos del tema y solo la clave primaria de las entidades de referencia. La tabla de relaciones incluye también las conexiones entre vistas.
+## Qué significan los símbolos
 
-## Cómo leer los diagramas
+| Símbolo o término | Explicación |
+| --- | --- |
+| PK o clave primaria | Es el dato que identifica un registro, como id_pedido. No se repite dentro de su tabla. |
+| FK o clave foránea | Es un dato que conecta una tabla con otra. Por ejemplo, id_mesa en PEDIDO indica a qué mesa pertenece. |
+| UK o valor único | Señala un dato que no se puede repetir, como el correo de un usuario. |
+| 1 | Debe existir exactamente un registro relacionado. |
+| 0..1 | Puede no existir todavía, pero habrá como máximo uno. |
+| 0..N | Puede no haber ninguno o haber varios. |
+| Opcional | El dato puede quedar vacío cuando no corresponde. Los demás datos son obligatorios. |
 
-- **PK:** clave primaria; identifica de forma única cada registro.
-- **FK:** clave foránea; apunta a la clave primaria de otra entidad.
-- **UK:** valor único; impide duplicados. En una FK opcional, la unicidad aplica únicamente a valores no nulos.
-- **1:** exactamente un registro; **0..1:** ninguno o uno; **0..N:** ninguno o varios.
-- En Mermaid, las barras representan uno, el círculo permite cero y la pata de cuervo representa muchos. Las líneas punteadas indican relaciones no identificadoras: cada entidad usa una clave primaria propia.
-- Los tipos int, string, decimal, datetime y boolean son orientativos. Los campos marcados «opcional» aceptan ausencia de dato; los demás son obligatorios.
-- Los importes se representarán con decimales exactos, no con números aproximados de coma flotante. Las cantidades de insumos pueden ser fraccionarias; las cantidades de productos del pedido son enteros positivos.
+En las líneas del diagrama, las barras representan uno, el círculo permite cero y la forma de tres puntas representa varios. Las líneas punteadas indican que cada tabla tiene su propio identificador.
 
-## Diagramas del modelo
+int representa números enteros; decimal, números con decimales; string, texto; datetime, fecha y hora; y boolean, verdadero o falso. Los precios usarán decimales exactos. Las cantidades de los insumos pueden tener decimales, mientras que las cantidades pedidas de un producto deben ser enteras.
+
+Si una clave foránea es opcional y única, varios registros pueden tenerla vacía, pero no pueden repetir el mismo valor cuando se complete.
+
+## Diagramas
 
 ### 1. Usuarios y seguridad
 
-Un usuario tiene un rol y puede registrar varias solicitudes de recuperación. Un evento de auditoría puede carecer de usuario identificado, por ejemplo un acceso fallido. Esto no permite operaciones de negocio anónimas.
+Cada trabajador tiene una cuenta y un rol. Si olvida la contraseña, puede pedir su recuperación. AUDITORIA guarda quién hizo una acción y cuándo. Si alguien intenta entrar y no se identifica, ese registro puede quedar sin usuario; esto no le permite hacer tareas del restaurante.
 
 ```mermaid
 erDiagram
@@ -67,7 +73,7 @@ erDiagram
 
 ### 2. Mesas y reservas
 
-Una mesa tiene muchos pedidos y reservas a lo largo del tiempo. Un pedido puede existir sin reserva. Una reserva puede no haberse atendido todavía y solo puede dar origen a un pedido. Los responsables de estas operaciones son claves hacia USUARIO, detalladas en la tabla de relaciones.
+Una mesa puede tener muchas reservas y pedidos en diferentes momentos. Una reserva puede terminar en un pedido cuando llegan los clientes. También se puede abrir un pedido sin reserva. Los horarios indican cuándo está habilitada cada mesa para atender.
 
 ```mermaid
 erDiagram
@@ -120,7 +126,7 @@ erDiagram
 
 ### 3. Menú y detalle del pedido
 
-Cada detalle pertenece a un pedido y a un producto. Un pedido recién abierto puede estar vacío; para enviarlo a cocina necesita al menos una línea. El nombre y precio guardados en el detalle conservan la información de la venta aunque se edite el menú.
+Una categoría agrupa productos del menú. DETALLE_PEDIDO guarda cada producto que se agrega a un pedido, su cantidad y precio. Un pedido recién abierto puede estar vacío, pero necesita productos para enviarse a cocina.
 
 ```mermaid
 erDiagram
@@ -155,9 +161,9 @@ erDiagram
     }
 ```
 
-### 4. Historial y responsables del pedido
+### 4. Cambios y responsables del pedido
 
-El historial guarda las transiciones, incluida la cancelación. El usuario que registra una acción y el administrador que autoriza una excepción pueden ser personas diferentes. El estado anterior solo es nulo en el registro inicial.
+HISTORIAL_PEDIDO guarda los cambios de estado, con fecha y responsable. Por ejemplo, permite saber quién lo pasó a En preparación. Si una cancelación necesita permiso del administrador, también se guarda quién la autorizó.
 
 ```mermaid
 erDiagram
@@ -188,7 +194,7 @@ erDiagram
 
 ### 5. Facturación y pago
 
-Un pedido tiene como máximo una factura; una factura puede estar pendiente de pago y admite como máximo un pago completo. La factura conserva los valores calculados y la autorización del descuento. El comprobante se genera con factura, pago y detalle del pedido.
+Un pedido puede tener una factura. Si aún no se ha cobrado, esa factura no tiene pago. Cuando se cobra, se registra un solo pago completo. Los datos de la factura, el pedido y el pago sirven para mostrar el comprobante.
 
 ```mermaid
 erDiagram
@@ -235,7 +241,7 @@ erDiagram
 
 ### 6. Inventario
 
-Cada movimiento corresponde a un insumo y a un responsable. La referencia al pedido es opcional, porque una entrada de mercancía no requiere pedido de cliente. Un ajuste puede señalar el movimiento que corrige. No se modelan recetas ni descuento automático de insumos.
+INSUMO representa lo que se guarda en inventario. MOVIMIENTO_INVENTARIO registra lo que entra, sale o se corrige. Cada movimiento tiene un responsable y puede relacionarse con un pedido cuando corresponda. El consumo se anota manualmente.
 
 ```mermaid
 erDiagram
@@ -273,32 +279,32 @@ erDiagram
     }
 ```
 
-## Diccionario de entidades
+## Qué guarda cada entidad
 
-| Entidad | Información que representa | Clave primaria |
+| Entidad | Qué guarda | Identificador |
 | --- | --- | --- |
-| ROL | Define los cuatro roles del personal. | id_rol |
-| USUARIO | Cuenta de un trabajador; el rol determina sus permisos. | id_usuario |
-| RECUPERACION_ACCESO | Solicitud temporal de recuperación de contraseña. | id_recuperacion |
-| AUDITORIA | Registro de operaciones y su resultado. | id_auditoria |
-| MESA | Mesa física con número y capacidad. | id_mesa |
-| HORARIO_MESA | Intervalos en que una mesa está habilitada para atención; permiten medir ocupación. | id_horario |
-| RESERVA | Reserva de una mesa para un contacto y un intervalo. | id_reserva |
-| PEDIDO | Atención de una mesa desde su apertura hasta el cierre y liberación. | id_pedido |
-| CATEGORIA | Agrupa los productos del menú. | id_categoria |
-| PRODUCTO | Producto que se ofrece en el menú; es distinto de un insumo. | id_producto |
-| DETALLE_PEDIDO | Cada línea del pedido; resuelve la relación muchos a muchos entre pedidos y productos. | id_detalle |
-| HISTORIAL_PEDIDO | Cambios de estado con su responsable y posibles autorizaciones. | id_historial |
-| FACTURA | Documento interno académico generado para un pedido entregado. | id_factura |
-| PAGO | Confirmación única del pago completo de una factura. | id_pago |
-| INSUMO | Elemento del inventario, con unidad de medida fija y mínimo. | id_insumo |
-| MOVIMIENTO_INVENTARIO | Entrada, salida o ajuste de un insumo; el saldo se obtiene de estos movimientos. | id_movimiento |
+| ROL | Los cuatro roles del personal. | id_rol |
+| USUARIO | La cuenta de cada trabajador. | id_usuario |
+| RECUPERACION_ACCESO | La solicitud y el plazo para cambiar una contraseña olvidada. | id_recuperacion |
+| AUDITORIA | Quién hizo una acción, cuándo y qué resultado tuvo. | id_auditoria |
+| MESA | El número y la capacidad de una mesa. | id_mesa |
+| HORARIO_MESA | Las fechas y horas en que se puede atender en una mesa. | id_horario |
+| RESERVA | Quién reserva, cuántas personas van y qué mesa y horario usarán. | id_reserva |
+| PEDIDO | Lo que se atiende en una mesa y el seguimiento hasta liberarla. | id_pedido |
+| CATEGORIA | El grupo al que pertenece un producto del menú. | id_categoria |
+| PRODUCTO | Lo que se ofrece en el menú, con precio y disponibilidad. | id_producto |
+| DETALLE_PEDIDO | Los productos de un pedido, con cantidad, nombre y precio de ese momento. | id_detalle |
+| HISTORIAL_PEDIDO | Los estados por los que pasó el pedido y quién los cambió. | id_historial |
+| FACTURA | Los valores que se cobran por un pedido. | id_factura |
+| PAGO | El registro del pago completo de una factura. | id_pago |
+| INSUMO | Un elemento del inventario, su unidad de medida y su mínimo. | id_insumo |
+| MOVIMIENTO_INVENTARIO | La entrada, salida o corrección de un insumo. | id_movimiento |
 
-## Relaciones y cardinalidades
+## Cómo se relacionan las tablas
 
-En la cuarta columna se indica cuántos registros hijos puede tener un registro padre. En la quinta se indica cuántos padres admite cada hijo. Todas las FK apuntan a la PK de la entidad padre.
+Cada FK de la tercera columna apunta al identificador de la tabla de referencia. Por ejemplo, un ROL puede estar asignado a varios USUARIO, pero cada usuario tiene un solo rol. Esta tabla también incluye las conexiones que no aparecen juntas en un mismo diagrama.
 
-| Padre | Hijo | FK en el hijo | Hijos por padre | Padres por hijo |
+| Tabla de referencia | Tabla que la usa | Dato que las conecta | Cuántos registros puede tener relacionados | Cuántas referencias admite cada registro |
 | --- | --- | --- | --- | --- |
 | ROL | USUARIO | id_rol | 0..N | 1 |
 | USUARIO | RECUPERACION_ACCESO | id_usuario | 0..N | 1 |
@@ -327,112 +333,114 @@ En la cuarta columna se indica cuántos registros hijos puede tener un registro 
 | PEDIDO | MOVIMIENTO_INVENTARIO | id_pedido | 0..N | 0..1 |
 | MOVIMIENTO_INVENTARIO | MOVIMIENTO_INVENTARIO | id_movimiento_origen | 0..N | 0..1 |
 
-## Restricciones que debe respetar el diseño
+## Reglas para guardar los datos
 
-### Usuarios y seguridad
+Estas reglas explican las decisiones del modelo. Las que aún no están definidas en la guía siguen siendo propuestas para revisar con la docente.
 
-1. ROL contiene Administrador, Mesero, Cocinero y Cajero. Cada USUARIO tiene un único rol en esta versión. Los permisos se aplican según la matriz de requerimientos; no se necesita una tabla de permisos mientras sean fijos.
-2. El correo se normaliza antes de comprobar su unicidad. La contraseña se guarda como hash de contraseña con sal; nunca como texto legible. El hash codificado puede incluir la sal y los parámetros del algoritmo.
-3. Desactivar un usuario no elimina pedidos, pagos, movimientos ni auditoría. Se impide desactivar o cambiar el rol del último administrador activo.
-4. RECUPERACION_ACCESO almacena el hash del token, no el enlace completo ni el token en claro. Se valida que no esté usado y que no haya vencido. Se propone vigencia de 15 minutos, como en RF06. Al recuperar la contraseña se incrementa version_sesion y se invalidan sesiones anteriores; cada operación protegida consulta la versión y el rol vigentes.
-5. AUDITORIA registra datos seguros de la operación, no contraseñas, tokens ni copias indiscriminadas de datos personales. entidad e identificador_registro son referencias descriptivas y **no son FK polimórficas**: una sola FK no puede apuntar a distintas tablas. id_usuario sí es una FK real. Se conserva la auditoría de cambios de reserva, de mesa y de autorizaciones.
+### Usuarios y acceso
 
-### Mesas, reservas y ocupación
+1. Los roles serán Administrador, Mesero, Cocinero y Cajero. Cada usuario tendrá uno solo. Los permisos serán los acordados en los requerimientos, por eso no agregamos una tabla de permisos por ahora.
+2. Antes de comparar correos, usaremos el mismo formato para evitar duplicados. La contraseña se guardará como hash, un valor que permite comprobarla sin guardar el texto original. El hash incluirá la información de protección que necesite el método elegido, como la sal y sus parámetros.
+3. Desactivar una cuenta no borra sus pedidos, pagos ni movimientos. Tampoco se permite dejar el sistema sin un administrador activo.
+4. Para recuperar el acceso se guardará un hash del token, que es el código temporal del enlace. No se guarda el enlace completo ni el código en texto legible. Se revisa si ya se usó o venció; proponemos 15 minutos de duración. Al cambiar la contraseña, version_sesion aumenta para dejar sin validez las sesiones anteriores. El sistema revisará esa versión y el rol antes de cada acción protegida.
+5. AUDITORIA guardará solo los datos necesarios para explicar una acción. No debe incluir contraseñas, códigos de recuperación ni copias innecesarias de datos personales. Sus campos entidad e identificador_registro describen lo afectado, pero no son claves foráneas, porque pueden referirse a tablas distintas. id_usuario sí conecta con USUARIO.
 
-6. MESA.numero es único y capacidad es un entero positivo. HORARIO_MESA contiene intervalos de fecha y hora con inicio < fin, sin solapamientos para la misma mesa. Estos intervalos preservan el horario realmente habilitado para los reportes históricos; no se sobrescriben periodos pasados al cambiar el horario futuro.
-7. RESERVA.personas debe ser positiva y no superar la capacidad de su mesa. Una reserva tiene una sola mesa; agrupar varias mesas queda fuera de esta propuesta. nombre_contacto, medio_contacto y dato_contacto registran la información necesaria sin crear una cuenta de cliente.
-8. Los estados de reserva son Confirmada, Cancelada y Atendida. La creación o modificación valida capacidad, horario y conflictos. No pueden existir reservas confirmadas solapadas para la misma mesa. Cancelada exige id_cancelador, cancelada_en y motivo_cancelacion; en los otros estados esos campos permanecen nulos.
-9. PEDIDO.id_reserva es opcional y único cuando tiene valor: admite pedidos sin reserva y evita atender una reserva dos veces. La mesa del pedido debe coincidir con la de la reserva vinculada. Registrar llegada, crear el pedido y cambiar la reserva a Atendida se realizan conjuntamente. Una reserva atendida no cambia de mesa ni horario por la función de edición.
-10. La ocupación empieza en PEDIDO.creado_en y termina en mesa_liberada_en. id_liberador y mesa_liberada_en se completan juntos al liberar la mesa. Solo se libera si el pedido está Facturado o Cancelado. Una mesa admite como máximo un pedido sin liberar, aunque ya esté pagado; esto evita abrir otra atención sobre una mesa aún ocupada.
-11. El estado visible de una mesa se **calcula**: ocupada si tiene un pedido sin liberar; reservada si una reserva Confirmada cubre el intervalo consultado; libre en caso contrario. Las reservas futuras no ocupan toda la jornada. La disponibilidad debe revisar tanto reservas como ocupación actual, y se vuelve a validar al guardar.
-12. Para el reporte de ocupación se calcula la intersección de cada intervalo de atención con HORARIO_MESA y con el periodo consultado. Una atención todavía abierta se corta a la hora de consulta. El porcentaje es minutos ocupados / minutos habilitados × 100. Si no hay minutos habilitados, se informa que no es calculable.
+### Mesas y reservas
+
+6. Cada mesa tiene un número único y una capacidad entera mayor que cero. Sus horarios deben tener inicio antes del fin y no cruzarse entre sí. Los horarios pasados se conservan para poder revisar después cuánto se usó la mesa.
+7. Una reserva corresponde a una mesa. La cantidad de personas debe ser positiva y caber en ella. Se guardan nombre y contacto sin crear una cuenta de cliente. Por ahora no se agrupan varias mesas en una reserva.
+8. Los estados de reserva son Confirmada, Cancelada y Atendida. Al registrar o modificar se revisan capacidad, horario y otras reservas. No se confirman dos reservas que se crucen en la misma mesa. Si se cancela, se guardan responsable, fecha y motivo; en los demás estados esos datos quedan vacíos.
+9. El pedido puede tener id_reserva vacío si el cliente llegó sin reservar. Cuando tenga reserva, su identificador no podrá repetirse en otro pedido y ambos deben tener la misma mesa. La llegada, el pedido y el cambio a Atendida se guardan juntos. Una reserva atendida ya no cambia de mesa u horario desde la función de edición.
+10. La atención empieza en creado_en del pedido y termina en mesa_liberada_en. Al liberar se guarda también id_liberador. Solo se libera si el pedido está Facturado o Cancelado. Una mesa no debe tener dos pedidos sin liberar, incluso si el primero ya se pagó.
+11. El estado visible de la mesa se calcula: ocupada si tiene un pedido sin liberar; reservada si una reserva Confirmada coincide con el horario consultado; libre en los demás casos. Una reserva futura no bloquea toda la jornada. Se revisa de nuevo la disponibilidad al guardar.
+12. Para calcular la ocupación, se cuenta solo el tiempo de atención que coincide con el horario habilitado y las fechas consultadas. Si la mesa sigue ocupada, se cuenta hasta la hora actual. El porcentaje es minutos ocupados / minutos habilitados × 100. Si no hay tiempo habilitado, no se calcula.
 
 ### Menú y pedidos
 
-13. PRODUCTO pertenece a una CATEGORIA. precio_actual es mayor o igual a cero. activo indica si sigue formando parte del menú; disponible indica si se puede pedir en ese momento. Para agregarlo o enviarlo a cocina se requieren ambos valores verdaderos.
-14. DETALLE_PEDIDO resuelve la relación N:M entre PEDIDO y PRODUCTO. cantidad es un entero positivo y precio_unitario no es negativo. El mismo producto puede aparecer en varias líneas, por ejemplo con observaciones distintas; no se impone unicidad sobre el par pedido/producto.
-15. nombre_producto_venta y precio_unitario se copian al agregar la línea. Su subtotal se calcula como cantidad × precio_unitario; no se almacena un segundo subtotal que pueda quedar desactualizado. El total preliminar del pedido es la suma de sus líneas.
-16. Un pedido puede estar vacío al abrirse, por eso su cardinalidad con detalle es 0..N. Para enviarlo a cocina o facturarlo debe contener al menos una línea. Las líneas solo se modifican mientras el pedido esté Pendiente. La versión permite detectar cambios simultáneos incompatibles.
-17. Los estados de pedido son Pendiente, En preparación, Listo, Entregado, Facturado y Cancelado. enviado_cocina_en se registra una sola vez y no cambia automáticamente el estado. HISTORIAL_PEDIDO registra la creación y las transiciones con fecha y responsable; actualizar el estado actual y guardar el historial forman una misma operación.
-18. Para cancelar se exige motivo. Si la preparación ya empezó, el historial debe registrar id_autorizador de un administrador. Un pedido Facturado no se cancela con esta función. La asignación de roles y las transiciones permitidas requieren validación de negocio; una FK a USUARIO por sí sola no demuestra que esa persona sea mesero, cajero o administrador.
+13. Cada producto tiene una categoría y un precio que no puede ser negativo. activo indica si sigue en el menú; disponible, si se puede pedir en ese momento. Para agregarlo o enviarlo a cocina, los dos deben ser verdaderos.
+14. Un pedido puede tener varios productos y un producto puede estar en varios pedidos. DETALLE_PEDIDO conecta ambos y guarda cada línea. La cantidad debe ser un entero positivo y el precio no puede ser negativo. Un mismo producto puede aparecer en varias líneas si tiene observaciones diferentes.
+15. Al agregar el producto, guardamos su nombre y precio de ese momento. Así, si el menú cambia después, no se cambia la venta anterior. El valor de la línea se calcula con cantidad × precio; el del pedido es la suma de las líneas.
+16. Un pedido recién abierto puede estar vacío, por eso la relación con sus detalles es 0..N. Para enviarlo o facturarlo debe tener al menos un producto. Solo se edita mientras esté Pendiente. El campo version ayuda a detectar si otra persona ya cambió el pedido.
+17. El pedido pasa por Pendiente, En preparación, Listo, Entregado y Facturado, o termina como Cancelado. La fecha de envío a cocina se guarda una sola vez y no cambia por sí sola el estado. El historial registra la creación y cada cambio con su responsable y hora. El estado anterior queda vacío solo al crear el pedido. El nuevo estado y su historial se guardan juntos.
+18. Una cancelación necesita motivo. Si la preparación empezó, se guarda quién la autorizó como administrador. Un pedido Facturado no se cancela desde esta función. El sistema debe revisar el rol: tener un identificador de usuario no demuestra por sí solo que esa persona tenga permiso.
 
-### Facturación
+### Facturas y pagos
 
-19. FACTURA.id_pedido es obligatorio y único: un pedido puede no tener factura todavía y nunca tendrá más de una. Se emite únicamente para un pedido Entregado. numero también es único.
-20. La factura usa las líneas del pedido, que quedan congeladas para conservar nombre, cantidad y precio de la venta. No se duplica DETALLE_FACTURA en esta versión porque no hay facturación parcial, varias facturas por pedido ni edición de un pedido facturado. Si se incorpora alguna de esas funciones, deberá revisarse el modelo.
-21. Los valores de FACTURA son una instantánea del cobro: subtotal = suma de líneas; 0 <= descuento <= subtotal; base_impuesto = subtotal − descuento; valor_impuesto = base_impuesto × tasa_impuesto; total = base_impuesto + valor_impuesto. Se aplica redondeo a dos decimales de manera consistente. La tasa se guarda como proporción y la moneda se identifica explícitamente. Tasa y política de descuentos se validarán con la docente.
-22. Un descuento mayor que cero exige motivo_descuento y un id_autorizador_descuento correspondiente a un administrador. Antes del pago, cualquier cambio autorizado de descuento recalcula importes y genera auditoría. Después del pago, factura y detalle no se modifican.
-23. PAGO.id_factura es obligatorio y único. Una factura está pendiente cuando no tiene PAGO, y pagada cuando lo tiene; no se mantiene otro estado redundante. Un pago es siempre confirmado, no un intento fallido.
-24. El importe neto pagado es el total de FACTURA. En efectivo, importe_recibido >= total y cambio = importe_recibido − total. Para los otros medios registrados, importe_recibido = total y cambio = 0. El total cobrado de los reportes no usa el dinero entregado antes de devolver cambio.
-25. clave_operacion evita repetir una confirmación. Registrar el pago y cambiar el pedido a Facturado se ejecutan en una sola transacción. El comprobante se genera a partir de la factura, su pedido y su pago; reimprimirlo no crea una venta ni una entidad adicional. Se trata del documento interno académico previsto en el alcance.
+19. Cada factura pertenece a un pedido y un pedido tiene como máximo una factura. Solo se genera para un pedido Entregado. El número de factura no se repite.
+20. La factura usa los productos guardados en DETALLE_PEDIDO. Cuando se factura, ese detalle se conserva sin cambios. No agregamos otra tabla de detalle de factura porque no tenemos facturas parciales ni varias facturas para el mismo pedido. Si eso cambia, tendremos que revisar el modelo.
+21. La factura conserva los valores del cobro: subtotal = suma de las líneas; descuento entre cero y el subtotal; base = subtotal − descuento; impuesto = base × tasa; total = base + impuesto. Se usa el mismo redondeo a dos decimales. La tasa se guarda como proporción y se indica la moneda. La tasa y los descuentos deben acordarse con la docente.
+22. Si hay descuento, debe tener motivo y autorización de un administrador. Antes del pago, un cambio autorizado de descuento vuelve a calcular los valores y queda registrado. Después del pago, no se modifican la factura ni los productos cobrados.
+23. Una factura sin PAGO está pendiente; una con PAGO está pagada. Por eso no guardamos otro estado que repita esa información. Cada factura tiene como máximo un pago y solo se guardan los pagos confirmados.
+24. Lo cobrado por la venta es el total de la factura. En efectivo, el dinero recibido debe alcanzar y el cambio es recibido − total. En otros medios, se registra el total exacto y cambio cero. Para los reportes se usa lo cobrado, no el efectivo entregado antes de devolver el cambio.
+25. clave_operacion permite reconocer un pago que ya se confirmó para no repetirlo. El pago y el cambio a Facturado se guardan juntos o no se guarda ninguno. El comprobante sale de esos datos; imprimirlo otra vez no crea otra venta. Sigue siendo la factura interna prevista para el proyecto.
 
 ### Inventario
 
-26. INSUMO.codigo es único; stock_minimo no es negativo. unidad_medida permanece fija después del primer movimiento para no mezclar unidades. PRODUCTO e INSUMO son entidades diferentes: uno se vende en el menú y el otro representa existencias. No hay relación automática entre ellos porque el alcance vigente no define recetas.
-27. MOVIMIENTO_INVENTARIO usa cantidad positiva y tipo Entrada, Consumo, Salida, AjusteEntrada o AjusteSalida. El saldo se calcula como Entrada + AjusteEntrada − Consumo − Salida − AjusteSalida. La existencia inicial se registra como entrada. Cada movimiento representa un insumo.
-28. El saldo es un dato calculado, no un campo independiente de INSUMO. Una salida se rechaza si deja saldo negativo; se debe comprobar y registrar de manera transaccional, serializando movimientos del mismo insumo.
-29. id_pedido se completa cuando el movimiento corresponde a la atención de un pedido. id_movimiento_origen se utiliza en movimientos compensatorios para señalar lo corregido; debe pertenecer al mismo insumo, preceder al ajuste y no referirse al propio movimiento. Una corrección debe tener motivo y autorización operativa del administrador; no se borra ni se modifica el movimiento original.
-30. clave_operacion es única para cada movimiento individual y se conserva al reintentar la misma operación. Si una entrada incluye varios insumos, se registra una clave por línea y se puede compartir referencia. Cancelar un pedido no devuelve automáticamente sus consumos.
+26. Cada insumo tiene un código único y un mínimo que no puede ser negativo. Su unidad de medida no cambia después del primer movimiento, para no mezclar cantidades. PRODUCTO es lo que se vende e INSUMO es lo que se controla en inventario. No se relacionan automáticamente porque todavía no hemos definido recetas.
+27. Cada movimiento corresponde a un insumo y lleva una cantidad positiva. Los tipos son Entrada, Consumo, Salida, AjusteEntrada y AjusteSalida. Lo disponible se calcula con entradas + ajustes de entrada − consumos − salidas − ajustes de salida. Lo que haya al comenzar se registra como entrada.
+28. La cantidad disponible se obtiene de los movimientos; no se guarda otro saldo independiente en INSUMO. Una salida no puede dejar cantidades negativas. Si llegan dos movimientos para el mismo insumo a la vez, se deben atender en orden, comprobando y guardando cada uno completo.
+29. Si el movimiento corresponde a un pedido, se guarda id_pedido. Si corrige otro movimiento, id_movimiento_origen señala cuál: debe ser anterior, del mismo insumo y distinto del ajuste. La corrección la realiza el administrador con su motivo, sin borrar el movimiento original.
+30. clave_operacion identifica cada movimiento para no repetirlo al intentar guardar otra vez. Si una entrada incluye varios insumos, cada línea tendrá su clave y podrá compartir la referencia. Cancelar un pedido no devuelve automáticamente los insumos.
 
-### Integridad entre tablas
+### Cuidado de las relaciones
 
-31. Todas las FK deben apuntar a registros existentes; se evita borrar en cascada historial de ventas, pedidos, reservas, pagos o inventario. Usuarios y productos con historial se desactivan.
-32. Las UK opcionales, como PEDIDO.id_reserva, deben admitir múltiples nulos y evitar duplicados únicamente en los valores presentes. Su implementación exacta dependerá del motor elegido.
-33. Las reservas sin solapamiento, un pedido sin liberar por mesa, los saldos suficientes y los permisos por rol no quedan garantizados solo por las cardinalidades. Requieren restricciones adicionales y operaciones transaccionales que se definirán durante el diseño físico.
-34. Las fechas representan instantes coherentes; se propone guardar instantes en UTC y presentar o filtrar en la zona del restaurante. Los reportes diarios usarán America/Bogota si se confirma que el restaurante opera en Cali.
+31. Las claves foráneas deben apuntar a registros existentes. Borrar un dato no debe llevarse su historial de pedidos, reservas, facturas, pagos o inventario. Usuarios y productos con historial se desactivan.
+32. Un dato opcional y único, como id_reserva en PEDIDO, puede quedar vacío en varios pedidos. Cuando se complete, no puede repetirse. Revisaremos cómo aplicar esta regla en la base de datos que elijamos.
+33. El diagrama no basta para impedir reservas cruzadas, dos pedidos sin liberar en una mesa, cantidades negativas o acciones sin permiso. Estas reglas también deberán comprobarse al programar. Los cambios relacionados deben guardarse completos para no dejar información a medias.
+34. Proponemos guardar las fechas usando UTC, una referencia común de tiempo, y mostrarlas con la hora del restaurante. Si opera en Cali, las consultas por día usarán America/Bogota.
 
-## Reportes y dashboard
+## De dónde salen los reportes
 
-No se crean tablas llamadas REPORTE o DASHBOARD: son resultados de consultas, no hechos nuevos del negocio.
+Los reportes y el dashboard consultan los datos que ya tenemos. No necesitamos guardar otra tabla con una copia de cada resumen.
 
-| Información | Entidades utilizadas | Criterio |
+| Información | Datos que usamos | Cómo se obtiene |
 | --- | --- | --- |
-| Ventas por periodo | PAGO, FACTURA | Sumar FACTURA.total por fecha de pago. |
-| Productos más vendidos | PAGO, FACTURA, PEDIDO, DETALLE_PEDIDO, PRODUCTO | Sumar cantidades de pedidos pagados por producto. |
-| Consumo de inventario | MOVIMIENTO_INVENTARIO, INSUMO | Sumar solo tipo Consumo, por insumo y unidad. |
-| Existencias y alertas | MOVIMIENTO_INVENTARIO, INSUMO | Comparar saldo calculado con stock_minimo, incluyendo insumos sin movimientos con saldo cero. |
-| Ocupación de mesas | MESA, PEDIDO, HORARIO_MESA | Comparar tiempo ocupado con tiempo habilitado del periodo. |
-| Ticket promedio | PAGO, FACTURA | Ventas cobradas / cantidad de pagos; sin pagos, promedio no disponible. |
-| Reservas | RESERVA, MESA | Filtrar por fecha, intervalo y estado. |
-| Pedidos activos | PEDIDO | Pendiente, En preparación, Listo o Entregado; Facturado y Cancelado no son pedidos activos. |
-| Dashboard | Consultas anteriores | Combinar resultados y mostrar hora de actualización; distinguir estado actual de métricas del periodo. |
+| Ventas por fechas | PAGO y FACTURA | Sumar el total de las facturas según la fecha de pago. |
+| Productos más vendidos | PAGO, FACTURA, PEDIDO, DETALLE_PEDIDO y PRODUCTO | Sumar las cantidades de los productos que se pagaron. |
+| Consumo de insumos | MOVIMIENTO_INVENTARIO e INSUMO | Sumar los movimientos de tipo Consumo por insumo y unidad. |
+| Inventario y avisos | MOVIMIENTO_INVENTARIO e INSUMO | Calcular cuánto queda y compararlo con el mínimo. Sin movimientos, el saldo es cero. |
+| Ocupación de mesas | MESA, PEDIDO y HORARIO_MESA | Comparar los minutos ocupados con los habilitados. |
+| Promedio por venta | PAGO y FACTURA | Dividir lo cobrado entre la cantidad de pagos. Sin pagos, no se calcula. |
+| Reservas | RESERVA y MESA | Consultar por fecha, horario y estado. |
+| Pedidos activos | PEDIDO | Consultar Pendiente, En preparación, Listo y Entregado. |
+| Dashboard | Las consultas anteriores | Reunir los resultados y mostrar cuándo se actualizaron. |
 
-Una mesa puede seguir ocupada después de que su pedido deja de estar activo, hasta que el personal registre su liberación. Por eso el indicador de mesas ocupadas usa mesa_liberada_en y no solo el estado del pedido.
+Una mesa puede seguir ocupada aunque el pedido ya esté Facturado o Cancelado, hasta que se registre su liberación. Por eso el resumen de mesas ocupadas usa mesa_liberada_en y no solo el estado del pedido. Los resúmenes por fechas se distinguen de los datos del momento actual.
 
 ## Relación con los requisitos
 
-| Requisitos | Soporte en el modelo |
+| Requisitos | Tablas que los apoyan |
 | --- | --- |
-| RF01–RF06 | ROL, USUARIO, RECUPERACION_ACCESO. |
-| RF07–RF11 | CATEGORIA, PRODUCTO y precio/nombre histórico en DETALLE_PEDIDO. |
-| RF12–RF16 | MESA, RESERVA, PEDIDO y sus datos de liberación. |
-| RF17–RF22 | PEDIDO, DETALLE_PEDIDO, HISTORIAL_PEDIDO y responsables USUARIO. |
+| RF01–RF06 | ROL, USUARIO y RECUPERACION_ACCESO. |
+| RF07–RF11 | CATEGORIA, PRODUCTO y los precios y nombres guardados en DETALLE_PEDIDO. |
+| RF12–RF16 | MESA, RESERVA y los datos de liberación de PEDIDO. |
+| RF17–RF22 | PEDIDO, DETALLE_PEDIDO, HISTORIAL_PEDIDO y USUARIO. |
 | RF23–RF27 | INSUMO y MOVIMIENTO_INVENTARIO. |
-| RF28–RF32 | FACTURA, PAGO y detalle congelado del pedido. |
+| RF28–RF32 | FACTURA, PAGO y los detalles conservados del pedido. |
 | RF33–RF37 | Consultas sobre pagos, facturas, detalles, movimientos, pedidos y HORARIO_MESA. |
-| RF38–RF42 | RESERVA y vínculo único opcional con PEDIDO. |
-| RF43–RF44 | Consultas del dashboard sobre las entidades anteriores. |
-| RNF04–RNF06 | Hash de contraseña, versión de sesión, rol, recuperación y AUDITORIA. |
+| RF38–RF42 | RESERVA y su conexión con PEDIDO. |
+| RF43–RF44 | Consultas de resumen sobre los datos anteriores. |
+| RNF04–RNF06 | Contraseña protegida, versión de sesión, rol, recuperación y AUDITORIA. |
 
-## Ejemplo para explicarlo en clase
+## Ejemplo
 
-Un mesero abre un pedido para la mesa 4. Agrega dos productos, que se guardan como dos líneas en DETALLE_PEDIDO. Cocina registra los cambios de estado en HISTORIAL_PEDIDO. Cuando se entrega la comida, el cajero genera una factura y registra su pago. Después, el personal libera la mesa y queda registrada la duración de la atención.
+Un mesero abre un pedido para la mesa 4. Agrega dos productos, que quedan como dos líneas en DETALLE_PEDIDO. El cocinero cambia su estado mientras lo prepara y esos cambios quedan en HISTORIAL_PEDIDO. Después de entregar la comida, el cajero genera la factura y registra el pago. Al terminar la atención, se libera la mesa y queda guardada la hora.
 
-Si los clientes tenían reserva, el pedido guarda su identificador; si llegaron sin reservar, ese campo queda vacío. Los insumos utilizados se registran manualmente mediante movimientos de inventario, como se definió en los requerimientos.
+Si los clientes tenían reserva, el pedido guarda su número. Si llegaron sin reservar, ese dato queda vacío. Los insumos que se usaron se anotan manualmente en el inventario.
 
-## Decisiones para revisar con el equipo
+## Lo que falta decidir
 
-- Confirmar las reglas propuestas de inventario y reservas de los documentos de requerimientos.
-- Confirmar una sola mesa por reserva, un pedido por atención y un solo pago completo por factura.
-- Confirmar el registro de intervalos habilitados por mesa para calcular ocupación.
-- Definir el motor de base de datos, longitudes de texto, precisión decimal e índices en una etapa posterior.
-- Mantener el alcance sin recetas, pagos parciales, devoluciones ni integraciones externas; cualquier ampliación requiere revisar requisitos y modelo.
+- Revisar con la docente las propuestas de inventario y reservas.
+- Confirmar una mesa por reserva, un pedido por atención y un pago completo por factura.
+- Confirmar cómo guardaremos los horarios habilitados de las mesas.
+- Elegir la base de datos y definir los tamaños de texto, la precisión de los decimales y los índices, que ayudan a buscar los datos.
+- Revisar el modelo si se agregan recetas, pagos parciales, devoluciones o conexiones externas.
 
-El cronograma se completará al final, según lo acordado.
+El cronograma lo haremos al final.
 
-## Referencias del modelo
+## Documentos de apoyo
 
-- [Requerimientos funcionales de SIAR](../02-ingenieria-de-requerimientos/03-requerimientos-funcionales.md).
-- [Requerimientos no funcionales de SIAR](../02-ingenieria-de-requerimientos/04-requerimientos-no-funcionales.md).
-- [Alcance del proyecto](../01-documento-de-inicio/alcance.md).
-- [Sintaxis oficial de diagramas entidad-relación de Mermaid](https://mermaid.js.org/syntax/entityRelationshipDiagram.html).
+- [Requerimientos funcionales](../02-ingenieria-de-requerimientos/03-requerimientos-funcionales.md).
+- [Requerimientos no funcionales](../02-ingenieria-de-requerimientos/04-requerimientos-no-funcionales.md).
+- [Alcance](../01-documento-de-inicio/alcance.md).
+- [Guía de Mermaid para diagramas entidad-relación](https://mermaid.js.org/syntax/entityRelationshipDiagram.html).
