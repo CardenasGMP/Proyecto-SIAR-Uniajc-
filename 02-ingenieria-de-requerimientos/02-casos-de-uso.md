@@ -1,563 +1,519 @@
 # Casos de uso
 
-Cada caso de uso describe la interacción entre una persona y SIAR para cumplir una tarea. Incluye condiciones previas, flujo principal, situaciones alternativas y resultado esperado. Los diagramas se elaborarán en el apartado de Modelado.
+En este documento explicamos, paso a paso, cómo se usarán las funciones de SIAR. En cada caso indicamos quién participa, qué necesita antes de empezar, qué pasos sigue y qué puede pasar si hay un problema.
 
-Los permisos, estados y supuestos se detallan en [requerimientos funcionales](03-requerimientos-funcionales.md). Salvo inicio y recuperación de sesión, todas las acciones requieren autenticación y autorización. Si la sesión vence o el rol no corresponde, el sistema rechaza la acción sin modificar datos. Un fallo al guardar debe conservar el estado anterior y permitir un reintento seguro.
+Excepto al ingresar o recuperar la contraseña, la persona debe tener una sesión abierta y permiso para la tarea. Si su sesión vence o no tiene permiso, no se realiza el cambio. Si algo falla al guardar, se deben conservar los datos anteriores y permitir intentar de nuevo sin repetir registros.
 
-Los casos que agrupan registrar, modificar o cancelar presentan variantes de una misma tarea; no exigen realizar todas las variantes en cada ejecución.
+Algunos casos agrupan opciones como crear, editar o cancelar. Se sigue la opción que se necesita; no hay que hacerlas todas cada vez. Los permisos y reglas completos están en los [requerimientos funcionales](03-requerimientos-funcionales.md).
 
 ## CU01 — Administrar cuentas
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU01.
 - **Requisitos:** RF01, RF02, RF03, RF04.
-- **Disparador:** el actor solicita administrar cuentas.
-- **Precondiciones:** Existe una sesión de administrador activo.
+- **Antes de empezar:** El administrador debe haber iniciado sesión.
 
-### Flujo principal
+### Pasos
 
-1. El administrador abre Usuarios y selecciona registrar, editar, desactivar o asignar rol.
-2. El sistema muestra el formulario o los datos actuales.
-3. El administrador completa los datos y confirma.
-4. El sistema valida correo, rol y la permanencia de un administrador activo.
-5. El sistema guarda la operación y registra al responsable.
+1. Abrir Usuarios y elegir crear, editar, desactivar o asignar un rol.
+2. Completar los datos o cambiar los que hagan falta.
+3. Revisar que el correo no esté repetido y que siga existiendo un administrador activo.
+4. Confirmar y guardar el cambio con el nombre de quien lo realizó.
 
-### Alternativas y errores
+### Si hay un problema
 
-Correo repetido o dato incompleto: señalar el campo y conservar el formulario sin guardar. Último administrador: rechazar su baja o cambio de rol.
+Si falta un dato o el correo se repite, se señala el problema y no se guarda. Tampoco se permite desactivar o cambiar el rol del último administrador activo.
 
-### Resultado esperado
+### Cómo debe quedar
 
-La cuenta y sus permisos quedan actualizados; las operaciones históricas permanecen.
+La cuenta queda actualizada y se conservan sus operaciones anteriores.
 
 ## CU02 — Iniciar sesión
 
-- **Actor principal:** usuario del restaurante.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** usuario del restaurante.
 - **Historia relacionada:** HU02.
 - **Requisitos:** RF05.
-- **Disparador:** el actor solicita iniciar sesión.
-- **Precondiciones:** La cuenta está registrada; el usuario aún no tiene una sesión válida.
+- **Antes de empezar:** La cuenta debe existir. El usuario todavía no ha iniciado sesión.
 
-### Flujo principal
+### Pasos
 
-1. El usuario abre el inicio de sesión.
-2. Escribe su correo y contraseña.
-3. El sistema comprueba credenciales y estado de la cuenta.
-4. El sistema crea la sesión y presenta las funciones permitidas.
+1. Abrir la pantalla de ingreso.
+2. Escribir correo y contraseña.
+3. Comprobar que los datos sean correctos y la cuenta esté activa.
+4. Permitir la entrada y mostrar las funciones del rol.
 
-### Alternativas y errores
+### Si hay un problema
 
-Credenciales incorrectas o cuenta inactiva: mostrar un mensaje general y mantener el acceso cerrado.
+Si los datos no coinciden o la cuenta está inactiva, se muestra un mensaje general y no se permite entrar.
 
-### Resultado esperado
+### Cómo debe quedar
 
-Se establece una sesión asociada al usuario y su rol.
+El usuario puede usar las funciones que tiene permitidas.
 
 ## CU03 — Recuperar acceso
 
-- **Actor principal:** usuario registrado.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** usuario registrado.
 - **Historia relacionada:** HU03.
 - **Requisitos:** RF06.
-- **Disparador:** el actor solicita recuperar acceso.
-- **Precondiciones:** El usuario dispone del medio de recuperación vinculado a su cuenta.
+- **Antes de empezar:** La persona debe poder acceder al medio de recuperación de su cuenta.
 
-### Flujo principal
+### Pasos
 
-1. El usuario solicita recuperación con su correo.
-2. El sistema muestra una respuesta general y, si corresponde, envía el enlace.
-3. El usuario abre el enlace y registra una nueva contraseña.
-4. El sistema valida identidad, vigencia y uso del enlace.
-5. El sistema reemplaza el hash de contraseña, invalida el enlace y las sesiones anteriores.
+1. Solicitar la recuperación escribiendo el correo.
+2. Mostrar una respuesta general y enviar el enlace si corresponde.
+3. Abrir el enlace y escribir una nueva contraseña.
+4. Revisar que el enlace pertenezca a la cuenta, siga vigente y no se haya usado.
+5. Guardar la contraseña de forma protegida, marcar el enlace como usado y cerrar las sesiones anteriores.
 
-### Alternativas y errores
+### Si hay un problema
 
-Enlace vencido o usado: impedir el cambio y permitir otra solicitud. Fallo de envío: permitir reintento sin exponer si existe la cuenta.
+Si el enlace venció o ya se usó, se pide solicitar otro. Si falla el envío, se puede intentar de nuevo sin revelar si el correo está registrado.
 
-### Resultado esperado
+### Cómo debe quedar
 
-La nueva contraseña permite ingresar y la anterior deja de funcionar.
+La persona puede entrar con la nueva contraseña; la anterior ya no sirve.
 
 ## CU04 — Administrar el menú
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU04.
 - **Requisitos:** RF07, RF08, RF09, RF10.
-- **Disparador:** el actor solicita administrar el menú.
-- **Precondiciones:** Existe una sesión de administrador y categorías disponibles para asignar.
+- **Antes de empezar:** El administrador debe haber ingresado. Deben existir categorías para asignar los productos.
 
-### Flujo principal
+### Pasos
 
-1. El administrador entra al menú y selecciona la operación.
-2. Completa o modifica nombre, categoría, precio y disponibilidad.
-3. El sistema valida los datos.
-4. El administrador confirma.
-5. El sistema guarda o desactiva el producto y actualiza la consulta.
+1. Abrir el menú y elegir qué se va a hacer.
+2. Escribir o cambiar nombre, categoría, precio y disponibilidad.
+3. Revisar los datos y confirmar.
+4. Guardar el producto o desactivarlo, según la opción elegida.
 
-### Alternativas y errores
+### Si hay un problema
 
-Precio negativo, categoría inexistente o datos incompletos: no guardar y mostrar el campo por corregir. Un producto con historial se desactiva, no se borra físicamente.
+Si falta un dato, el precio es negativo o la categoría no existe, se muestra el error. Un producto que tenga ventas anteriores se desactiva para conservar su historial.
 
-### Resultado esperado
+### Cómo debe quedar
 
-El menú refleja el cambio y conserva los datos de ventas anteriores.
+El menú queda actualizado y las ventas anteriores mantienen sus datos.
 
 ## CU05 — Controlar disponibilidad del menú
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU05.
 - **Requisitos:** RF11.
-- **Disparador:** el actor solicita controlar disponibilidad del menú.
-- **Precondiciones:** Existe un producto del menú y una sesión de administrador.
+- **Antes de empezar:** El administrador debe haber ingresado y el producto debe existir.
 
-### Flujo principal
+### Pasos
 
-1. El administrador selecciona el producto.
-2. Indica disponible o no disponible.
-3. El sistema guarda el estado.
-4. El personal consulta el menú actualizado.
-5. Al agregar o enviar un pedido el sistema vuelve a comprobar el estado.
+1. Seleccionar un producto.
+2. Marcarlo como disponible o no disponible.
+3. Guardar el cambio y mostrarlo al personal.
+4. Volver a revisar ese estado cuando se agrega el producto o se envía un pedido.
 
-### Alternativas y errores
+### Si hay un problema
 
-Si la disponibilidad cambia mientras se arma un pedido, el envío se rechaza e informa qué línea debe corregirse.
+Si el producto deja de estar disponible mientras se arma el pedido, no se confirma el envío y se indica qué producto debe corregirse.
 
-### Resultado esperado
+### Cómo debe quedar
 
-El estado actualizado rige para nuevas confirmaciones de pedidos.
+Los nuevos pedidos usan la disponibilidad actualizada.
 
 ## CU06 — Administrar mesas
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU06.
 - **Requisitos:** RF12, RF13.
-- **Disparador:** el actor solicita administrar mesas.
-- **Precondiciones:** Existe una sesión de administrador.
+- **Antes de empezar:** El administrador debe haber iniciado sesión.
 
-### Flujo principal
+### Pasos
 
-1. El administrador entra a Mesas.
-2. Selecciona registrar o editar.
-3. Introduce número y capacidad.
-4. El sistema valida unicidad, capacidad y reservas vigentes.
-5. El sistema guarda y muestra la mesa.
+1. Entrar a Mesas y elegir registrar o editar.
+2. Escribir el número y la capacidad.
+3. Revisar que el número no se repita y que la capacidad sirva para las reservas activas.
+4. Guardar y mostrar la mesa.
 
-### Alternativas y errores
+### Si hay un problema
 
-Número repetido o capacidad inválida: rechazar. Si la reducción de capacidad contradice una reserva activa, mantener la capacidad anterior.
+Si el número ya existe o la capacidad no es válida, no se guarda. Si se intenta reducir la capacidad por debajo de una reserva activa, se conserva la anterior.
 
-### Resultado esperado
+### Cómo debe quedar
 
-La mesa queda registrada o actualizada sin invalidar reservas.
+Los datos de la mesa quedan guardados sin afectar las reservas.
 
 ## CU07 — Consultar y liberar mesas
 
-- **Actor principal:** mesero.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** mesero.
 - **Historia relacionada:** HU07.
 - **Requisitos:** RF14, RF16.
-- **Disparador:** el actor solicita consultar y liberar mesas.
-- **Precondiciones:** Existe una sesión autorizada; para liberar, la mesa está ocupada.
+- **Antes de empezar:** El mesero debe tener permiso. Para liberar una mesa, esta debe estar ocupada.
 
-### Flujo principal
+### Pasos
 
-1. El mesero consulta las mesas.
-2. El sistema muestra capacidad y estado actual, y reservas para el intervalo consultado.
-3. El mesero elige liberar una mesa al finalizar la atención.
-4. El sistema comprueba que no queden pedidos activos sin cerrar.
-5. El sistema registra la liberación y conserva las reservas futuras.
+1. Consultar las mesas.
+2. Ver capacidad, estado y reservas del horario elegido.
+3. Elegir la mesa que terminó su atención.
+4. Revisar que sus pedidos estén cancelados o facturados.
+5. Marcarla como libre y conservar las reservas para más tarde.
 
-### Alternativas y errores
+### Si hay un problema
 
-Pedidos sin cancelar o facturar: impedir liberación. Mesa ya libre: informar sin duplicar la operación.
+Si queda un pedido sin cerrar, no se libera. Si la mesa ya está libre, se informa sin repetir el cambio.
 
-### Resultado esperado
+### Cómo debe quedar
 
-La consulta refleja el estado y, si procede, la mesa queda libre.
+Se puede consultar el estado actual y usar la mesa si quedó libre.
 
 ## CU08 — Crear y editar pedidos
 
-- **Actor principal:** mesero.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** mesero.
 - **Historia relacionada:** HU08.
 - **Requisitos:** RF17, RF18, RF19.
-- **Disparador:** el actor solicita crear y editar pedidos.
-- **Precondiciones:** El mesero tiene sesión; existe mesa disponible o reserva del cliente que llega y productos en el menú.
+- **Antes de empezar:** El mesero debe haber ingresado. Debe haber una mesa disponible o una reserva del cliente que llega, y productos en el menú.
 
-### Flujo principal
+### Pasos
 
-1. El mesero selecciona la mesa y abre el pedido.
-2. El sistema asigna identificador, responsable y estado Pendiente, y ocupa la mesa.
-3. El mesero agrega productos, cantidades y observaciones.
-4. El sistema valida disponibilidad y calcula subtotales.
-5. El mesero corrige las líneas necesarias y guarda.
-6. El sistema conserva los precios de las líneas y confirma el total.
+1. Elegir la mesa y abrir el pedido.
+2. Guardar su número, mesero responsable y estado Pendiente; marcar la mesa como ocupada.
+3. Agregar productos, cantidades y observaciones.
+4. Comprobar disponibilidad y calcular los valores.
+5. Corregir lo necesario y guardar.
+6. Conservar el precio de cada producto agregado y mostrar el total.
 
-### Alternativas y errores
+### Si hay un problema
 
-Mesa con otro pedido activo: abrir el pedido existente. Cantidad inválida o producto no disponible: rechazar esa operación. Si cocina ya inició preparación, impedir la modificación.
+Si la mesa ya tiene un pedido activo, se abre ese pedido. Se rechazan cantidades incorrectas y productos no disponibles. Si cocina ya empezó, no se permite editar.
 
-### Resultado esperado
+### Cómo debe quedar
 
-Existe un pedido Pendiente con detalle y total consistentes.
+El pedido queda Pendiente, con sus productos y un total correcto.
 
 ## CU09 — Cancelar pedidos
 
-- **Actor principal:** mesero.
-- **Actores de apoyo:** administrador para la autorización indicada.
+- **Quién lo usa:** mesero.
+- **Quién más participa:** administrador para la autorización indicada.
 - **Historia relacionada:** HU09.
 - **Requisitos:** RF20.
-- **Disparador:** el actor solicita cancelar pedidos.
-- **Precondiciones:** Existe un pedido no facturado y una sesión autorizada.
+- **Antes de empezar:** Debe existir un pedido sin facturar y un usuario con permiso para cancelarlo.
 
-### Flujo principal
+### Pasos
 
-1. El mesero selecciona el pedido y solicita cancelación.
-2. El sistema comprueba el estado.
-3. Si comenzó la preparación, el administrador autoriza la excepción.
-4. Se registra el motivo.
-5. El sistema marca la cancelación y la comunica en la consulta de cocina.
+1. Elegir el pedido y pedir su cancelación.
+2. Revisar en qué estado se encuentra.
+3. Si cocina ya empezó, solicitar la autorización del administrador.
+4. Escribir el motivo.
+5. Guardar la cancelación y mostrarla también en cocina.
 
-### Alternativas y errores
+### Si hay un problema
 
-Sin autorización para un pedido iniciado: rechazar. Pedido facturado: impedir cancelación por esta función. Consumo ya registrado: mantenerlo; cualquier ajuste requiere movimiento separado con motivo.
+Sin la autorización necesaria, el pedido no se cancela. Si ya está Facturado, esta función no permite cancelarlo. Los insumos que ya se usaron se mantienen registrados; cualquier corrección se anota por separado con su motivo.
 
-### Resultado esperado
+### Cómo debe quedar
 
-El pedido queda cancelado con trazabilidad; no genera cobro ni reposición automática.
+El pedido queda Cancelado, con su responsable y motivo. No genera cobro ni devuelve insumos automáticamente.
 
 ## CU10 — Enviar pedidos a cocina
 
-- **Actor principal:** mesero.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** mesero.
 - **Historia relacionada:** HU10.
 - **Requisitos:** RF21.
-- **Disparador:** el actor solicita enviar pedidos a cocina.
-- **Precondiciones:** Existe un pedido Pendiente con líneas guardadas.
+- **Antes de empezar:** Debe existir un pedido Pendiente con productos guardados.
 
-### Flujo principal
+### Pasos
 
-1. El mesero revisa el pedido y confirma el envío.
-2. El sistema valida mesa, cantidades y disponibilidad actual.
-3. El sistema registra fecha de envío.
-4. El pedido aparece una sola vez en la lista de cocina, aún Pendiente.
+1. Revisar el pedido y confirmar el envío.
+2. Comprobar la mesa, las cantidades y la disponibilidad de los productos.
+3. Guardar la fecha de envío.
+4. Mostrar el pedido una sola vez en cocina, todavía como Pendiente.
 
-### Alternativas y errores
+### Si hay un problema
 
-Pedido vacío o producto no disponible: impedir envío y señalar el motivo. Repetición del envío: devolver el pedido ya enviado.
+Si está vacío o tiene un producto no disponible, no se envía y se explica el motivo. Si ya se había enviado, se muestra el mismo pedido sin crear otra copia.
 
-### Resultado esperado
+### Cómo debe quedar
 
-El pedido queda disponible para que el cocinero inicie su preparación.
+El cocinero puede ver el pedido y comenzar a prepararlo.
 
 ## CU11 — Seguir la preparación y entrega
 
-- **Actor principal:** cocinero.
-- **Actores de apoyo:** mesero para entrega y cajero en el posterior cobro.
+- **Quién lo usa:** cocinero.
+- **Quién más participa:** mesero para entrega y cajero en el posterior cobro.
 - **Historia relacionada:** HU11.
 - **Requisitos:** RF22.
-- **Disparador:** el actor solicita seguir la preparación y entrega.
-- **Precondiciones:** Existe un pedido enviado a cocina y no cancelado.
+- **Antes de empezar:** El pedido debe estar enviado a cocina y no estar cancelado.
 
-### Flujo principal
+### Pasos
 
-1. El cocinero consulta la lista de pedidos enviados.
-2. Selecciona un pedido Pendiente y lo marca En preparación.
-3. Al terminar lo marca Listo.
-4. El mesero consulta el estado y lo marca Entregado al servirlo.
-5. El sistema registra responsable y hora en cada transición.
-6. el posterior pago lo cambia a Facturado.
+1. Consultar los pedidos enviados.
+2. El cocinero elige uno Pendiente y lo marca En preparación.
+3. Cuando termina, lo marca Listo.
+4. El mesero lo sirve y lo marca Entregado.
+5. Guardar quién hizo cada cambio y a qué hora.
+6. Cuando el cajero registre el pago, el pedido pasa a Facturado.
 
-### Alternativas y errores
+### Si hay un problema
 
-Transición no permitida, rol incorrecto o cambio simultáneo: rechazar y mostrar el estado vigente. Un pedido cancelado no continúa el flujo.
+Si alguien intenta un cambio que no le corresponde o se salta un estado, no se acepta. Si dos personas cambian el pedido a la vez, se muestra el estado vigente. Un pedido Cancelado no continúa.
 
-### Resultado esperado
+### Cómo debe quedar
 
-El estado e historial permiten conocer el avance real del pedido.
+El personal puede ver en qué va el pedido y consultar sus cambios.
 
 ## CU12 — Registrar insumos y entradas
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU12.
 - **Requisitos:** RF23, RF24.
-- **Disparador:** el actor solicita registrar insumos y entradas.
-- **Precondiciones:** Existe una sesión de administrador; para una entrada el insumo ya está registrado.
+- **Antes de empezar:** El administrador debe haber ingresado. Para anotar una entrada, el insumo ya debe estar creado.
 
-### Flujo principal
+### Pasos
 
-1. El administrador registra código, nombre, unidad y mínimo del insumo.
-2. El sistema valida los datos y crea el registro con saldo inicial cero.
-3. El administrador registra cantidad de entrada y referencia.
-4. El sistema guarda el movimiento con fecha y responsable.
-5. La existencia aumenta según la cantidad registrada.
+1. Registrar código, nombre, unidad de medida y cantidad mínima del insumo.
+2. Revisar los datos y crear el insumo inicialmente con cantidad cero.
+3. Anotar la cantidad que entra y su referencia.
+4. Guardar la entrada con fecha y responsable.
+5. Sumar la cantidad al inventario.
 
-### Alternativas y errores
+### Si hay un problema
 
-Código duplicado o cantidad no positiva: impedir el registro. Una existencia inicial se carga como entrada, no editando directamente el saldo.
+No se permite repetir el código ni registrar cantidades iguales o menores que cero. Si ya hay existencias al iniciar, se anotan como una entrada.
 
-### Resultado esperado
+### Cómo debe quedar
 
-El insumo y sus entradas pueden consultarse y el saldo queda actualizado.
+Se pueden consultar el insumo, sus entradas y la cantidad disponible.
 
 ## CU13 — Registrar consumo de insumos
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU13.
 - **Requisitos:** RF25.
-- **Disparador:** el actor solicita registrar consumo de insumos.
-- **Precondiciones:** Existe un insumo con saldo y una sesión de administrador.
+- **Antes de empezar:** El insumo debe existir y tener cantidad disponible. El administrador debe haber ingresado.
 
-### Flujo principal
+### Pasos
 
-1. El administrador elige el insumo.
-2. Registra cantidad, motivo y referencia de pedido cuando aplica.
-3. El sistema verifica saldo suficiente.
-4. El administrador confirma.
-5. El sistema guarda una sola salida y actualiza el saldo de forma conjunta.
+1. Elegir el insumo.
+2. Escribir cantidad, motivo y referencia del pedido cuando corresponda.
+3. Revisar que alcance lo disponible.
+4. Confirmar la salida.
+5. Guardar el movimiento y actualizar la cantidad juntos, una sola vez.
 
-### Alternativas y errores
+### Si hay un problema
 
-Stock insuficiente: no guardar salida ni cambiar saldo. Reenvío de la misma operación: mostrar el movimiento existente.
+Si no alcanza, no se guarda ni se cambia la cantidad. Si se repite la misma confirmación, se muestra la salida ya registrada.
 
-### Resultado esperado
+### Cómo debe quedar
 
-Se conserva la salida con responsable y el saldo no queda negativo.
+La salida conserva su responsable y el inventario no queda con cantidades negativas.
 
 ## CU14 — Consultar inventario y alertas
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU14.
 - **Requisitos:** RF26, RF27.
-- **Disparador:** el actor solicita consultar inventario y alertas.
-- **Precondiciones:** Existe una sesión de administrador.
+- **Antes de empezar:** El administrador debe haber iniciado sesión.
 
-### Flujo principal
+### Pasos
 
-1. El administrador consulta el inventario.
-2. Filtra un insumo o periodo de movimientos.
-3. El sistema muestra saldo, unidad, entradas y salidas.
-4. El administrador abre la consulta de alertas.
-5. El sistema lista insumos con saldo igual o inferior a su mínimo.
+1. Consultar el inventario.
+2. Elegir un insumo o unas fechas para revisar sus movimientos.
+3. Ver cantidades, unidad de medida, entradas y salidas.
+4. Abrir los avisos de inventario.
+5. Mostrar los insumos que estén en su mínimo o por debajo.
 
-### Alternativas y errores
+### Si hay un problema
 
-Sin movimientos o sin alertas: mostrar lista vacía con explicación. Los saldos de diferentes unidades se presentan separados.
+Si no hay movimientos o avisos, se indica que no hay datos. Las cantidades con distintas unidades se muestran por separado.
 
-### Resultado esperado
+### Cómo debe quedar
 
-Se dispone de información de existencias y necesidades de reposición.
+El administrador puede revisar cuánto queda y qué necesita reponer.
 
 ## CU15 — Preparar la factura
 
-- **Actor principal:** cajero.
-- **Actores de apoyo:** administrador para la autorización indicada.
+- **Quién lo usa:** cajero.
+- **Quién más participa:** administrador para la autorización indicada.
 - **Historia relacionada:** HU15.
 - **Requisitos:** RF28, RF29, RF30.
-- **Disparador:** el actor solicita preparar la factura.
-- **Precondiciones:** Existe un pedido Entregado sin factura y están definidas las tasas académicas de impuesto.
+- **Antes de empezar:** Debe existir un pedido Entregado sin factura. Las tasas de impuesto del ejercicio ya deben estar definidas.
 
-### Flujo principal
+### Pasos
 
 1. El cajero selecciona el pedido.
-2. El sistema recupera líneas y precios guardados.
-3. Si aplica descuento, el administrador lo autoriza y se registra su motivo.
-4. El sistema calcula subtotal, descuento, base, impuesto y total.
-5. El cajero confirma.
-6. El sistema guarda la factura interna con número único y estado pendiente de pago.
+2. Consultar sus productos y precios guardados.
+3. Si habrá descuento, pedir autorización al administrador y guardar el motivo.
+4. Calcular subtotal, descuento, base, impuesto y total.
+5. Confirmar el cobro que se va a presentar.
+6. Guardar la factura con un número único, todavía sin pago.
 
-### Alternativas y errores
+### Si hay un problema
 
-Pedido no entregado: rechazar. Factura existente: mostrarla sin duplicarla. Descuento inválido o sin autorización: impedirlo. Tasa no definida: impedir emisión hasta configurar.
+Si el pedido no está Entregado, no se factura. Si ya tiene factura, se muestra la existente. No se aplica un descuento inválido o sin permiso. Si falta definir la tasa, se debe hacer antes de emitir.
 
-### Resultado esperado
+### Cómo debe quedar
 
-Se conserva una factura interna pendiente de pago con detalle verificable.
+Queda una factura pendiente de pago con los valores que se le cobrarán al cliente.
 
 ## CU16 — Registrar pago y comprobante
 
-- **Actor principal:** cajero.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** cajero.
 - **Historia relacionada:** HU16.
 - **Requisitos:** RF31, RF32.
-- **Disparador:** el actor solicita registrar pago y comprobante.
-- **Precondiciones:** Existe una factura pendiente de pago y una sesión de cajero.
+- **Antes de empezar:** El cajero debe haber ingresado y debe existir una factura pendiente de pago.
 
-### Flujo principal
+### Pasos
 
-1. El cajero abre la factura e indica medio de pago e importe recibido.
-2. El sistema comprueba el total y calcula cambio si es efectivo.
-3. El cajero confirma el pago.
-4. El sistema registra el pago y cambia el pedido a Facturado en una misma operación.
-5. El cajero muestra, imprime o descarga el comprobante.
+1. Abrir la factura y registrar el medio de pago y el dinero recibido.
+2. Comprobar el total y calcular el cambio si es efectivo.
+3. Confirmar el pago.
+4. Guardar el pago y pasar el pedido a Facturado juntos.
+5. Mostrar, imprimir o descargar el comprobante.
 
-### Alternativas y errores
+### Si hay un problema
 
-Importe insuficiente: rechazar. Factura ya pagada o doble clic: no registrar otro pago. Si falla la impresión, permitir reimpresión sin cobrar de nuevo.
+Si el dinero no alcanza, no se registra el pago. Una factura ya pagada o un doble clic no deben generar otro cobro. Si falla la impresión, se puede imprimir de nuevo sin repetir el pago.
 
-### Resultado esperado
+### Cómo debe quedar
 
-La factura queda pagada y existe un comprobante consultable; la liberación de mesa se realiza mediante RF16.
+La factura queda pagada y su comprobante se puede consultar. Para liberar la mesa se usa RF16.
 
 ## CU17 — Consultar ventas y productos
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU17.
 - **Requisitos:** RF33, RF34.
-- **Disparador:** el actor solicita consultar ventas y productos.
-- **Precondiciones:** Existe una sesión de administrador.
+- **Antes de empezar:** El administrador debe haber iniciado sesión.
 
-### Flujo principal
+### Pasos
 
-1. El administrador selecciona fecha inicial y final.
-2. El sistema valida el intervalo.
-3. Consulta pagos confirmados del periodo.
-4. Muestra total de ventas y productos ordenados por unidades vendidas.
-5. El administrador revisa el detalle que respalda los totales.
+1. Elegir fecha inicial y final.
+2. Comprobar que las fechas estén en orden.
+3. Consultar los pagos registrados en ese periodo.
+4. Mostrar el total y ordenar los productos por cantidad vendida.
+5. Permitir revisar los datos con los que se obtuvieron los totales.
 
-### Alternativas y errores
+### Si hay un problema
 
-Fechas invertidas: solicitar corrección. Sin ventas: mostrar cero y lista vacía.
+Si las fechas están invertidas, se pide corregirlas. Si no hubo ventas, se muestra cero y una lista vacía.
 
-### Resultado esperado
+### Cómo debe quedar
 
-Los reportes reflejan las ventas cobradas dentro del periodo.
+Los reportes muestran las ventas cobradas entre las fechas elegidas.
 
 ## CU18 — Consultar consumo y ocupación
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU18.
 - **Requisitos:** RF35, RF36.
-- **Disparador:** el actor solicita consultar consumo y ocupación.
-- **Precondiciones:** Existe sesión de administrador; el reporte de ocupación requiere horarios habilitados y eventos de apertura y liberación.
+- **Antes de empezar:** El administrador debe haber ingresado. Para calcular la ocupación, deben estar guardados los horarios de atención y cuándo se ocuparon y liberaron las mesas.
 
-### Flujo principal
+### Pasos
 
-1. El administrador elige reporte y periodo.
-2. El sistema valida las fechas.
-3. Para consumo agrupa salidas de consumo por insumo y unidad.
-4. Para ocupación calcula tiempo ocupado dentro del horario y periodo seleccionados.
-5. El sistema muestra los datos y la fórmula usada.
+1. Elegir el reporte y las fechas.
+2. Revisar que las fechas estén bien.
+3. Para consumo, sumar las salidas de cada insumo usando su unidad de medida.
+4. Para ocupación, calcular cuánto tiempo estuvo ocupada cada mesa dentro del horario consultado.
+5. Mostrar los datos y explicar el cálculo.
 
-### Alternativas y errores
+### Si hay un problema
 
-Sin horarios habilitados: indicar ocupación no calculable. Sin consumos: mostrar cero por insumo consultado. Un pedido activo aporta tiempo solo hasta la hora de consulta.
+Si faltan horarios, se indica que no se puede calcular la ocupación. Si no hubo consumo, se muestra cero. Si la mesa sigue ocupada, se cuenta solo hasta la hora de la consulta.
 
-### Resultado esperado
+### Cómo debe quedar
 
-Se muestran cifras verificables sin mezclar unidades ni dividir por cero.
+Se pueden revisar las cantidades y el uso de las mesas sin mezclar unidades ni dividir entre cero.
 
 ## CU19 — Consultar indicadores financieros
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU19.
 - **Requisitos:** RF37.
-- **Disparador:** el actor solicita consultar indicadores financieros.
-- **Precondiciones:** Existe una sesión de administrador.
+- **Antes de empezar:** El administrador debe haber iniciado sesión.
 
-### Flujo principal
+### Pasos
 
-1. El administrador selecciona el periodo.
-2. El sistema recupera ventas pagadas.
-3. Calcula el total cobrado y el número de ventas.
-4. Divide el total por la cantidad para obtener el ticket promedio.
-5. Muestra los indicadores y su periodo.
+1. Elegir las fechas.
+2. Consultar las ventas pagadas.
+3. Sumar lo cobrado y contar las ventas.
+4. Dividir el total entre la cantidad de ventas para obtener el promedio por venta, llamado ticket promedio.
+5. Mostrar los valores y el periodo consultado.
 
-### Alternativas y errores
+### Si hay un problema
 
-Sin ventas: total y cantidad son cero; ticket promedio no disponible. No hay costos registrados: no mostrar utilidad como si estuviera calculada.
+Si no hubo ventas, total y cantidad son cero y el promedio no se calcula. Si no hay datos de costos, no se muestra una ganancia calculada.
 
-### Resultado esperado
+### Cómo debe quedar
 
-Los indicadores coinciden con el reporte de ventas.
+El resumen coincide con el reporte de ventas.
 
 ## CU20 — Registrar y modificar reservas
 
-- **Actor principal:** mesero.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** mesero.
 - **Historia relacionada:** HU20.
 - **Requisitos:** RF15, RF38, RF39.
-- **Disparador:** el actor solicita registrar y modificar reservas.
-- **Precondiciones:** Existe una sesión autorizada y mesas registradas.
+- **Antes de empezar:** Debe haber mesas registradas y un usuario con permiso.
 
-### Flujo principal
+### Pasos
 
-1. El mesero captura contacto, personas, fecha y horas de inicio y fin.
-2. El sistema busca mesas con capacidad suficiente y sin solapamientos.
-3. El mesero selecciona la mesa y confirma.
-4. El sistema vuelve a comprobar disponibilidad y guarda la reserva.
-5. Para modificar, el mesero edita una reserva Confirmada y el sistema repite las validaciones antes de sustituir la asignación.
+1. Escribir contacto, número de personas, fecha y horas de inicio y fin.
+2. Buscar una mesa con capacidad y sin otra reserva que se cruce.
+3. Elegir la mesa y confirmar.
+4. Revisar otra vez la disponibilidad y guardar.
+5. Para cambiar una reserva Confirmada, revisar de nuevo capacidad y horario antes de guardar los nuevos datos.
 
-### Alternativas y errores
+### Si hay un problema
 
-Sin mesa disponible: informar y permitir elegir otro intervalo. Conflicto simultáneo: rechazar la nueva reserva. Modificación inválida: conservar los datos anteriores.
+Si no hay mesa, se puede elegir otro horario. Si otra persona la reserva al mismo tiempo, se rechaza la solicitud que entre en conflicto. Si un cambio falla, se conservan los datos anteriores.
 
-### Resultado esperado
+### Cómo debe quedar
 
-Queda una reserva Confirmada asociada a una mesa e intervalo; RF15 representa esta misma asignación, no una segunda reserva.
+Queda una reserva Confirmada con mesa y horario. RF15 es la asignación de esa misma reserva.
 
 ## CU21 — Consultar, cancelar y atender reservas
 
-- **Actor principal:** mesero.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** mesero.
 - **Historia relacionada:** HU21.
 - **Requisitos:** RF40, RF41, RF42.
-- **Disparador:** el actor solicita consultar, cancelar y atender reservas.
-- **Precondiciones:** Existe una sesión autorizada; cancelar o atender requiere una reserva Confirmada.
+- **Antes de empezar:** El usuario debe tener permiso. Para cancelar o registrar llegada, la reserva debe estar Confirmada.
 
-### Flujo principal
+### Pasos
 
-1. El mesero consulta reservas por fecha, mesa o estado.
-2. Selecciona una reserva.
-3. Si cancela, registra motivo y confirma.
-4. el sistema libera su intervalo.
-5. Si registra llegada, el sistema valida mesa libre y asocia la reserva con la apertura del pedido.
-6. El sistema cambia la reserva a Atendida y la mesa a ocupada.
+1. Consultar reservas por fecha, mesa o estado.
+2. Elegir una reserva.
+3. Si se cancela, escribir el motivo y confirmar para liberar su horario.
+4. Si llegan los clientes, revisar que la mesa esté libre y relacionar la reserva con el nuevo pedido.
+5. Marcar la reserva como Atendida y la mesa como ocupada.
 
-### Alternativas y errores
+### Si hay un problema
 
-Reserva ya cancelada o atendida: impedir repetir transición. Mesa todavía ocupada: no confirmar llegada; ofrecer revisión de otra mesa mediante modificación de reserva.
+No se repite una cancelación o llegada ya registrada. Si la mesa sigue ocupada, no se confirma la llegada; se puede revisar otra mesa cambiando la reserva.
 
-### Resultado esperado
+### Cómo debe quedar
 
-La reserva conserva su historial y refleja la cancelación o atención, sin duplicar el pedido.
+La reserva queda actualizada, se conserva su historial y no se duplica el pedido.
 
 ## CU22 — Consultar dashboard
 
-- **Actor principal:** administrador.
-- **Actores de apoyo:** no requiere un actor adicional.
+- **Quién lo usa:** administrador.
 - **Historia relacionada:** HU22.
 - **Requisitos:** RF43, RF44.
-- **Disparador:** el actor solicita consultar dashboard.
-- **Precondiciones:** Existe una sesión de administrador.
+- **Antes de empezar:** El administrador debe haber iniciado sesión.
 
-### Flujo principal
+### Pasos
 
-1. El administrador abre el dashboard.
-2. El sistema muestra ventas, pedidos activos, mesas ocupadas, reservas y alertas con hora de actualización.
-3. El administrador selecciona un periodo.
-4. El sistema actualiza ventas y reservas y distingue las cifras de estado actual.
-5. El administrador abre el detalle de un indicador con sus filtros aplicables.
+1. Abrir el dashboard, que es la pantalla de resumen.
+2. Mostrar ventas, pedidos activos, mesas ocupadas, reservas y avisos de inventario, con la hora de actualización.
+3. Elegir unas fechas.
+4. Actualizar ventas y reservas con ese periodo, dejando identificados los datos que corresponden al momento actual.
+5. Abrir el detalle de un indicador con los filtros que correspondan.
 
-### Alternativas y errores
+### Si hay un problema
 
-Sin datos: mostrar cero o sin información según el indicador. Error al cargar un módulo: indicar que ese dato no está disponible, sin presentarlo como cero.
+Si no hay registros, se muestra cero o sin información según el dato. Si falla la consulta de un módulo, se indica que no está disponible; no se muestra cero como si fuera un resultado real.
 
-### Resultado esperado
+### Cómo debe quedar
 
-El resumen coincide con los módulos de origen y permite consultar su detalle.
+El resumen coincide con la información de cada módulo y permite consultar el detalle.
 
-## Conexión entre casos
+## Cómo se conectan
 
-CU08 crea el pedido; CU10 lo envía; CU11 registra preparación y entrega; CU15 genera la factura; CU16 registra el pago; CU07 libera la mesa. CU09 permite la cancelación en los estados autorizados. CU20 y CU21 gestionan la reserva y su atención vinculada con CU08. El consumo de inventario se registra mediante CU13 y no se descuenta automáticamente al crear el pedido.
+El mesero crea el pedido en CU08 y lo envía a cocina en CU10. Su preparación y entrega se siguen en CU11. Después, el cajero prepara la factura en CU15 y registra el pago en CU16. La mesa se libera con CU07. CU09 permite cancelar cuando las reglas lo permiten.
+
+CU20 y CU21 cubren las reservas y la llegada de los clientes, que se relaciona con la apertura del pedido de CU08. El consumo de inventario se anota manualmente con CU13; no se descuenta solo por abrir un pedido.

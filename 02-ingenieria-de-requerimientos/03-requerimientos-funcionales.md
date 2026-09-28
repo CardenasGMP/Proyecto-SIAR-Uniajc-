@@ -1,376 +1,326 @@
 # Requerimientos funcionales
 
-Esta es la primera versión documental del primer corte. Describe el comportamiento esperado del futuro sistema; no representa funciones programadas ni pruebas ejecutadas. Se basa en el alcance y los objetivos del repositorio y en la guía «Proyecto de semestre» compartida por el equipo.
+Aquí explicamos qué debe permitir hacer SIAR. Cada función tiene un código RF para poder encontrarla y relacionarla con las historias de usuario y los casos de uso.
 
-Se conservan los identificadores RF01–RF22 y RF28–RF37 de la guía. RF23–RF27 completan como propuesta el módulo de inventario, cuyo detalle falta en la guía. RF38–RF44 desarrollan como propuesta reservas y dashboard. Las validaciones, permisos detallados y reglas operativas aquí definidas son una propuesta del equipo pendiente de revisión con la docente. No se ha realizado una validación con un restaurante real.
+Tomamos como base la guía del proyecto y el [alcance](../01-documento-de-inicio/alcance.md). Conservamos los números de la guía. Como esta no detalla todas las funciones de inventario, reservas y dashboard, agregamos RF23–RF27 y RF38–RF44 como propuestas para revisar con la docente. Las reglas y comprobaciones que detallamos también deben revisarse con ella.
 
-## Alcance y lectura
+## Quién usará el sistema
 
-Un requerimiento funcional describe una acción que el sistema debe permitir realizar. Los criterios de aceptación indican cómo comprobarla cuando comience el desarrollo. Esta carpeta documenta los nueve módulos; el cronograma queda pendiente para el final.
-
-- [Historias de usuario](01-historias-de-usuario.md)
-- [Casos de uso](02-casos-de-uso.md)
-- [Requerimientos no funcionales](04-requerimientos-no-funcionales.md)
-- [Alcance del proyecto](../01-documento-de-inicio/alcance.md)
-
-## Actores y permisos propuestos
-
-| Rol | Acciones previstas |
+| Rol | Qué podrá hacer |
 | --- | --- |
-| Administrador | Gestionar cuentas, roles, menú, mesas e inventario; consultar reportes y dashboard; registrar, modificar, consultar y cancelar reservas; autorizar descuentos o cancelaciones excepcionales. |
-| Mesero | Consultar menú y mesas; registrar, editar, enviar y seguir pedidos; registrar entrega; gestionar reservas y liberar mesas. |
-| Cocinero | Consultar pedidos enviados y cambiar su preparación a En preparación y Listo. |
-| Cajero | Consultar pedidos entregados, generar facturas, aplicar descuentos autorizados y registrar pagos y comprobantes. |
-| Usuario registrado | Iniciar sesión y recuperar su propia contraseña. |
+| Administrador | Manejar cuentas, roles, menú, mesas e inventario; consultar reportes y dashboard; registrar, cambiar, consultar y cancelar reservas; autorizar descuentos y ciertas cancelaciones. |
+| Mesero | Consultar menú y mesas; tomar y enviar pedidos; revisar su estado; registrar la entrega; manejar reservas y liberar mesas. |
+| Cocinero | Consultar los pedidos enviados a cocina y marcar cuándo están En preparación o Listos. |
+| Cajero | Consultar pedidos entregados, preparar facturas, aplicar descuentos autorizados, registrar pagos y entregar comprobantes. |
+| Usuario registrado | Ingresar al sistema y recuperar su propia contraseña. |
 
-El cliente del restaurante recibe la atención, pero no tiene una cuenta ni acceso directo en esta versión. Para funciones sensibles no se presupone que el administrador pueda suplantar al cajero o mesero: la matriz define los permisos propuestos. Una decisión diferente deberá actualizar estos documentos.
+El cliente recibe la atención, pero no necesita una cuenta. Ser administrador no significa hacer automáticamente las tareas del cajero o del mesero: cada rol tendrá los permisos que acordemos.
 
-## Reglas que conectan los módulos
+## Reglas generales
 
-1. **Historial:** eliminar usuarios o productos significa desactivarlos cuando tienen operaciones asociadas. Los datos anteriores se conservan.
-2. **Pedidos:** se propone un pedido activo por mesa. El pedido guarda el precio de cada línea; un cambio posterior del menú no modifica ese precio.
-3. **Estados:** Pendiente → En preparación → Listo → Entregado → Facturado. Enviar a cocina registra el envío, pero no inicia por sí mismo la preparación. Un pedido enviado y todavía Pendiente puede corregirse; cocina debe ver la versión vigente. La aceptación de preparación y la edición se validan contra el mismo estado para impedir cambios simultáneos incompatibles.
-4. **Cancelación:** se propone Cancelado como estado terminal adicional para representar RF20. Si inició preparación, requiere autorización del administrador. No se permite cancelar un pedido facturado con esta función.
-5. **Inventario:** la primera propuesta registra entradas y consumos manualmente por el administrador. No incluye descuento automático por receta porque la guía no define recetas ni equivalencias. Una cancelación no repone por sí sola insumos consumidos. Una corrección se registra como movimiento compensatorio con motivo, nunca reescribiendo el historial.
-6. **Facturación:** para el ejercicio se propone subtotal = suma de cantidad × precio; base = subtotal − descuento; impuesto = base × tasa configurada; total = base + impuesto. Se redondea a dos decimales. Las tasas y el formato definitivo se validarán con la docente. Es una factura interna académica; no se incluye integración de facturación electrónica ni se afirma validez fiscal.
-7. **Pago:** se propone un pago completo por factura y una factura por pedido. Los medios se registran sin conexión con pasarelas externas. El estado Facturado se aplica al confirmar el pago. No se contemplan pagos divididos, crédito ni devoluciones en esta versión.
-8. **Mesas:** libre, ocupada y reservada son estados operativos. Una reserva futura bloquea su intervalo, no toda la jornada. La mesa se libera explícitamente al terminar la atención y cerrar sus pedidos.
-9. **Reservas:** RF15 asigna la mesa dentro del proceso de RF38/RF39. Es una sola reserva. Se propone guardar inicio y fin; dos intervalos se solapan si inicio A < fin B y fin A > inicio B. Un intervalo que empieza exactamente al terminar otro no se solapa. Capacidad, ocupación actual y conflictos se validan antes de confirmar. Si la mesa está ocupada, no se confirma una llegada hasta que esté libre.
-10. **Concurrencia:** doble clic, reintentos o dos usuarios simultáneos no deben generar pagos, envíos o reservas duplicadas. Si una operación falla, no debe dejar saldos o estados parcialmente actualizados.
-11. **Reportes:** las ventas se contabilizan al registrarse el pago. Se propone usar la zona horaria del restaurante (America/Bogota si opera en Cali), incluyendo desde las 00:00 de la fecha inicial hasta antes de las 00:00 del día posterior a la fecha final.
-12. **Seguridad:** cada operación valida sesión y permisos en el servidor; ocultar botones no sustituye esta validación.
+- **Guardar el historial:** si un usuario o producto tiene operaciones anteriores, lo desactivamos en vez de borrar esos registros.
+- **Un pedido por mesa:** proponemos un pedido activo a la vez. Se conserva el precio de cada producto desde que se agrega al pedido.
+- **Orden del pedido:** Pendiente → En preparación → Listo → Entregado → Facturado. Enviarlo a cocina no significa que ya estén preparándolo. Mientras siga Pendiente puede corregirse, y cocina debe ver la versión actualizada.
+- **Cambios al mismo tiempo:** si cocina empieza a preparar mientras el mesero edita, el sistema debe aceptar solo la operación compatible con el estado vigente.
+- **Cancelación:** proponemos Cancelado como estado final. Si cocina ya empezó, el administrador debe autorizarla. Un pedido Facturado no se cancela con esta función.
+- **Inventario manual:** el administrador anota entradas y consumos. No hemos definido recetas para descontar insumos automáticamente. Cancelar un pedido no devuelve por sí solo lo ya consumido. Las correcciones se registran como otro movimiento con su motivo.
+- **Cálculo de factura:** subtotal = suma de cantidad × precio; base = subtotal − descuento; impuesto = base × tasa; total = base + impuesto. Usaremos dos decimales. Las tasas se acordarán para el ejercicio. Es una factura interna del proyecto, sin conexión con facturación electrónica ni garantía de validez fiscal.
+- **Pago:** proponemos una factura por pedido y un pago completo por factura. Se registra el medio de pago sin conectarse a pasarelas externas. El pedido queda Facturado al confirmar el pago. No incluimos pagos divididos, crédito ni devoluciones.
+- **Liberar la mesa:** el personal la marca libre cuando termina la atención y sus pedidos ya están cerrados. Una reserva para más tarde se conserva.
+- **Reservas:** RF15 asigna la mesa al registrar o cambiar la reserva de RF38/RF39. Se guarda una sola reserva, con hora de inicio y fin. Dos horarios se cruzan si el primero empieza antes de que termine el segundo y termina después de que el segundo empiece. Si uno empieza justo cuando acaba el otro, no se cruzan. Se revisan capacidad, reservas y ocupación actual antes de guardar.
+- **No repetir registros:** un doble clic o un reintento no debe duplicar un pago, una reserva o un envío a cocina. Si algo falla, no debe quedar guardada solo una parte del cambio.
+- **Fechas de los reportes:** una venta cuenta cuando se paga. Proponemos usar la hora del restaurante, America/Bogota si está en Cali. El rango incluye todo el día inicial y todo el día final.
+- **Permisos:** el servidor debe revisar quién solicita cada acción y si tiene permiso. Ocultar un botón no es suficiente.
 
-## Catálogo de requisitos
+## Funciones por módulo
+
+En cada función indicamos qué debe hacer el sistema y cómo revisaremos que funcione. Estas comprobaciones son los criterios de aceptación.
 
 ### Usuarios y roles
 
 #### RF01 — Registrar usuarios
 
-- **Actor:** Administrador.
-- **Requisito:** Registrar un usuario con nombre, correo único, rol y estado.
-- **Criterio de aceptación:** Con datos válidos se crea una sola cuenta; si falta un dato o el correo ya existe, se informa el error sin guardar.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Crear una cuenta con nombre, correo, rol y estado.
+- **Cómo lo comprobaremos:** Si los datos están completos, se guarda la cuenta. Si falta algo o el correo ya está registrado, se muestra el error y no se crea otra cuenta.
 
 #### RF02 — Editar usuarios
 
-- **Actor:** Administrador.
-- **Requisito:** Modificar nombre, correo y estado de una cuenta existente.
-- **Criterio de aceptación:** Los cambios se conservan al consultar nuevamente; se rechaza un correo perteneciente a otra cuenta.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Cambiar el nombre, el correo o el estado de una cuenta.
+- **Cómo lo comprobaremos:** Al volver a consultar el usuario deben aparecer los cambios. No se acepta un correo que ya use otra persona.
 
 #### RF03 — Eliminar usuarios
 
-- **Actor:** Administrador.
-- **Requisito:** Retirar el acceso de un usuario conservando sus operaciones anteriores.
-- **Criterio de aceptación:** Se propone baja lógica: la cuenta queda inactiva y no puede acceder; sus pedidos y registros conservan la referencia al responsable. No se permite desactivar el último administrador activo.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Desactivar la cuenta de un trabajador para que deje de ingresar.
+- **Cómo lo comprobaremos:** Se conserva quién hizo los pedidos y otras operaciones anteriores. No se permite dejar el sistema sin un administrador activo.
 
 #### RF04 — Gestionar roles
 
-- **Actor:** Administrador.
-- **Requisito:** Asignar uno de los roles administrador, mesero, cocinero o cajero y aplicar los permisos definidos.
-- **Criterio de aceptación:** Un mesero no puede gestionar cuentas ni facturar, tampoco mediante una solicitud directa; un cambio de rol aplica en la siguiente operación protegida.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Asignar a cada usuario uno de los cuatro roles y permitirle solo las funciones que le corresponden.
+- **Cómo lo comprobaremos:** Un mesero no puede administrar cuentas ni cobrar, aunque intente saltarse las pantallas. Si cambia el rol, los nuevos permisos se aplican desde la siguiente acción.
 
 #### RF05 — Iniciar sesión
 
-- **Actor:** Todos los roles.
-- **Requisito:** Validar las credenciales de una cuenta activa y permitir el acceso según su rol.
-- **Criterio de aceptación:** Las credenciales válidas permiten entrar; las incorrectas o de una cuenta inactiva no crean sesión ni revelan cuál dato falló.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Todos los roles.
+- **Qué debe hacer:** Comprobar el correo y la contraseña antes de permitir el ingreso.
+- **Cómo lo comprobaremos:** Una cuenta activa con datos correctos puede entrar. Si hay un error o la cuenta está inactiva, se muestra un aviso general sin indicar cuál dato falló.
 
 #### RF06 — Recuperar contraseña
 
-- **Actor:** Usuario registrado.
-- **Requisito:** Restablecer una contraseña mediante un mecanismo que compruebe la identidad del titular.
-- **Criterio de aceptación:** Se propone enlace de un solo uso con vigencia de 15 minutos: un enlace usado o vencido se rechaza, y la contraseña anterior deja de funcionar. El mensaje de solicitud no revela si el correo existe.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Usuario registrado.
+- **Qué debe hacer:** Permitir que el usuario cambie su contraseña si la olvidó, después de comprobar que la cuenta le pertenece.
+- **Cómo lo comprobaremos:** Proponemos un enlace que dure 15 minutos y se use una sola vez. Si está vencido o ya se usó, no permite el cambio. Al cambiar la contraseña, la anterior deja de funcionar. La respuesta de la solicitud no revela si el correo está registrado.
 
 ### Menú
 
 #### RF07 — Crear productos
 
-- **Actor:** Administrador.
-- **Requisito:** Registrar productos del menú con nombre, categoría, precio y disponibilidad.
-- **Criterio de aceptación:** Un producto válido aparece en el menú; se rechaza un precio negativo o un producto sin nombre ni categoría.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Guardar un producto del menú con nombre, categoría, precio y disponibilidad.
+- **Cómo lo comprobaremos:** El producto aparece en el menú. No se guarda si le falta nombre o categoría, o si su precio es negativo.
 
 #### RF08 — Modificar productos
 
-- **Actor:** Administrador.
-- **Requisito:** Actualizar los datos de un producto existente.
-- **Criterio de aceptación:** Los cambios aparecen en nuevas consultas; cambiar un precio no altera las líneas de pedidos ya guardadas.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Actualizar los datos de un producto del menú.
+- **Cómo lo comprobaremos:** Los cambios se ven al consultar el menú. Si cambia el precio, se conservan los precios ya guardados en pedidos anteriores.
 
 #### RF09 — Eliminar productos
 
-- **Actor:** Administrador.
-- **Requisito:** Retirar un producto del menú manteniendo su historial de ventas.
-- **Criterio de aceptación:** Se propone desactivación: deja de ofrecerse para nuevos pedidos, pero permanece en pedidos y comprobantes anteriores.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Retirar del menú un producto que ya no se ofrecerá.
+- **Cómo lo comprobaremos:** El producto se desactiva para nuevos pedidos. Sus datos se conservan en los pedidos y comprobantes anteriores.
 
 #### RF10 — Categorizar productos
 
-- **Actor:** Administrador.
-- **Requisito:** Asignar una categoría a cada producto y consultar el menú por categoría.
-- **Criterio de aceptación:** Al filtrar por una categoría se muestran únicamente sus productos; no se acepta una categoría inexistente.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Asignar una categoría al producto y permitir consultar el menú por categoría.
+- **Cómo lo comprobaremos:** Al elegir una categoría, aparecen sus productos. No se puede asignar una categoría que no exista.
 
 #### RF11 — Gestionar disponibilidad
 
-- **Actor:** Administrador.
-- **Requisito:** Marcar productos como disponibles o no disponibles y mostrar su estado al personal.
-- **Criterio de aceptación:** Un producto no disponible no se agrega ni se confirma para envío a cocina; la validación se repite al guardar.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Señalar si un producto está disponible para pedirlo.
+- **Cómo lo comprobaremos:** Un producto no disponible no se puede agregar ni confirmar para enviarlo a cocina. Se vuelve a revisar la disponibilidad al guardar.
 
 ### Mesas
 
 #### RF12 — Crear mesas
 
-- **Actor:** Administrador.
-- **Requisito:** Registrar una mesa con número único, capacidad y estado inicial libre.
-- **Criterio de aceptación:** Una mesa válida aparece en la consulta; se rechazan números repetidos y capacidades que no sean enteros positivos.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Registrar una mesa con número, capacidad y estado inicial libre.
+- **Cómo lo comprobaremos:** El número no se repite y la capacidad debe ser un número entero mayor que cero. La mesa aparece en la consulta.
 
 #### RF13 — Modificar mesas
 
-- **Actor:** Administrador.
-- **Requisito:** Actualizar los datos de una mesa sin afectar pedidos o reservas vigentes.
-- **Criterio de aceptación:** Se rechaza una capacidad inferior a los comensales de una reserva activa asociada y un número ya usado.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Cambiar los datos de una mesa.
+- **Cómo lo comprobaremos:** No se acepta un número que ya tenga otra mesa. Tampoco se reduce la capacidad por debajo de la cantidad de personas de una reserva activa.
 
 #### RF14 — Consultar estado de mesas
 
-- **Actor:** Administrador y mesero.
-- **Requisito:** Mostrar la capacidad y el estado libre, ocupada o reservada de cada mesa.
-- **Criterio de aceptación:** La consulta coincide con los pedidos activos y las reservas del intervalo consultado; una reserva futura no bloquea todo el día.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador y mesero.
+- **Qué debe hacer:** Mostrar la capacidad de cada mesa y si está libre, ocupada o reservada.
+- **Cómo lo comprobaremos:** La información debe coincidir con los pedidos y las reservas del horario consultado. Una reserva para más tarde no bloquea la mesa durante todo el día.
 
 #### RF15 — Reservar mesas
 
-- **Actor:** Administrador y mesero.
-- **Requisito:** Asignar una mesa disponible a una reserva para un intervalo de fecha y hora.
-- **Criterio de aceptación:** Se comprueba capacidad y ausencia de solapamiento antes de confirmar; dos solicitudes simultáneas no reservan la misma mesa en horarios superpuestos.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador y mesero.
+- **Qué debe hacer:** Asignar una mesa a una reserva en una fecha y horario.
+- **Cómo lo comprobaremos:** La mesa debe tener capacidad suficiente y no tener otra reserva que se cruce con ese horario. Si dos personas intentan reservarla al mismo tiempo, solo se confirma una.
 
 #### RF16 — Liberar mesas
 
-- **Actor:** Administrador y mesero.
-- **Requisito:** Cambiar una mesa ocupada a libre cuando termina su atención.
-- **Criterio de aceptación:** Se impide liberar una mesa con pedidos activos sin cancelar o facturar; una reserva futura permanece registrada.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador y mesero.
+- **Qué debe hacer:** Marcar una mesa como libre cuando termine la atención.
+- **Cómo lo comprobaremos:** No se libera mientras tenga un pedido sin cancelar o facturar. Las reservas para más tarde se conservan.
 
 ### Pedidos
 
 #### RF17 — Crear pedido
 
-- **Actor:** Mesero.
-- **Requisito:** Crear un pedido asociado a una mesa libre, o a una mesa reservada para el cliente que registra su llegada, y al mesero responsable; la mesa pasa a ocupada.
-- **Criterio de aceptación:** Se asigna un identificador y estado Pendiente; se propone un pedido activo por mesa, rechazando una segunda apertura simultánea.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Mesero.
+- **Qué debe hacer:** Abrir un pedido con la mesa y el mesero responsable. Puede ser una mesa libre o la reservada para el cliente que acaba de llegar.
+- **Cómo lo comprobaremos:** El pedido recibe un número y queda Pendiente; la mesa pasa a ocupada. Proponemos un pedido activo por mesa. No se abren dos al mismo tiempo para la misma mesa.
 
 #### RF18 — Agregar productos
 
-- **Actor:** Mesero.
-- **Requisito:** Incluir productos disponibles con cantidad, precio unitario y observaciones.
-- **Criterio de aceptación:** Solo se aceptan cantidades enteras positivas; cada línea conserva el precio vigente al agregarla y el total coincide con la suma de subtotales.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Mesero.
+- **Qué debe hacer:** Agregar productos, cantidades y observaciones a un pedido.
+- **Cómo lo comprobaremos:** Las cantidades deben ser enteros positivos. Cada producto conserva el precio que tenía al agregarlo. El total debe coincidir con la suma de lo pedido.
 
 #### RF19 — Modificar pedido
 
-- **Actor:** Mesero.
-- **Requisito:** Cambiar cantidades, observaciones o retirar productos mientras el pedido siga Pendiente.
-- **Criterio de aceptación:** Se recalcula el total; una modificación de un pedido En preparación, Listo, Entregado o Facturado se rechaza según la regla inicial propuesta.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Mesero.
+- **Qué debe hacer:** Corregir cantidades, observaciones o productos mientras el pedido esté Pendiente.
+- **Cómo lo comprobaremos:** Se actualiza el total. Si el pedido está En preparación, Listo, Entregado o Facturado, ya no se permite editarlo.
 
 #### RF20 — Cancelar pedido
 
-- **Actor:** Mesero; administrador en excepciones.
-- **Requisito:** Cancelar un pedido dejando fecha, responsable y motivo.
-- **Criterio de aceptación:** Un pedido Pendiente puede cancelarse; uno iniciado en cocina requiere administrador y motivo. Un pedido Facturado no se cancela por esta función. No se elimina el historial ni se repone automáticamente un consumo ya realizado.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Mesero; administrador en excepciones.
+- **Qué debe hacer:** Cancelar un pedido y guardar el motivo, la fecha y quién lo canceló.
+- **Cómo lo comprobaremos:** Un pedido Pendiente puede cancelarse. Si cocina ya empezó, se necesita permiso del administrador. Un pedido Facturado no se cancela desde esta función. Se conserva su historial y no se devuelven automáticamente los insumos que ya se usaron.
 
 #### RF21 — Enviar pedido a cocina
 
-- **Actor:** Mesero.
-- **Requisito:** Confirmar y enviar un pedido con al menos un producto disponible a la lista de cocina.
-- **Criterio de aceptación:** Un pedido vacío o con producto no disponible se rechaza; repetir el envío no duplica el pedido en cocina. El envío conserva Pendiente hasta que el cocinero acepte su preparación.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Mesero.
+- **Qué debe hacer:** Enviar a cocina un pedido confirmado con al menos un producto disponible.
+- **Cómo lo comprobaremos:** No se envía un pedido vacío o con productos no disponibles. Repetir el envío no crea otra copia. Sigue Pendiente hasta que el cocinero empiece a prepararlo.
 
 #### RF22 — Consultar y seguir estado
 
-- **Actor:** Mesero, cocinero, cajero y administrador.
-- **Requisito:** Consultar el estado del pedido y registrar los cambios autorizados de su atención.
-- **Criterio de aceptación:** El cocinero cambia un pedido enviado de Pendiente a En preparación y luego a Listo; el mesero lo cambia a Entregado; el cobro lo deja Facturado. Se rechazan saltos y retrocesos no permitidos.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Mesero, cocinero, cajero y administrador.
+- **Qué debe hacer:** Consultar cómo va un pedido y actualizar su estado según la tarea de cada trabajador.
+- **Cómo lo comprobaremos:** El cocinero pasa un pedido enviado de Pendiente a En preparación y luego a Listo. El mesero lo marca Entregado y el pago lo deja Facturado. No se permiten saltos o retrocesos fuera de ese orden.
 
 ### Inventario
 
 #### RF23 — Registrar insumos
 
-- **Actor:** Administrador.
-- **Requisito:** Registrar insumos con código único, nombre, unidad y stock mínimo.
-- **Criterio de aceptación:** No se repite el código; el stock mínimo no puede ser negativo y la unidad queda definida antes de registrar movimientos.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Registrar cada insumo con código, nombre, unidad de medida y cantidad mínima.
+- **Cómo lo comprobaremos:** El código no se repite y la cantidad mínima no puede ser negativa. La unidad se define antes de registrar entradas o salidas.
 
 #### RF24 — Registrar entradas
 
-- **Actor:** Administrador.
-- **Requisito:** Registrar entradas de insumos con cantidad positiva, fecha, responsable y referencia.
-- **Criterio de aceptación:** El saldo aumenta exactamente en la cantidad registrada y se conserva el movimiento con su referencia.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Anotar lo que entra al inventario, con cantidad, fecha, responsable y referencia.
+- **Cómo lo comprobaremos:** La cantidad debe ser mayor que cero. Se suma exactamente lo registrado y se conserva el dato de la entrada.
 
 #### RF25 — Registrar consumos y salidas
 
-- **Actor:** Administrador.
-- **Requisito:** Registrar salidas o consumo de insumos con cantidad, motivo y referencia al pedido cuando corresponda.
-- **Criterio de aceptación:** La cantidad positiva se descuenta una sola vez; se rechaza una salida superior a la existencia y se muestra el saldo disponible.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Anotar los insumos que se usan o salen, junto con la cantidad, el motivo y el pedido cuando corresponda.
+- **Cómo lo comprobaremos:** Se descuenta la cantidad una sola vez. No se permite sacar más de lo disponible y se informa cuánto queda.
 
 #### RF26 — Consultar existencias
 
-- **Actor:** Administrador.
-- **Requisito:** Consultar saldos y movimientos por insumo y periodo.
-- **Criterio de aceptación:** El saldo corresponde a entradas menos salidas y ajustes registrados; cada movimiento permite identificar a su responsable.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Consultar las cantidades disponibles y los movimientos de cada insumo por fecha.
+- **Cómo lo comprobaremos:** Lo disponible debe coincidir con las entradas menos las salidas y los ajustes registrados. En cada movimiento se puede ver quién lo hizo.
 
 #### RF27 — Alertar existencias bajas
 
-- **Actor:** Administrador.
-- **Requisito:** Identificar insumos cuyo saldo sea igual o inferior al mínimo definido.
-- **Criterio de aceptación:** Un insumo bajo el umbral aparece en la consulta de alertas y deja de aparecer cuando su saldo supera el mínimo.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Mostrar cuáles insumos llegaron a su cantidad mínima o están por debajo de ella.
+- **Cómo lo comprobaremos:** El aviso aparece cuando la cantidad es igual o menor al mínimo y desaparece cuando vuelve a estar por encima.
 
 ### Facturación
 
 #### RF28 — Generar factura
 
-- **Actor:** Cajero.
-- **Requisito:** Generar una factura interna a partir de un pedido Entregado, conservando el detalle y un número único.
-- **Criterio de aceptación:** No se generan dos facturas para el mismo pedido; productos, cantidades y precios coinciden con el pedido. Emitirla por sí solo no marca el pedido como pagado.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Cajero.
+- **Qué debe hacer:** Crear una factura interna para un pedido Entregado, con un número que no se repita.
+- **Cómo lo comprobaremos:** Solo se crea una factura por pedido. Los productos, cantidades y precios deben coincidir con lo pedido. Crear la factura no significa que ya se haya pagado.
 
 #### RF29 — Calcular impuestos
 
-- **Actor:** Cajero.
-- **Requisito:** Calcular impuestos usando las tasas configuradas para el ejercicio académico.
-- **Criterio de aceptación:** Se muestra base, tasa e importe; la misma regla de redondeo a dos decimales se aplica al cálculo y al comprobante. Las tasas deben definirse antes de ejecutar pruebas.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Cajero.
+- **Qué debe hacer:** Calcular el impuesto con la tasa definida para el proyecto.
+- **Cómo lo comprobaremos:** La factura muestra el valor sobre el que se calcula, la tasa y el impuesto. El cálculo y el comprobante usan el mismo redondeo a dos decimales. La tasa debe definirse antes de hacer las pruebas.
 
 #### RF30 — Aplicar descuentos
 
-- **Actor:** Cajero con autorización del administrador.
-- **Requisito:** Aplicar un descuento permitido antes de registrar el pago.
-- **Criterio de aceptación:** El descuento se registra con motivo y autorización; no supera el subtotal ni deja valores negativos y recalcula la base del impuesto.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Cajero con autorización del administrador.
+- **Qué debe hacer:** Aplicar un descuento autorizado antes del pago.
+- **Cómo lo comprobaremos:** Se guarda el motivo y quién lo autorizó. El descuento no puede superar el subtotal ni dejar valores negativos. Se vuelve a calcular el impuesto sobre el valor con descuento.
 
 #### RF31 — Registrar pago
 
-- **Actor:** Cajero.
-- **Requisito:** Registrar el pago completo de una factura con medio, importe y responsable.
-- **Criterio de aceptación:** Se propone un solo pago por factura: se rechaza un importe inferior al total; en efectivo se calcula cambio. Repetir la confirmación no duplica el pago y el pedido pasa a Facturado.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Cajero.
+- **Qué debe hacer:** Registrar el pago completo de una factura, con el medio usado, el dinero recibido y el cajero.
+- **Cómo lo comprobaremos:** Proponemos un pago por factura. No se acepta menos del total; si es efectivo, se calcula el cambio. Confirmar dos veces no registra otro pago. El pedido pasa a Facturado.
 
 #### RF32 — Emitir comprobante
 
-- **Actor:** Cajero.
-- **Requisito:** Mostrar e imprimir o descargar un comprobante del pago registrado.
-- **Criterio de aceptación:** El comprobante contiene número, fecha, detalle, subtotal, descuento, impuestos, total y medio de pago; reimprimir no crea otra venta.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Cajero.
+- **Qué debe hacer:** Mostrar, imprimir o descargar el comprobante de un pago.
+- **Cómo lo comprobaremos:** Debe mostrar número, fecha, productos, cantidades, subtotal, descuento, impuestos, total y medio de pago. Imprimirlo otra vez no crea otra venta.
 
 ### Reportes
 
 #### RF33 — Ventas por periodo
 
-- **Actor:** Administrador.
-- **Requisito:** Consultar ventas cobradas en un intervalo de fechas.
-- **Criterio de aceptación:** El total coincide con los pagos registrados dentro del intervalo y excluye pedidos cancelados y facturas sin pago; un periodo sin datos devuelve total cero.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Consultar las ventas pagadas entre dos fechas.
+- **Cómo lo comprobaremos:** El total debe coincidir con los pagos de esas fechas. No se suman pedidos cancelados ni facturas sin pagar. Si no hubo ventas, se muestra cero.
 
 #### RF34 — Productos más vendidos
 
-- **Actor:** Administrador.
-- **Requisito:** Listar productos por cantidad vendida en un periodo.
-- **Criterio de aceptación:** Se suman unidades de pedidos pagados y se ordenan de mayor a menor; no se cuentan pedidos cancelados.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Consultar cuáles productos se vendieron más entre dos fechas.
+- **Cómo lo comprobaremos:** Se suman las unidades de pedidos pagados y se ordenan de mayor a menor. No se cuentan los pedidos cancelados.
 
 #### RF35 — Consumo de inventario
 
-- **Actor:** Administrador.
-- **Requisito:** Consultar salidas por consumo de cada insumo durante un periodo.
-- **Criterio de aceptación:** El resultado coincide con los movimientos de tipo consumo y separa las cantidades por unidad, sin sumar unidades incompatibles.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Consultar cuántos insumos se consumieron entre dos fechas.
+- **Cómo lo comprobaremos:** La cantidad debe coincidir con los movimientos marcados como consumo. Cada insumo se muestra con su unidad; no se mezclan, por ejemplo, kilos con litros.
 
 #### RF36 — Ocupación de mesas
 
-- **Actor:** Administrador.
-- **Requisito:** Consultar el uso de las mesas durante un periodo.
-- **Criterio de aceptación:** Se propone medir minutos ocupados entre apertura de pedido y liberación, divididos por minutos habilitados del periodo; se informa el horario usado y se evita dividir por cero.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Consultar cuánto tiempo estuvieron ocupadas las mesas.
+- **Cómo lo comprobaremos:** Proponemos dividir los minutos ocupados, desde que se abre el pedido hasta que se libera la mesa, entre los minutos habilitados del periodo. Se muestra el horario usado. Si no hubo tiempo habilitado, no se hace la división.
 
 #### RF37 — Indicadores financieros
 
-- **Actor:** Administrador.
-- **Requisito:** Consultar indicadores calculados a partir de ventas registradas.
-- **Criterio de aceptación:** Se propone mostrar ventas cobradas, cantidad de ventas y ticket promedio; con cero ventas el promedio se muestra como no disponible. No se presenta utilidad sin datos de costos.
-- **Origen:** Guía del proyecto; detalle propuesto.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Consultar un resumen de los ingresos registrados.
+- **Cómo lo comprobaremos:** Se muestran las ventas cobradas, la cantidad de ventas y el promedio por venta. Si no hubo ventas, el promedio queda sin calcular. No se muestra ganancia si no tenemos los datos de costos.
 
 ### Reservas
 
 #### RF38 — Registrar reservas
 
-- **Actor:** Administrador y mesero.
-- **Requisito:** Registrar nombre de contacto, medio de contacto, cantidad de personas e intervalo de la reserva.
-- **Criterio de aceptación:** Se asigna un identificador y estado Confirmada solo si existe mesa adecuada; se rechaza un intervalo pasado, invertido o solapado. Utiliza RF15 para asignar mesa.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador y mesero.
+- **Qué debe hacer:** Guardar una reserva con nombre y contacto del cliente, número de personas, fecha y horario.
+- **Cómo lo comprobaremos:** Queda Confirmada si hay una mesa adecuada. Se rechaza un horario pasado, con el fin antes del inicio o que se cruce con otra reserva. La mesa se asigna mediante RF15.
 
 #### RF39 — Modificar reservas
 
-- **Actor:** Administrador y mesero.
-- **Requisito:** Cambiar datos, horario o mesa de una reserva Confirmada.
-- **Criterio de aceptación:** Se vuelve a validar capacidad y disponibilidad; si falla la nueva asignación se conserva íntegra la reserva anterior.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador y mesero.
+- **Qué debe hacer:** Cambiar el contacto, el horario o la mesa de una reserva Confirmada.
+- **Cómo lo comprobaremos:** Se revisan de nuevo capacidad y disponibilidad. Si el cambio no se puede hacer, la reserva conserva sus datos anteriores.
 
 #### RF40 — Cancelar reservas
 
-- **Actor:** Administrador y mesero.
-- **Requisito:** Cancelar una reserva Confirmada guardando motivo y responsable.
-- **Criterio de aceptación:** La reserva queda Cancelada y su intervalo se libera sin borrar el historial ni afectar otras reservas.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador y mesero.
+- **Qué debe hacer:** Cancelar una reserva Confirmada y guardar el motivo y el responsable.
+- **Cómo lo comprobaremos:** Queda Cancelada y su horario vuelve a estar disponible. No se borra el historial ni se cambian otras reservas.
 
 #### RF41 — Consultar reservas
 
-- **Actor:** Administrador y mesero.
-- **Requisito:** Consultar reservas por fecha, mesa y estado.
-- **Criterio de aceptación:** La lista muestra contacto, personas, intervalo y estado; los filtros solo devuelven coincidencias y los roles no autorizados no acceden a los contactos.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador y mesero.
+- **Qué debe hacer:** Consultar las reservas por fecha, mesa o estado.
+- **Cómo lo comprobaremos:** Se muestran contacto, personas, horario y estado según los filtros elegidos. Solo los roles autorizados pueden ver los datos de contacto.
 
 #### RF42 — Registrar llegada
 
-- **Actor:** Mesero.
-- **Requisito:** Marcar una reserva Confirmada como Atendida cuando llega el cliente y ocupar la mesa.
-- **Criterio de aceptación:** Se valida que la mesa esté libre al momento de llegada; se asocia la reserva con el pedido de atención y no se registra la llegada dos veces.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Mesero.
+- **Qué debe hacer:** Registrar que llegaron los clientes de una reserva Confirmada y comenzar su atención.
+- **Cómo lo comprobaremos:** La mesa debe estar libre. La reserva se relaciona con el pedido y pasa a Atendida; la mesa queda ocupada. La llegada no se registra dos veces.
 
 ### Dashboard
 
 #### RF43 — Consultar resumen administrativo
 
-- **Actor:** Administrador.
-- **Requisito:** Mostrar ventas cobradas del día, pedidos activos, mesas ocupadas, reservas del día y alertas de inventario.
-- **Criterio de aceptación:** Cada indicador coincide con la consulta de su módulo para la misma fecha y muestra la hora de actualización.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Mostrar al administrador un resumen de ventas del día, pedidos activos, mesas ocupadas, reservas y avisos de inventario.
+- **Cómo lo comprobaremos:** Cada dato coincide con la consulta de su módulo para la misma fecha. Se muestra cuándo se actualizó la información.
 
 #### RF44 — Filtrar indicadores
 
-- **Actor:** Administrador.
-- **Requisito:** Actualizar los indicadores históricos por periodo y acceder al detalle correspondiente.
-- **Criterio de aceptación:** Ventas y reservas respetan el periodo; pedidos activos, mesas ocupadas y alertas se identifican como estado actual. El detalle conserva los filtros aplicables.
-- **Origen:** Propuesta para validar.
+- **Quién lo usa:** Administrador.
+- **Qué debe hacer:** Elegir un periodo para los datos históricos y abrir el detalle de los indicadores.
+- **Cómo lo comprobaremos:** Ventas y reservas cambian según las fechas elegidas. Pedidos activos, mesas ocupadas y avisos se identifican como datos del momento actual. Al abrir el detalle se mantienen los filtros que correspondan.
 
-## Trazabilidad
+## Relación entre los documentos
 
-Esta tabla permite relacionar cada requisito con la necesidad del usuario y el flujo que lo desarrolla.
+Esta tabla muestra qué historia y qué caso de uso explican cada requisito. Nos sirve para revisar que ninguna función quede sin documentar.
 
 | Requisitos | Historia | Caso de uso | Tema |
 | --- | --- | --- | --- |
@@ -397,16 +347,16 @@ Esta tabla permite relacionar cada requisito con la necesidad del usuario y el f
 | RF40, RF41, RF42 | HU21 | CU21 | Consultar, cancelar y atender reservas |
 | RF43, RF44 | HU22 | CU22 | Consultar dashboard |
 
-## Decisiones por validar antes de programar
+Puedes consultar las [historias de usuario](01-historias-de-usuario.md), los [casos de uso](02-casos-de-uso.md) y los [requerimientos no funcionales](04-requerimientos-no-funcionales.md).
 
-- Confirmar RF23–RF27 de inventario y RF38–RF44 de reservas y dashboard, incluidos los permisos propuestos.
-- Confirmar baja lógica, un pedido activo por mesa, edición solo en Pendiente y el estado adicional Cancelado.
-- Confirmar si inventario seguirá siendo manual o se incorporarán recetas y consumo automático en una revisión del alcance.
-- Definir duración de reservas, horario del restaurante y política de retrasos o inasistencia. La versión inicial solicita inicio y fin y permite cancelación manual; no cancela automáticamente por tardanza.
-- Definir tasas académicas, medios de pago, reglas de descuento y formato del comprobante. No se fija una tasa legal por suposición.
-- Confirmar el medio de recuperación de cuenta y la vigencia propuesta de 15 minutos, la invalidación de sesiones tras recuperar la contraseña y quién registrará la llegada de reservas.
-- Acordar datos de prueba, volumen y carga para comprobar los requisitos no funcionales.
+## Lo que falta acordar
 
-## Fuera del alcance inicial
+- Confirmar las propuestas de inventario, reservas y dashboard y sus permisos.
+- Revisar la desactivación de cuentas y productos, el pedido único por mesa y las reglas para editar o cancelar pedidos.
+- Confirmar si seguiremos registrando el inventario manualmente o si más adelante se trabajará con recetas.
+- Definir el horario del restaurante, la duración de las reservas y qué hacer si los clientes llegan tarde o no llegan. Por ahora, la cancelación será manual.
+- Elegir los medios de pago, las tasas para el ejercicio, las reglas de descuento y los datos del comprobante.
+- Definir cómo llegará el enlace de recuperación de contraseña y confirmar sus 15 minutos de duración. También debemos revisar el cierre de sesiones anteriores después de recuperar la cuenta y quién registrará la llegada de reservas.
+- Acordar los datos y la cantidad de usuarios que usaremos en las pruebas.
 
-Se mantienen las exclusiones del [alcance](../01-documento-de-inicio/alcance.md): pasarelas externas de pago, aplicación móvil independiente, sistemas contables externos, domicilios mediante plataformas externas y automatización con inteligencia artificial.
+Se mantienen las exclusiones del [alcance](../01-documento-de-inicio/alcance.md): plataformas externas de pago, aplicación móvil independiente, sistemas contables externos, plataformas de domicilios e inteligencia artificial.

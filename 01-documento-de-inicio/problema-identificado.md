@@ -1,9 +1,9 @@
 # Problema identificado
 
-En la administracion de un restaurante requiere coordinar sus diferentes actividades, como lo que es la atencion de mesas, el registro de pedidos, la disponibilidad de menus, el inventario, las reservar y su facturacion. Cuando estos datos se manejan manuales o en registros separados o de forma manual, esto hace que se presenten dificultades para mantenerla actualizada y compartirla entre los trabajadores del establecimiento.
+En un restaurante se deben organizar varias tareas al mismo tiempo: atender las mesas, tomar pedidos, revisar los productos disponibles, controlar el inventario, recibir reservas y cobrar. Cuando esta información se lleva en papeles o en registros separados, puede ser difícil saber qué está pasando y comunicarlo al resto del personal.
 
-Un ejemplo seria que, un pedido puede llegar incompleto a la cocina, se puede ofrecer un producto que ya no esta disponible en ese momento o registrar una reserva para una mesa ocupada, estas situaciones pueden ocasionar demoras en la atencionm, errores en los cobros y confunsiones entre meseros, cocineros y cajeros.
+Por ejemplo, un pedido puede llegar incompleto a la cocina o un mesero puede ofrecer un producto que ya se terminó. También pueden presentarse confusiones con las reservas o errores al cobrar. Estas situaciones pueden causar demoras y molestias tanto para los trabajadores como para los clientes.
 
-Esto uede generar que los datos de las ventas y el inventario no esten sincronizados, y al administrador se le dificultara conocer que productos se vendieron mas ese dia, o que insumos necesita comprar y como esta funcionando el restaurante.
+Al administrador también se le puede dificultar revisar qué productos se vendieron más o qué insumos necesita comprar si la información está desordenada.
 
-Entonces en este plantiamiento, nuestro proyecto SIAR busca solucionar esa necesidad de contar con informacion organizada y relacionada entre los diferentes roles del restaurante, para asi facilitar su consulta y apoyar el trabajo personal.
+Con el proyecto SIAR queremos reunir esos datos en un mismo sistema para que el personal pueda consultarlos y trabajar de forma más organizada. Partimos de estas dificultades generales; todavía no hemos hecho una revisión en un restaurante específico.
