@@ -73,7 +73,7 @@ La guía no detalla todas las funciones de inventario, reservas y dashboard. Por
 
 ## Integrantes
 
-Pendiente agregar los nombres y las responsabilidades del equipo.
+Santiago Lopez, Nicol segovia, Jose Cardenas
 
 ## Instalación y uso
 
