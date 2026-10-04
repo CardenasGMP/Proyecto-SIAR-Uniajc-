@@ -1,6 +1,6 @@
 # Modelo entidad-relación de SIAR
 
-En este modelo mostramos qué datos necesitamos guardar y cómo se relacionan. Por ejemplo, un pedido pertenece a una mesa, tiene productos y puede generar una factura.
+El modelo define los datos de SIAR y sus relaciones.
 
 Lo organizamos a partir de los [requerimientos funcionales](../02-ingenieria-de-requerimientos/03-requerimientos-funcionales.md) y los [no funcionales](../02-ingenieria-de-requerimientos/04-requerimientos-no-funcionales.md). Por ahora es el diseño de los datos; todavía no hemos creado la base de datos.
 
@@ -421,12 +421,6 @@ Una mesa puede seguir ocupada aunque el pedido ya esté Facturado o Cancelado, h
 | RF38–RF42 | RESERVA y su conexión con PEDIDO. |
 | RF43–RF44 | Consultas de resumen sobre los datos anteriores. |
 | RNF04–RNF06 | Contraseña protegida, versión de sesión, rol, recuperación y AUDITORIA. |
-
-## Ejemplo
-
-Un mesero abre un pedido para la mesa 4. Agrega dos productos, que quedan como dos líneas en DETALLE_PEDIDO. El cocinero cambia su estado mientras lo prepara y esos cambios quedan en HISTORIAL_PEDIDO. Después de entregar la comida, el cajero genera la factura y registra el pago. Al terminar la atención, se libera la mesa y queda guardada la hora.
-
-Si los clientes tenían reserva, el pedido guarda su número. Si llegaron sin reservar, ese dato queda vacío. Los insumos que se usaron se anotan manualmente en el inventario.
 
 ## Lo que falta decidir
 

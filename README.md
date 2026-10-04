@@ -2,79 +2,41 @@
 
 Proyecto de Ingeniería de Software II — UNIAJC.
 
-## ¿De qué trata?
+SIAR será una aplicación web para organizar la atención y la información de un restaurante. Reunirá usuarios, menú, mesas, pedidos, inventario, reservas y cobros. El administrador podrá consultar ventas y un resumen de la operación.
 
-Queremos crear una aplicación web que ayude a organizar las actividades de un restaurante. La idea es reunir en un mismo lugar la información de los usuarios, el menú, las mesas, los pedidos, el inventario, las reservas y los cobros.
+## Módulos
 
-Así, cada trabajador podrá consultar y actualizar los datos que necesita. También queremos que el administrador pueda revisar las ventas y ver un resumen de cómo va el restaurante.
-
-## Funciones del sistema
-
-| Módulo | Qué queremos hacer |
+| Módulo | Función principal |
 | --- | --- |
-| Usuarios y roles | Crear cuentas, actualizar sus datos y definir qué puede hacer cada trabajador. |
-| Menú | Registrar productos, organizarlos por categorías y señalar si están disponibles. |
-| Mesas | Registrar mesas y consultar si están libres, ocupadas o reservadas. |
-| Pedidos | Tomar pedidos, enviarlos a cocina y seguir su preparación hasta el cobro. |
-| Inventario | Registrar insumos, entradas y salidas, y consultar cuánto queda. |
-| Facturación | Preparar facturas, calcular impuestos y descuentos autorizados, y registrar pagos. |
-| Reportes | Consultar ventas, productos más vendidos, consumo de insumos y uso de las mesas. |
-| Reservas | Organizar las reservas y registrar la llegada de los clientes. |
-| Dashboard | Mostrar una pantalla de resumen con los datos del restaurante. |
+| Usuarios y roles | Administrar cuentas y permisos. |
+| Menú | Registrar productos, categorías, precios y disponibilidad. |
+| Mesas | Consultar capacidad, ocupación y liberación. |
+| Pedidos | Registrar pedidos y seguir su preparación y entrega. |
+| Inventario | Registrar insumos y movimientos manuales; avisar cuando queden pocos. |
+| Facturación | Calcular el cobro, aplicar descuentos autorizados y registrar pagos. |
+| Reservas | Organizar horarios y registrar la llegada de los clientes. |
+| Reportes | Consultar ventas, consumo y ocupación. |
+| Dashboard | Mostrar indicadores y alertas del restaurante. |
 
-Los roles serán administrador, mesero, cocinero y cajero.
+Los roles serán **administrador, mesero, cocinero y cajero**. Los clientes no necesitan una cuenta.
 
-## Organización del proyecto
+## Documentación
 
-Seguimos los apartados del documento que nos compartió la docente.
-
-| Carpeta | Qué contiene |
+| Carpeta | Contenido |
 | --- | --- |
-| [01-documento-de-inicio](01-documento-de-inicio/) | Problema, justificación, objetivos, alcance y espacio para el cronograma. |
-| [02-ingenieria-de-requerimientos](02-ingenieria-de-requerimientos/) | Historias de usuario, casos de uso y requisitos funcionales y no funcionales. |
-| [03-modelado](03-modelado/) | Archivos para los diagramas de casos de uso, clases y modelo entidad-relación. |
-| 04-diseno — pendiente | Arquitectura del sistema, patrones de diseño y explicación de por qué los elegimos. |
+| [Documento de inicio](01-documento-de-inicio/) | Problema, justificación, objetivos y alcance. El cronograma queda para el final. |
+| [Ingeniería de requerimientos](02-ingenieria-de-requerimientos/) | Historias, casos de uso y requisitos funcionales y no funcionales. |
+| [Modelado](03-modelado/) | [Casos de uso](03-modelado/diagrama_casos_uso.md), [clases](03-modelado/diagrama_clases.md) y [entidad-relación](03-modelado/modelo_entidad_relacion.md). |
+| Diseño — pendiente | Arquitectura, patrones y su justificación. |
 
-Los archivos .md permiten escribir texto con títulos, listas, tablas y diagramas que podemos consultar en GitHub.
+Estamos en la documentación del sistema; aún no hay una aplicación ejecutable. Las propuestas de inventario, reservas y dashboard se revisarán con la docente.
 
-## Cómo nos organizaremos
+## Organización del trabajo
 
-Usaremos Git para guardar el historial de cambios y GitHub para compartir el trabajo.
+Usaremos Git y GitHub para guardar los avances y revisarlos mediante Pull Requests. `main` contiene la versión revisada, `develop` reúne avances y las ramas de trabajo permiten preparar cada cambio. Si un cambio parte de `main` para conservar una actualización reciente, se indicará en su solicitud.
 
-- **main:** versión revisada del proyecto.
-- **develop:** rama para reunir los avances del equipo.
-- **Ramas de trabajo:** sirven para preparar cambios, como docs-requerimientos o docs-modelado.
-
-La idea es trabajar desde develop y pedir una revisión antes de unir los cambios. Esa solicitud se llama Pull Request. Para pasar los avances revisados a main también usaremos una solicitud. Si un cambio parte de main para conservar archivos recientes, se indicará en su solicitud.
-
-Cada integrante guardará sus aportes con un mensaje claro, por ejemplo: docs: agregar historias de usuario de pedidos. Podemos marcar una versión revisada con una release, que sirve para identificar ese avance.
-
-## Cómo pensamos construirlo
-
-Separaremos las pantallas, las reglas del sistema y el manejo de los datos. Esta organización se llama arquitectura en capas. En el diseño explicaremos las tareas de los controladores, servicios y repositorios, y los patrones que decidamos usar.
-
-Aún debemos elegir las herramientas para crear la interfaz, programar el servidor, guardar los datos, hacer pruebas y publicar la aplicación.
-
-## Condiciones que debemos cumplir
-
-La guía pide que el sistema se adapte a distintos tamaños de pantalla, tenga una disponibilidad mínima del 95 % y responda en menos de 3 segundos bajo las condiciones de prueba que acordemos.
-
-También pide proteger las contraseñas, controlar los permisos, guardar quién realiza los cambios, usar Git, mantener la documentación y alcanzar al menos un 70 % de cobertura de pruebas. Esto último indica qué parte del código fue recorrida por las pruebas automáticas.
-
-Estas son metas del proyecto. Su cumplimiento se comprobará cuando exista la aplicación.
-
-## Lo que llevamos
-
-Ya tenemos redactados el problema, la justificación, los objetivos, el alcance, los requerimientos y el modelo entidad-relación. Seguimos preparando la documentación; todavía no hemos programado el sistema.
-
-Los archivos de diagramas de casos de uso y de clases están creados, pero falta desarrollarlos. También falta el apartado de Diseño. El cronograma lo haremos al final.
-
-La guía no detalla todas las funciones de inventario, reservas y dashboard. Por eso, lo que agregamos para completar esos módulos está marcado como propuesta para revisar con la docente.
+El diseño separará pantallas, reglas del negocio y acceso a datos. Las tecnologías están pendientes. Los requisitos incluyen adaptación a distintas pantallas, disponibilidad mínima del 95 %, respuesta menor a 3 segundos bajo la carga acordada, protección de datos y al menos 70 % de cobertura de pruebas. Se comprobarán cuando exista la aplicación.
 
 ## Integrantes
 
-Santiago Lopez, Nicol segovia, Jose Cardenas
-
-## Instalación y uso
-
-Escribiremos estos pasos cuando tengamos una versión de la aplicación que se pueda ejecutar.
+Santiago Lopez, Nicol Segovia y Jose Cardenas.
