@@ -1,0 +1,5 @@
+# CRONOGRAMA:
+
+ENLACE DEL CRONOGRAMA EN EXCEL: Cronograma.xlsx
+
+![CRONOGRAMA DEL PROYECTO SIAR](imagenes/cronograma.png)

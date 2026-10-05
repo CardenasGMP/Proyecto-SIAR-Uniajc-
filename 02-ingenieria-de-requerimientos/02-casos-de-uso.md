@@ -1,429 +1,573 @@
-# Casos de uso
+# CASOS DE USO:
 
-Cada caso indica actores, condiciones, pasos, errores y resultado. Salvo ingreso y recuperación, se requiere sesión y permiso. Si falla un cambio, se conservan los datos anteriores; los reintentos no deben duplicar registros. Las opciones agrupadas se ejecutan según la necesidad, no todas a la vez.
+Los casos de uso describen la interacción entre los usuarios y el Sistema Integral de Administración para Restaurantes, SIAR, para ejecutar las funciones establecidas en los requerimientos funcionales del proyecto.
 
-Los permisos y criterios están en los [requerimientos funcionales](03-requerimientos-funcionales.md).
+Cada caso de uso identifica el actor principal, la historia de usuario relacionada, los requerimientos funcionales correspondientes, las condiciones necesarias para iniciar, el flujo principal, los flujos alternativos y el resultado de la operación.
 
-## CU01 — Administrar cuentas
+El acceso a las funciones del sistema depende del rol asignado al usuario. Los roles definidos para SIAR son Administrador, Cajero, Mesero y Cocinero. Todas las operaciones deben cumplir los requerimientos no funcionales del proyecto, especialmente el control de acceso por roles, el cifrado de contraseñas y el registro de auditoría.
 
-- **Actor:** administrador.
-- **Historia:** HU01.
-- **Requisitos:** RF01, RF02, RF03, RF04.
-- **Condición:** Sesión de administrador activa.
+## CU-01. Administrar usuarios
 
-### Pasos
+**Actor:** Administrador
 
-1. Abrir Usuarios y elegir crear, editar, desactivar o asignar un rol.
-2. Completar los datos o cambiar los que hagan falta.
-3. Revisar que el correo no esté repetido y que siga existiendo un administrador activo.
-4. Confirmar y guardar el cambio con el nombre de quien lo realizó.
+**Historia relacionada:** HU-01
 
-**Errores:** Si falta un dato o el correo se repite, se señala el problema y no se guarda. Tampoco se permite desactivar o cambiar el rol del último administrador activo.
+**Requerimientos:** RF01, RF02 y RF03
 
-**Resultado:** La cuenta queda actualizada y se conservan sus operaciones anteriores.
+**Precondición:** El administrador debe haber iniciado sesión.
 
-## CU02 — Iniciar sesión
+**Flujo principal:**
 
-- **Actor:** usuario del restaurante.
-- **Historia:** HU02.
-- **Requisitos:** RF05.
-- **Condición:** La cuenta debe existir. El usuario todavía no ha iniciado sesión.
+1. El administrador ingresa al módulo de usuarios.
 
-### Pasos
+2. El sistema muestra los usuarios registrados.
 
-1. Abrir la pantalla de ingreso.
-2. Escribir correo y contraseña.
-3. Comprobar que los datos sean correctos y la cuenta esté activa.
-4. Permitir la entrada y mostrar las funciones del rol.
+3. El administrador selecciona registrar, editar o eliminar un usuario.
 
-**Errores:** Si los datos no coinciden o la cuenta está inactiva, se muestra un mensaje general y no se permite entrar.
+4. El administrador completa o modifica la información solicitada.
 
-**Resultado:** El usuario puede usar las funciones que tiene permitidas.
+5. El administrador confirma la operación.
 
-## CU03 — Recuperar acceso
+6. El sistema procesa la solicitud y muestra el resultado.
 
-- **Actor:** usuario registrado.
-- **Historia:** HU03.
-- **Requisitos:** RF06.
-- **Condición:** La persona debe poder acceder al medio de recuperación de su cuenta.
+**Flujo alternativo:** Si la operación no puede completarse, el sistema informa el problema y no guarda los cambios.
 
-### Pasos
+**Postcondición:** El usuario queda registrado, actualizado o eliminado, según la opción seleccionada.
 
-1. Solicitar la recuperación escribiendo el correo.
-2. Mostrar una respuesta general y enviar el enlace si corresponde.
-3. Abrir el enlace y escribir una nueva contraseña.
-4. Revisar que el enlace pertenezca a la cuenta, siga vigente y no se haya usado.
-5. Guardar la contraseña de forma protegida, marcar el enlace como usado y cerrar las sesiones anteriores.
+## CU-02. Gestionar roles
 
-**Errores:** Si el enlace venció o ya se usó, se pide solicitar otro. Si falla el envío, se puede intentar de nuevo sin revelar si el correo está registrado.
+**Actor:** Administrador
 
-**Resultado:** La persona puede entrar con la nueva contraseña; la anterior ya no sirve.
+**Historia relacionada:** HU-02
 
-## CU04 — Administrar el menú
+**Requerimiento:** RF04
 
-- **Actor:** administrador.
-- **Historia:** HU04.
-- **Requisitos:** RF07, RF08, RF09, RF10.
-- **Condición:** Deben existir categorías para asignar los productos.
+**Precondición:** El usuario debe estar registrado en el sistema.
 
-### Pasos
+**Flujo principal:**
 
-1. Abrir el menú y elegir qué se va a hacer.
-2. Escribir o cambiar nombre, categoría, precio y disponibilidad.
-3. Revisar los datos y confirmar.
-4. Guardar el producto o desactivarlo, según la opción elegida.
+1. El administrador consulta los usuarios registrados.
 
-**Errores:** Si falta un dato, el precio es negativo o la categoría no existe, se muestra el error. Un producto que tenga ventas anteriores se desactiva para conservar su historial.
+2. El administrador selecciona un usuario.
 
-**Resultado:** El menú queda actualizado y las ventas anteriores mantienen sus datos.
+3. El sistema muestra el rol actual.
 
-## CU05 — Controlar disponibilidad del menú
+4. El administrador asigna el rol Administrador, Cajero, Mesero o Cocinero.
 
-- **Actor:** administrador.
-- **Historia:** HU05.
-- **Requisitos:** RF11.
-- **Condición:** El producto debe existir.
+5. El administrador confirma la asignación.
 
-### Pasos
+6. El sistema guarda el cambio e informa el resultado.
 
-1. Seleccionar un producto.
-2. Marcarlo como disponible o no disponible.
-3. Guardar el cambio y mostrarlo al personal.
-4. Volver a revisar ese estado cuando se agrega el producto o se envía un pedido.
+**Flujo alternativo:** Si el rol no puede actualizarse, el sistema conserva la información anterior e informa el problema.
 
-**Errores:** Si el producto deja de estar disponible mientras se arma el pedido, no se confirma el envío y se indica qué producto debe corregirse.
+**Postcondición:** El usuario queda asociado con el rol seleccionado.
 
-**Resultado:** Los nuevos pedidos usan la disponibilidad actualizada.
+## CU-03. Iniciar sesión
 
-## CU06 — Administrar mesas
+**Actor:** Usuario del sistema
 
-- **Actor:** administrador.
-- **Historia:** HU06.
-- **Requisitos:** RF12, RF13.
-- **Condición:** Sesión de administrador activa.
+**Historia relacionada:** HU-03
 
-### Pasos
+**Requerimiento:** RF05
 
-1. Entrar a Mesas y elegir registrar o editar.
-2. Escribir el número y la capacidad.
-3. Revisar que el número no se repita y que la capacidad sirva para las reservas activas.
-4. Guardar y mostrar la mesa.
+**Precondición:** El usuario debe estar registrado.
 
-**Errores:** Si el número ya existe o la capacidad no es válida, no se guarda. Si se intenta reducir la capacidad por debajo de una reserva activa, se conserva la anterior.
+**Flujo principal:**
 
-**Resultado:** Los datos de la mesa quedan guardados sin afectar las reservas.
+1. El usuario abre la pantalla de inicio de sesión.
 
-## CU07 — Consultar y liberar mesas
+2. El usuario ingresa sus datos de acceso.
 
-- **Actor:** mesero o administrador.
-- **Historia:** HU07.
-- **Requisitos:** RF14, RF16.
-- **Condición:** Se requiere permiso de mesero o administrador. Para liberar una mesa, esta debe estar ocupada.
+3. El sistema verifica la información.
 
-### Pasos
+4. El sistema inicia la sesión.
 
-1. Consultar las mesas.
-2. Ver capacidad, estado y reservas del horario elegido.
-3. Elegir la mesa que terminó su atención.
-4. Revisar que sus pedidos estén cancelados o facturados.
-5. Marcarla como libre y conservar las reservas para más tarde.
+5. El sistema muestra las funciones disponibles según el rol.
 
-**Errores:** Si queda un pedido sin cerrar, no se libera. Si la mesa ya está libre, se informa sin repetir el cambio.
+**Flujo alternativo:** Si los datos no son válidos, el sistema informa que no fue posible iniciar sesión.
 
-**Resultado:** Se puede consultar el estado actual y usar la mesa si quedó libre.
+**Postcondición:** El usuario queda autenticado y puede acceder a las funciones correspondientes a su rol.
 
-## CU08 — Crear y editar pedidos
+## CU-04. Recuperar contraseña
 
-- **Actor:** mesero.
-- **Historia:** HU08.
-- **Requisitos:** RF17, RF18, RF19.
-- **Condición:** El mesero debe haber ingresado. Debe haber una mesa disponible o una reserva del cliente que llega, y productos en el menú.
+**Actor:** Usuario registrado
 
-### Pasos
+**Historia relacionada:** HU-04
 
-1. Elegir la mesa y abrir el pedido.
-2. Guardar su número, mesero responsable y estado Pendiente; marcar la mesa como ocupada.
-3. Agregar productos, cantidades y observaciones.
-4. Comprobar disponibilidad y calcular los valores.
-5. Corregir lo necesario y guardar.
-6. Conservar el precio de cada producto agregado y mostrar el total.
+**Requerimiento:** RF06
 
-**Errores:** Si la mesa ya tiene un pedido activo, se abre ese pedido. Se rechazan cantidades incorrectas y productos no disponibles. Si cocina ya empezó, no se permite editar.
+**Precondición:** El usuario debe tener una cuenta registrada.
 
-**Resultado:** El pedido queda Pendiente, con sus productos y un total correcto.
+**Flujo principal:**
 
-## CU09 — Cancelar pedidos
+1. El usuario selecciona la opción de recuperar contraseña.
 
-- **Actor:** mesero; administrador si la cancelación requiere autorización.
-- **Quién más participa:** administrador para la autorización indicada.
-- **Historia:** HU09.
-- **Requisitos:** RF20.
-- **Condición:** Debe existir un pedido sin facturar y un usuario con permiso para cancelarlo.
+2. El sistema solicita la información de la cuenta.
 
-### Pasos
+3. El usuario ingresa la información solicitada.
 
-1. Elegir el pedido y pedir su cancelación.
-2. Revisar en qué estado se encuentra.
-3. Si cocina ya empezó, solicitar la autorización del administrador.
-4. Escribir el motivo.
-5. Guardar la cancelación y mostrarla también en cocina.
+4. El sistema procesa la solicitud de recuperación.
 
-**Errores:** Sin la autorización necesaria, el pedido no se cancela. Si ya está Facturado, esta función no permite cancelarlo. Los insumos que ya se usaron se mantienen registrados; cualquier corrección se anota por separado con su motivo.
+5. El usuario registra una nueva contraseña.
 
-**Resultado:** El pedido queda Cancelado, con su responsable y motivo. No genera cobro ni devuelve insumos automáticamente.
+6. El sistema guarda la nueva contraseña de forma cifrada.
 
-## CU10 — Enviar pedidos a cocina
+7. El sistema informa que la contraseña fue actualizada.
 
-- **Actor:** mesero.
-- **Historia:** HU10.
-- **Requisitos:** RF21.
-- **Condición:** Debe existir un pedido Pendiente con productos guardados.
+**Flujo alternativo:** Si la recuperación no puede procesarse, el sistema informa el problema al usuario.
 
-### Pasos
+**Postcondición:** El usuario puede iniciar sesión con la nueva contraseña.
 
-1. Revisar el pedido y confirmar el envío.
-2. Comprobar la mesa, las cantidades y la disponibilidad de los productos.
-3. Guardar la fecha de envío.
-4. Mostrar el pedido una sola vez en cocina, todavía como Pendiente.
+## CU-05. Administrar productos
 
-**Errores:** Si está vacío o tiene un producto no disponible, no se envía y se explica el motivo. Si ya se había enviado, se muestra el mismo pedido sin crear otra copia.
+**Actor:** Administrador
 
-**Resultado:** El cocinero puede ver el pedido y comenzar a prepararlo.
+**Historia relacionada:** HU-05
 
-## CU11 — Seguir la preparación y entrega
+**Requerimientos:** RF07, RF08 y RF09
 
-- **Actor:** cocinero y mesero; administrador y cajero para consultar.
-- **Quién más participa:** mesero para entrega y cajero en el posterior cobro.
-- **Historia:** HU11.
-- **Requisitos:** RF22.
-- **Condición:** El pedido debe estar enviado a cocina y no estar cancelado.
+**Precondición:** El administrador debe haber iniciado sesión.
 
-### Pasos
+**Flujo principal:**
 
-1. Consultar los pedidos enviados.
-2. El cocinero elige uno Pendiente y lo marca En preparación.
-3. Cuando termina, lo marca Listo.
-4. El mesero lo sirve y lo marca Entregado.
-5. Guardar quién hizo cada cambio y a qué hora.
-6. Cuando el cajero registre el pago, el pedido pasa a Facturado.
+1. El administrador ingresa al módulo de menú.
 
-**Errores:** Si alguien intenta un cambio que no le corresponde o se salta un estado, no se acepta. Si dos personas cambian el pedido a la vez, se muestra el estado vigente. Un pedido Cancelado no continúa.
+2. El sistema muestra los productos registrados.
 
-**Resultado:** El personal puede ver en qué va el pedido y consultar sus cambios.
+3. El administrador selecciona crear, modificar o eliminar un producto.
 
-## CU12 — Registrar insumos y entradas
+4. El administrador completa o modifica la información correspondiente.
 
-- **Actor:** administrador.
-- **Historia:** HU12.
-- **Requisitos:** RF23, RF24.
-- **Condición:** Para anotar una entrada, el insumo ya debe estar creado.
+5. El administrador confirma la operación.
 
-### Pasos
+6. El sistema procesa la solicitud.
 
-1. Registrar código, nombre, unidad de medida y cantidad mínima del insumo.
-2. Revisar los datos y crear el insumo inicialmente con cantidad cero.
-3. Anotar la cantidad que entra y su referencia.
-4. Guardar la entrada con fecha y responsable.
-5. Sumar la cantidad al inventario.
+7. El sistema actualiza el menú y muestra el resultado.
 
-**Errores:** No se permite repetir el código ni registrar cantidades iguales o menores que cero. Si ya hay existencias al iniciar, se anotan como una entrada.
+**Flujo alternativo:** Si la operación no puede completarse, el sistema informa el problema y conserva la información anterior.
 
-**Resultado:** Se pueden consultar el insumo, sus entradas y la cantidad disponible.
+**Postcondición:** El producto queda creado, modificado o eliminado, según la opción seleccionada.
 
-## CU13 — Registrar consumo de insumos
+## CU-06. Categorizar productos
 
-- **Actor:** administrador.
-- **Historia:** HU13.
-- **Requisitos:** RF25.
-- **Condición:** El insumo debe existir y tener cantidad disponible. El administrador debe haber ingresado.
+**Actor:** Administrador
 
-### Pasos
+**Historia relacionada:** HU-06
 
-1. Elegir el insumo.
-2. Escribir cantidad, motivo y referencia del pedido cuando corresponda.
-3. Revisar que alcance lo disponible.
-4. Confirmar la salida.
-5. Guardar el movimiento y actualizar la cantidad juntos, una sola vez.
+**Requerimiento:** RF10
 
-**Errores:** Si no alcanza, no se guarda ni se cambia la cantidad. Si se repite la misma confirmación, se muestra la salida ya registrada.
+**Precondición:** El producto debe estar registrado.
 
-**Resultado:** La salida conserva su responsable y el inventario no queda con cantidades negativas.
+**Flujo principal:**
 
-## CU14 — Consultar inventario y alertas
+1. El administrador ingresa al módulo de menú.
 
-- **Actor:** administrador.
-- **Historia:** HU14.
-- **Requisitos:** RF26, RF27.
-- **Condición:** Sesión de administrador activa.
+2. El administrador selecciona un producto.
 
-### Pasos
+3. El sistema muestra las opciones de categoría.
 
-1. Consultar el inventario.
-2. Elegir un insumo o unas fechas para revisar sus movimientos.
-3. Ver cantidades, unidad de medida, entradas y salidas.
-4. Abrir los avisos de inventario.
-5. Mostrar los insumos que estén en su mínimo o por debajo.
+4. El administrador selecciona la categoría correspondiente.
 
-**Errores:** Si no hay movimientos o avisos, se indica que no hay datos. Las cantidades con distintas unidades se muestran por separado.
+5. El administrador confirma la operación.
 
-**Resultado:** El administrador puede revisar cuánto queda y qué necesita reponer.
+6. El sistema guarda la categoría y organiza el producto.
 
-## CU15 — Preparar la factura
+**Flujo alternativo:** Si la categoría no puede asignarse, el sistema informa el problema y conserva la información anterior.
 
-- **Actor:** cajero; administrador para autorizar descuentos.
-- **Quién más participa:** administrador para la autorización indicada.
-- **Historia:** HU15.
-- **Requisitos:** RF28, RF29, RF30.
-- **Condición:** Debe existir un pedido Entregado sin factura. Las tasas de impuesto del ejercicio ya deben estar definidas.
+**Postcondición:** El producto queda asociado con la categoría seleccionada.
 
-### Pasos
+## CU-07. Gestionar disponibilidad de productos
 
-1. El cajero selecciona el pedido.
-2. Consultar sus productos y precios guardados.
-3. Si habrá descuento, pedir autorización al administrador y guardar el motivo.
-4. Calcular subtotal, descuento, base, impuesto y total.
-5. Confirmar el cobro que se va a presentar.
-6. Guardar la factura con un número único, todavía sin pago.
+**Actor:** Administrador
 
-**Errores:** Si el pedido no está Entregado, no se factura. Si ya tiene factura, se muestra la existente. No se aplica un descuento inválido o sin permiso. Si falta definir la tasa, se debe hacer antes de emitir.
+**Historia relacionada:** HU-07
 
-**Resultado:** Queda una factura pendiente de pago con los valores que se le cobrarán al cliente.
+**Requerimiento:** RF11
 
-## CU16 — Registrar pago y comprobante
+**Precondición:** El producto debe estar registrado.
 
-- **Actor:** cajero.
-- **Historia:** HU16.
-- **Requisitos:** RF31, RF32.
-- **Condición:** El cajero debe haber ingresado y debe existir una factura pendiente de pago.
+**Flujo principal:**
 
-### Pasos
+1. El administrador ingresa al módulo de menú.
 
-1. Abrir la factura y registrar el medio de pago y el dinero recibido.
-2. Comprobar el total y calcular el cambio si es efectivo.
-3. Confirmar el pago.
-4. Guardar el pago y pasar el pedido a Facturado juntos.
-5. Mostrar, imprimir o descargar el comprobante.
+2. El administrador selecciona un producto.
 
-**Errores:** Si el dinero no alcanza, no se registra el pago. Una factura ya pagada o un doble clic no deben generar otro cobro. Si falla la impresión, se puede imprimir de nuevo sin repetir el pago.
+3. El sistema muestra su disponibilidad actual.
 
-**Resultado:** La factura queda pagada y su comprobante se puede consultar. Para liberar la mesa se usa RF16.
+4. El administrador cambia el estado de disponibilidad.
 
-## CU17 — Consultar ventas y productos
+5. El administrador confirma la operación.
 
-- **Actor:** administrador.
-- **Historia:** HU17.
-- **Requisitos:** RF33, RF34.
-- **Condición:** Sesión de administrador activa.
+6. El sistema guarda el nuevo estado y actualiza el menú.
 
-### Pasos
+**Flujo alternativo:** Si la disponibilidad no puede actualizarse, el sistema conserva el estado anterior e informa el problema.
 
-1. Elegir fecha inicial y final.
-2. Comprobar que las fechas estén en orden.
-3. Consultar los pagos registrados en ese periodo.
-4. Mostrar el total y ordenar los productos por cantidad vendida.
-5. Permitir revisar los datos con los que se obtuvieron los totales.
+**Postcondición:** El producto queda identificado como disponible o no disponible
 
-**Errores:** Si las fechas están invertidas, se pide corregirlas. Si no hubo ventas, se muestra cero y una lista vacía.
+## CU-08. Administrar mesas
 
-**Resultado:** Los reportes muestran las ventas cobradas entre las fechas elegidas.
+**Actor:** Administrador
 
-## CU18 — Consultar consumo y ocupación
+**Historia relacionada:** HU-08
 
-- **Actor:** administrador.
-- **Historia:** HU18.
-- **Requisitos:** RF35, RF36.
-- **Condición:** Para calcular la ocupación, deben estar guardados los horarios de atención y cuándo se ocuparon y liberaron las mesas.
+**Requerimientos:** RF12 y RF13
 
-### Pasos
+**Precondición:** El administrador debe haber iniciado sesión.
 
-1. Elegir el reporte y las fechas.
-2. Revisar que las fechas estén bien.
-3. Para consumo, sumar las salidas de cada insumo usando su unidad de medida.
-4. Para ocupación, calcular cuánto tiempo estuvo ocupada cada mesa dentro del horario consultado.
-5. Mostrar los datos y explicar el cálculo.
+**Flujo principal:**
 
-**Errores:** Si faltan horarios, se indica que no se puede calcular la ocupación. Si no hubo consumo, se muestra cero. Si la mesa sigue ocupada, se cuenta solo hasta la hora de la consulta.
+1. El administrador ingresa al módulo de mesas.
 
-**Resultado:** Se pueden revisar las cantidades y el uso de las mesas sin mezclar unidades ni dividir entre cero.
+2. El sistema muestra las mesas registradas.
 
-## CU19 — Consultar indicadores financieros
+3. El administrador selecciona crear o modificar una mesa.
 
-- **Actor:** administrador.
-- **Historia:** HU19.
-- **Requisitos:** RF37.
-- **Condición:** Sesión de administrador activa.
+4. El administrador completa o modifica la información solicitada.
 
-### Pasos
+5. El administrador confirma la operación.
 
-1. Elegir las fechas.
-2. Consultar las ventas pagadas.
-3. Sumar lo cobrado y contar las ventas.
-4. Dividir el total entre la cantidad de ventas para obtener el promedio por venta, llamado ticket promedio.
-5. Mostrar los valores y el periodo consultado.
+6. El sistema guarda la información y muestra el resultado.
 
-**Errores:** Si no hubo ventas, total y cantidad son cero y el promedio no se calcula. Si no hay datos de costos, no se muestra una ganancia calculada.
+**Flujo alternativo:** Si la operación no puede completarse, el sistema informa el problema y no guarda los cambios.
 
-**Resultado:** El resumen coincide con el reporte de ventas.
+**Postcondición:** La mesa queda creada o modificada, según la opción seleccionada.
 
-## CU20 — Registrar y modificar reservas
+## CU-09. Consultar estado de las mesas
 
-- **Actor:** mesero o administrador.
-- **Historia:** HU20.
-- **Requisitos:** RF15, RF38, RF39.
-- **Condición:** Debe haber mesas registradas y un usuario con permiso.
+**Actor:** Mesero
 
-### Pasos
+**Historia relacionada:** HU-09
 
-1. Escribir contacto, número de personas, fecha y horas de inicio y fin.
-2. Buscar una mesa con capacidad y sin otra reserva que se cruce.
-3. Elegir la mesa y confirmar.
-4. Revisar otra vez la disponibilidad y guardar.
-5. Para cambiar una reserva Confirmada, revisar de nuevo capacidad y horario antes de guardar los nuevos datos.
+**Requerimiento:** RF14
 
-**Errores:** Si no hay mesa, se puede elegir otro horario. Si otra persona la reserva al mismo tiempo, se rechaza la solicitud que entre en conflicto. Si un cambio falla, se conservan los datos anteriores.
+**Precondición:** El mesero debe haber iniciado sesión.
 
-**Resultado:** Queda una reserva Confirmada con mesa y horario. RF15 es la asignación de esa misma reserva.
+**Flujo principal:**
 
-## CU21 — Consultar, cancelar y atender reservas
+1. El mesero ingresa al módulo de mesas.
 
-- **Actor:** mesero; administrador para consultar y cancelar.
-- **Historia:** HU21.
-- **Requisitos:** RF40, RF41, RF42.
-- **Condición:** El usuario debe tener permiso. Para cancelar o registrar llegada, la reserva debe estar Confirmada.
+2. El sistema consulta las mesas registradas.
 
-### Pasos
+3. El sistema muestra el estado de cada mesa.
 
-1. Consultar reservas por fecha, mesa o estado.
-2. Elegir una reserva.
-3. Si se cancela, escribir el motivo y confirmar para liberar su horario.
-4. Si llegan los clientes, revisar que la mesa esté libre y relacionar la reserva con el nuevo pedido.
-5. Marcar la reserva como Atendida y la mesa como ocupada.
+4. El mesero revisa la información.
 
-**Errores:** No se repite una cancelación o llegada ya registrada. Si la mesa sigue ocupada, no se confirma la llegada; se puede revisar otra mesa cambiando la reserva.
+5. El mesero puede actualizar la consulta.
 
-**Resultado:** La reserva queda actualizada, se conserva su historial y no se duplica el pedido.
+**Flujo alternativo:** Si no existe información disponible, el sistema informa que no hay mesas para mostrar.
 
-## CU22 — Consultar dashboard
+**Postcondición:** El mesero puede conocer el estado actual de las mesas.
 
-- **Actor:** administrador.
-- **Historia:** HU22.
-- **Requisitos:** RF43, RF44.
-- **Condición:** Sesión de administrador activa.
+## CU-10. Reservar y liberar mesas
 
-### Pasos
+**Actor:** Mesero
 
-1. Abrir el dashboard, que es la pantalla de resumen.
-2. Mostrar ventas, pedidos activos, mesas ocupadas, reservas y avisos de inventario, con la hora de actualización.
-3. Elegir unas fechas.
-4. Actualizar ventas y reservas con ese periodo, dejando identificados los datos que corresponden al momento actual.
-5. Abrir el detalle de un indicador con los filtros que correspondan.
+**Historia relacionada:** HU-10
 
-**Errores:** Si no hay registros, se muestra cero o sin información según el dato. Si falla la consulta de un módulo, se indica que no está disponible; no se muestra cero como si fuera un resultado real.
+**Requerimientos:** RF15 y RF16
 
-**Resultado:** El resumen coincide con la información de cada módulo y permite consultar el detalle.
+**Precondición:** La mesa debe estar registrada en el sistema.
 
-## Cómo se conectan
+**Flujo principal:**
 
-El mesero crea el pedido en CU08 y lo envía a cocina en CU10. Su preparación y entrega se siguen en CU11. Después, el cajero prepara la factura en CU15 y registra el pago en CU16. La mesa se libera con CU07. CU09 permite cancelar cuando las reglas lo permiten.
+1. El mesero ingresa al módulo de mesas.
 
-CU20 y CU21 cubren las reservas y la llegada de los clientes, que se relaciona con la apertura del pedido de CU08. El consumo de inventario se anota manualmente con CU13; no se descuenta solo por abrir un pedido.
+2. El sistema muestra el estado de las mesas.
+
+3. El mesero selecciona reservar o liberar una mesa.
+
+4. Si selecciona reservar, registra la información correspondiente.
+
+5. Si selecciona liberar, elige la mesa que desea dejar disponible.
+
+6. El mesero confirma la operación.
+
+7. El sistema guarda la información y actualiza el estado de la mesa.
+
+**Flujo alternativo:** Si la mesa no puede reservarse o liberarse, el sistema informa el problema y conserva su estado anterior.
+
+**Postcondición:** La mesa queda reservada o disponible, según la operación realizada.
+
+## CU-11. Crear pedidos y agregar productos
+
+**Actor:** Mesero
+
+**Historia relacionada:** HU-11
+
+**Requerimientos:** RF17 y RF18
+
+**Precondición:** El mesero debe haber iniciado sesión y deben existir productos registrados en el menú.
+
+**Flujo principal:**
+
+1. El mesero ingresa al módulo de pedidos.
+
+2. El mesero selecciona la opción de crear un pedido.
+
+3. El sistema muestra el formulario correspondiente.
+
+4. El mesero registra la información del pedido.
+
+5. El sistema crea el pedido.
+
+6. El mesero selecciona los productos y sus cantidades.
+
+7. El mesero confirma la operación.
+
+8. El sistema agrega los productos y muestra el pedido actualizado.
+
+**Flujo alternativo:** Si el pedido no puede crearse o un producto no puede agregarse, el sistema informa el problema.
+
+**Postcondición:** El pedido queda creado con los productos seleccionados
+
+## CU-12. Modificar o cancelar pedidos
+
+**Actor:** Mesero
+
+**Historia relacionada:** HU-12
+
+**Requerimientos:** RF19 y RF20
+
+**Precondición:** El pedido debe estar registrado.
+
+**Flujo principal:**
+
+1. El mesero ingresa al módulo de pedidos.
+
+2. El sistema muestra los pedidos registrados.
+
+3. El mesero selecciona un pedido.
+
+4. El mesero elige modificar o cancelar.
+
+5. Si selecciona modificar, cambia la información necesaria.
+
+6. Si selecciona cancelar, confirma la cancelación.
+
+7. El sistema procesa la operación.
+
+8. El sistema muestra el resultado.
+
+**Flujo alternativo:** Si la modificación o cancelación no puede realizarse, el sistema informa el problema y conserva la información anterior.
+
+**Postcondición:** El pedido queda modificado o cancelado, según la opción seleccionada.
+
+## CU-13. Enviar pedidos a cocina
+
+**Actor:** Mesero
+
+**Actor secundario:** Cocinero
+
+**Historia relacionada:** HU-13
+
+**Requerimiento:** RF21
+
+**Precondición:** El pedido debe estar registrado.
+
+**Flujo principal:**
+
+1. El mesero ingresa al módulo de pedidos.
+
+2. El mesero selecciona un pedido.
+
+3. El mesero elige la opción de enviar a cocina.
+
+4. El sistema procesa el envío.
+
+5. El sistema muestra el pedido en el área de cocina.
+
+6. El cocinero consulta el pedido recibido.
+
+**Flujo alternativo:** Si el pedido no puede enviarse, el sistema informa el problema al mesero.
+
+**Postcondición:** El pedido queda disponible en cocina para su preparación.
+
+## CU-14. Consultar estado del pedido
+
+**Actores:** Mesero y cocinero
+
+**Historia relacionada:** HU-14
+
+**Requerimiento:** RF22
+
+**Precondición:** El pedido debe estar registrado.
+
+**Flujo principal:**
+
+1. El usuario ingresa al módulo de pedidos.
+
+2. El sistema muestra los pedidos registrados.
+
+3. El usuario selecciona un pedido.
+
+4. El sistema muestra la información y su estado actual.
+
+5. El usuario consulta el estado del pedido.
+
+**Estados disponibles:**
+
+- Pendiente.
+
+- En preparación.
+
+- Listo.
+
+- Entregado.
+
+- Facturado.
+
+**Flujo alternativo:** Si el pedido no está disponible, el sistema informa que no fue posible consultar su estado.
+
+**Postcondición:** El usuario puede conocer el estado actual del pedido.
+
+## CU-15. Preparar la factura
+
+**Actor:** Cajero
+
+**Historia relacionada:** HU-15
+
+**Requerimientos:** RF28, RF29 y RF30
+
+**Precondición:** Debe existir información de un pedido para generar la factura.
+
+**Flujo principal:**
+
+1. El cajero ingresa al módulo de facturación.
+
+2. El cajero selecciona el pedido.
+
+3. El sistema consulta la información correspondiente.
+
+4. El cajero selecciona la opción de generar factura.
+
+5. El sistema genera la factura y calcula los impuestos.
+
+6. Si corresponde, el cajero registra un descuento.
+
+7. El sistema aplica el descuento y actualiza el valor.
+
+8. El sistema muestra la factura.
+
+**Flujo alternativo:** Si la factura, los impuestos o el descuento no pueden procesarse, el sistema informa el problema al cajero.
+
+**Postcondición:** La factura queda generada con los impuestos y descuentos correspondientes.
+
+## CU-16. Registrar pago y emitir comprobante
+
+**Actor:** Cajero
+
+**Historia relacionada:** HU-16
+
+**Requerimientos:** RF31 y RF32
+
+**Precondición:** Debe existir una factura.
+
+**Flujo principal:**
+
+1. El cajero consulta la factura.
+
+2. El cajero selecciona la opción de registrar pago.
+
+3. El cajero ingresa la información correspondiente.
+
+4. El cajero confirma la operación.
+
+5. El sistema guarda el pago.
+
+6. El cajero selecciona la opción de emitir comprobante.
+
+7. El sistema genera y muestra el comprobante.
+
+8. El cajero entrega el comprobante al cliente.
+
+**Flujo alternativo:** Si el pago o el comprobante no pueden procesarse, el sistema informa el problema al cajero.
+
+**Postcondición:** El pago queda registrado y el comprobante queda generado.
+
+## CU-17. Consultar ventas y productos más vendidos
+
+**Actor:** Administrador
+
+**Historia relacionada:** HU-17
+
+**Requerimientos:** RF33 y RF34
+
+**Precondición:** El administrador debe haber iniciado sesión.
+
+**Flujo principal:**
+
+1. El administrador ingresa al módulo de reportes.
+
+2. El administrador selecciona la consulta de ventas por periodo.
+
+3. El administrador indica el periodo que desea consultar.
+
+4. El sistema muestra las ventas correspondientes.
+
+5. El administrador selecciona la consulta de productos más vendidos.
+
+6. El sistema procesa la información registrada.
+
+7. El sistema muestra los productos más vendidos.
+
+**Flujo alternativo:** Si no existe información para la consulta, el sistema informa que no hay datos disponibles.
+
+**Postcondición:** El administrador puede consultar las ventas del periodo y los productos más vendidos.
+
+## CU-18. Consultar consumo de inventario y ocupación de mesas
+
+**Actor:** Administrador
+
+**Historia relacionada:** HU-18
+
+**Requerimientos:** RF35 y RF36
+
+**Precondición:** Debe existir información sobre el consumo de inventario y el uso de las mesas.
+
+**Flujo principal:**
+
+1. El administrador ingresa al módulo de reportes.
+
+2. El administrador selecciona la consulta de consumo de inventario.
+
+3. El administrador establece los datos de la consulta.
+
+4. El sistema muestra la información disponible.
+
+5. El administrador selecciona la consulta de ocupación de mesas.
+
+6. El administrador establece los datos de la consulta.
+
+7. El sistema muestra la información sobre la ocupación.
+
+**Flujo alternativo:** Si no existe información para alguna consulta, el sistema informa que no hay datos disponibles.
+
+**Postcondición:** El administrador puede consultar el consumo de inventario y la ocupación de las mesas.
+
+## CU-19. Consultar indicadores financieros
+
+**Actor:** Administrador
+
+**Historia relacionada:** HU-19
+
+**Requerimiento:** RF37
+
+**Precondición:** El administrador debe haber iniciado sesión.
+
+**Flujo principal:**
+
+1. El administrador ingresa al módulo de reportes.
+
+2. El administrador selecciona la opción de indicadores financieros.
+
+3. El sistema consulta la información disponible.
+
+4. El sistema procesa los indicadores.
+
+5. El sistema muestra los resultados.
+
+6. El administrador revisa la información financiera.
+
+**Flujo alternativo:** Si no existe información financiera, el sistema informa que no hay datos disponibles.
+
+**Postcondición:** El administrador puede consultar los indicadores financieros del restaurante.

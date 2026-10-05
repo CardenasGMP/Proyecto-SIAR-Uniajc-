@@ -1,13 +1,67 @@
-# Justificación de los patrones
+# Justificación
 
-| Patrón | Por qué lo elegimos | Ejemplo |
-| --- | --- | --- |
-| Singleton | Evita crear varias copias de la misma configuración durante la ejecución. | Los módulos consultan la misma zona horaria del restaurante. |
-| Facade | Simplifica procesos que necesitan varios componentes y evita que la interfaz conozca todos sus pasos internos. | Registrar un pago desde una sola operación de la fachada de facturación. |
-| Observer | Permite actualizar varias vistas cuando cambia un pedido, sin que cocina tenga que llamar directamente a la pantalla del mesero. | Mostrar que un pedido ya está Listo. |
+## Patrón Singleton
 
-Los tres patrones se integran en la arquitectura de presentación, lógica de negocio y datos. Las sesiones siguen siendo individuales, los cambios relacionados se guardan mediante transacciones y los avisos se envían después de confirmar el guardado.
+Singleton se selecciona porque SIAR necesita mantener algunos datos compartidos durante la ejecución de la aplicación sin crear varias copias con información diferente.
 
-Esta organización facilita separar responsabilidades y probar cada parte. Su funcionamiento se comprobará cuando exista la aplicación.
+Este patrón permitirá:
 
-Ver [patrones seleccionados](patrones-de-diseno.md) y [arquitectura](arquitectura-del-sistema.md).
+- Mantener una única referencia de la sesión actual.
+
+- Evitar información duplicada entre los módulos.
+
+- Centralizar la configuración general.
+
+- Facilitar el acceso a información compartida.
+
+- Reiniciar la información cuando el usuario cierre sesión.
+
+- Reducir inconsistencias entre las diferentes partes del sistema.
+
+Su aplicación será especialmente útil para las funciones de inicio de sesión, consulta del rol y presentación de las opciones correspondientes a cada usuario.
+
+## Patrón Facade
+
+Facade se selecciona porque varias funciones de SIAR requieren ejecutar operaciones relacionadas con diferentes componentes.
+
+Este patrón permitirá:
+
+- Simplificar la comunicación entre la presentación y la lógica del negocio.
+
+- Evitar que las interfaces conozcan todos los detalles internos.
+
+- Centralizar los procesos principales.
+
+- Reducir la dependencia entre los módulos.
+
+- Coordinar operaciones relacionadas.
+
+- Mantener un manejo uniforme de los errores.
+
+- Facilitar las pruebas de los flujos completos.
+
+- Evitar que una operación quede ejecutada parcialmente.
+
+Su aplicación será especialmente útil en la creación de pedidos, la facturación, el registro de pagos y la preparación de información para los reportes.
+
+## Patrón Observer
+
+Observer se selecciona porque diferentes usuarios necesitan consultar información actualizada sobre la operación del restaurante.
+
+Este patrón permitirá:
+
+- Reflejar los cambios de los pedidos.
+
+- Mantener comunicados al mesero y al cocinero.
+
+- Actualizar varias vistas a partir de un mismo cambio.
+
+- Reducir la dependencia directa entre componentes.
+
+- Reutilizar el mecanismo de actualización.
+
+- Facilitar la incorporación de nuevos observadores.
+
+- Mejorar el seguimiento de los procesos.
+
+- Evitar que cada vista tenga que conocer todos los componentes internos.

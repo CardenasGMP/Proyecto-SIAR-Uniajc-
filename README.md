@@ -1,44 +1,39 @@
-# SIAR — Sistema Integral de Administración para Restaurantes
+# Proyecto SIAR
 
-Proyecto de Ingeniería de Software II — UNIAJC.
+Santiago López Ramírez  
+José David Cárdenas Tovar  
+Nicole Segovia Cortes
 
-SIAR será una aplicación web para organizar la atención y la información de un restaurante. Reunirá usuarios, menú, mesas, pedidos, inventario, reservas y cobros. El administrador podrá consultar ventas y un resumen de la operación.
+Gloria Johanna Chala Torres
 
-## Módulos
+Institución Universitaria Antonio José Camacho  
+Facultad de ingenierías  
+Ingeniería de Sistemas  
+2026
 
-| Módulo | Función principal |
-| --- | --- |
-| Usuarios y roles | Administrar cuentas y permisos. |
-| Menú | Registrar productos, categorías, precios y disponibilidad. |
-| Mesas | Consultar capacidad, ocupación y liberación. |
-| Pedidos | Registrar pedidos y seguir su preparación y entrega. |
-| Inventario | Registrar insumos y movimientos manuales; avisar cuando queden pocos. |
-| Facturación | Calcular el cobro, aplicar descuentos autorizados y registrar pagos. |
-| Reservas | Organizar horarios y registrar la llegada de los clientes. |
-| Reportes | Consultar ventas, consumo y ocupación. |
-| Dashboard | Mostrar indicadores y alertas del restaurante. |
+## DOCUMENTOS DE INICIO
 
-Los roles serán **administrador, mesero, cocinero y cajero**. Los clientes no necesitan una cuenta.
+- [Problema identificado](01-documento-de-inicio/problema-identificado.md)
+- [Justificación](01-documento-de-inicio/justificacion.md)
+- [Objetivos](01-documento-de-inicio/objetivos.md)
+- [Alcance](01-documento-de-inicio/alcance.md)
+- [Cronograma](01-documento-de-inicio/cronograma.md)
 
-## Documentación
+## INGENIERÍA DE REQUERIMIENTOS
 
-| Carpeta | Contenido |
-| --- | --- |
-| [Documento de inicio](01-documento-de-inicio/) | Problema, justificación, objetivos y alcance. El cronograma queda para el final. |
-| [Ingeniería de requerimientos](02-ingenieria-de-requerimientos/) | Historias, casos de uso y requisitos funcionales y no funcionales. |
-| [Modelado](03-modelado/) | [Casos de uso](03-modelado/diagrama_casos_uso.md), [clases](03-modelado/diagrama_clases.md) y [entidad-relación](03-modelado/modelo_entidad_relacion.md). |
-| [Diseño](04-diseno/) | [Arquitectura](04-diseno/arquitectura-del-sistema.md), [patrones](04-diseno/patrones-de-diseno.md) y [justificación](04-diseno/justificacion-de-patrones.md). |
+- [Historia de usuario](02-ingenieria-de-requerimientos/01-historias-de-usuario.md)
+- [Casos de uso](02-ingenieria-de-requerimientos/02-casos-de-uso.md)
+- [Requerimientos funcionales](02-ingenieria-de-requerimientos/03-requerimientos-funcionales.md)
+- [Requerimientos no funcionales](02-ingenieria-de-requerimientos/04-requerimientos-no-funcionales.md)
 
-La [relación con el documento del proyecto](relacion-con-documento.md) indica las equivalencias y los ajustes pendientes en el PDF.
+## MODELADO
 
-Estamos en la documentación del sistema; aún no hay una aplicación ejecutable. Las propuestas de inventario, reservas y dashboard se revisarán con la docente.
+- [Diagrama de casos de uso](03-modelado/diagrama_casos_uso.md)
+- [Diagrama de clases](03-modelado/diagrama_clases.md)
+- [Modelo entidad relación](03-modelado/modelo_entidad_relacion.md)
 
-## Organización del trabajo
+## DISEÑO
 
-Usaremos Git y GitHub para guardar los avances y revisarlos mediante Pull Requests. `main` contiene la versión revisada, `develop` reúne avances y las ramas de trabajo permiten preparar cada cambio. Si un cambio parte de `main` para conservar una actualización reciente, se indicará en su solicitud.
-
-El diseño propone una arquitectura cliente-servidor de tres capas, con Singleton, Facade y Observer. Las tecnologías están pendientes. Los requisitos incluyen adaptación a distintas pantallas, disponibilidad mínima del 95 %, respuesta menor a 3 segundos bajo la carga acordada, protección de datos y al menos 70 % de cobertura de pruebas. Se comprobarán cuando exista la aplicación.
-
-## Integrantes
-
-Santiago López Ramírez, José David Cárdenas Tovar y Nicole Segovia Cortes.
+- [Arquitectura de sistemas](04-diseno/arquitectura-del-sistema.md)
+- [Patrones de diseño seleccionado](04-diseno/patrones-de-diseno.md)
+- [Justificación](04-diseno/justificacion-de-patrones.md)
