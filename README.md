@@ -27,7 +27,7 @@ Los roles serán **administrador, mesero, cocinero y cajero**. Los clientes no n
 | [Documento de inicio](01-documento-de-inicio/) | Problema, justificación, objetivos y alcance. El cronograma queda para el final. |
 | [Ingeniería de requerimientos](02-ingenieria-de-requerimientos/) | Historias, casos de uso y requisitos funcionales y no funcionales. |
 | [Modelado](03-modelado/) | [Casos de uso](03-modelado/diagrama_casos_uso.md), [clases](03-modelado/diagrama_clases.md) y [entidad-relación](03-modelado/modelo_entidad_relacion.md). |
-| Diseño — pendiente | Arquitectura, patrones y su justificación. |
+| [Diseño](04-diseno/) | [Arquitectura](04-diseno/arquitectura-del-sistema.md), [patrones](04-diseno/patrones-de-diseno.md) y [justificación](04-diseno/justificacion-de-patrones.md). |
 
 Estamos en la documentación del sistema; aún no hay una aplicación ejecutable. Las propuestas de inventario, reservas y dashboard se revisarán con la docente.
 
@@ -35,7 +35,7 @@ Estamos en la documentación del sistema; aún no hay una aplicación ejecutable
 
 Usaremos Git y GitHub para guardar los avances y revisarlos mediante Pull Requests. `main` contiene la versión revisada, `develop` reúne avances y las ramas de trabajo permiten preparar cada cambio. Si un cambio parte de `main` para conservar una actualización reciente, se indicará en su solicitud.
 
-El diseño separará pantallas, reglas del negocio y acceso a datos. Las tecnologías están pendientes. Los requisitos incluyen adaptación a distintas pantallas, disponibilidad mínima del 95 %, respuesta menor a 3 segundos bajo la carga acordada, protección de datos y al menos 70 % de cobertura de pruebas. Se comprobarán cuando exista la aplicación.
+El diseño propone una arquitectura en capas, con MVC, servicios y repositorios. Las tecnologías están pendientes. Los requisitos incluyen adaptación a distintas pantallas, disponibilidad mínima del 95 %, respuesta menor a 3 segundos bajo la carga acordada, protección de datos y al menos 70 % de cobertura de pruebas. Se comprobarán cuando exista la aplicación.
 
 ## Integrantes
 
