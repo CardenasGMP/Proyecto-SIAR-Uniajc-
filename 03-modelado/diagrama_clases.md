@@ -233,7 +233,7 @@ classDiagram
 - El inventario se calcula a partir de movimientos manuales y no admite saldo negativo. Corregir crea un ajuste, sin borrar el original. Cancelar un pedido no repone insumos automáticamente.
 - Reportes y dashboard consultan estos datos; no son nuevas entidades. Las ventas se cuentan por la fecha de pago.
 
-Las validaciones de permisos, horarios cruzados y cambios simultáneos se coordinarán en la capa de servicios. El diseño de esa capa y las herramientas se definirá en el apartado de Diseño.
+Las validaciones de permisos, horarios cruzados y cambios simultáneos se coordinarán en la capa de servicios. La organización de esa capa se explica en la [arquitectura del sistema](../04-diseno/arquitectura-del-sistema.md). Las herramientas siguen pendientes de elección.
 
 ## Relación con los requisitos
 
