@@ -2,7 +2,9 @@
 
 ## Objetivo general
 
-Diseñar un sistema web que permita organizar la atención y la información de un restaurante.
+Desarrollar SIAR, una aplicación web que reúna usuarios, menú, mesas, pedidos, inventario, reservas y facturación para organizar la atención de un restaurante.
+
+Actualmente se trabaja en la documentación y el diseño de esa aplicación.
 
 ## Objetivos específicos
 

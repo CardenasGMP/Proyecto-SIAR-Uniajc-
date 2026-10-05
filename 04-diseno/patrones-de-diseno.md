@@ -1,15 +1,25 @@
 # Patrones de diseño seleccionados
 
-Proponemos tres patrones para organizar SIAR. Son decisiones de diseño; todavía no hay código.
+Se seleccionan **Singleton, Facade y Observer**, de acuerdo con el documento del proyecto: uno creacional, uno estructural y uno de comportamiento. Son decisiones de diseño, todavía sin implementar.
 
-| Patrón | Cómo se aplicará | Ejemplo |
+| Patrón | Categoría | Uso en SIAR |
 | --- | --- | --- |
-| Modelo–Vista–Controlador (MVC) | Separar la información y sus reglas, las pantallas y la recepción de solicitudes. | La vista muestra un pedido; el controlador recibe el cambio y lo envía al servicio. |
-| Capa de servicios (Service Layer) | Coordinar una operación, sus permisos y los cambios que deben guardarse juntos. | El servicio de reservas comprueba disponibilidad y registra la reserva. |
-| Repositorio (Repository) | Reunir las consultas y el guardado de cada grupo de datos. | El repositorio de pedidos busca un pedido y guarda sus cambios. |
+| Singleton | Creacional | Mantener una única instancia de configuración general por proceso del servidor. |
+| Facade | Estructural | Ofrecer operaciones como crear pedido o registrar pago, coordinando los servicios necesarios. |
+| Observer | Comportamiento | Notificar cambios confirmados en pedidos para actualizar las vistas del mesero y de cocina. |
 
-En MVC, el modelo incluye los datos y las reglas del sistema; no se limita a las tablas. Los servicios y las clases del dominio forman parte de esa organización.
+## Singleton
 
-Los controladores no harán consultas directas a la base de datos. Los repositorios tampoco decidirán si un mesero puede cobrar: esa validación corresponde al servicio.
+La configuración compartirá valores generales, como la zona horaria del restaurante. **El usuario y su sesión se mantendrán separados por persona**, no en una instancia global del servidor. Si se usa una instancia para la sesión en el navegador, será solo local y no sustituirá la validación del servidor.
 
-La [arquitectura](arquitectura-del-sistema.md) muestra cómo se conectan estas partes y la [justificación](justificacion-de-patrones.md) explica su elección.
+## Facade
+
+La fachada de pedidos coordinará la revisión de la mesa, la disponibilidad de productos y el registro del pedido. La de facturación coordinará el cobro mediante los servicios. Las transacciones guardarán juntos los cambios relacionados; Facade por sí solo no evita registros incompletos.
+
+## Observer
+
+Después de guardar un cambio, se notificará a los componentes interesados. Por ejemplo, al marcar un pedido Listo, se actualizará la vista del mesero.
+
+Para llegar a navegadores diferentes se necesitará un mecanismo de comunicación, que se definirá al elegir las tecnologías. Cada conexión deberá respetar los permisos. Si se pierde un aviso, la vista volverá a consultar el estado guardado; no se repetirá el pago ni el pedido.
+
+Ver [arquitectura](arquitectura-del-sistema.md) y [justificación](justificacion-de-patrones.md).

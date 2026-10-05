@@ -1,15 +1,13 @@
 # Justificación de los patrones
 
-| Patrón | Por qué lo elegimos para SIAR |
-| --- | --- |
-| MVC | Permite cambiar una pantalla sin mezclar su presentación con las reglas del restaurante. También facilita repartir el trabajo por responsabilidades. |
-| Capa de servicios | Evita repetir reglas en varios controladores. Permite coordinar tareas como registrar un pago y actualizar el pedido dentro de una misma transacción. |
-| Repositorio | Mantiene las consultas en un lugar definido. Facilita ajustar el acceso a datos y probar los servicios con repositorios de prueba. |
+| Patrón | Por qué lo elegimos | Ejemplo |
+| --- | --- | --- |
+| Singleton | Evita crear varias copias de la misma configuración durante la ejecución. | Los módulos consultan la misma zona horaria del restaurante. |
+| Facade | Simplifica procesos que necesitan varios componentes y evita que la interfaz conozca todos sus pasos internos. | Registrar un pago desde una sola operación de la fachada de facturación. |
+| Observer | Permite actualizar varias vistas cuando cambia un pedido, sin que cocina tenga que llamar directamente a la pantalla del mesero. | Mostrar que un pedido ya está Listo. |
 
-Por ejemplo, si cambia la forma de mostrar las reservas, se ajusta la vista. Si cambia una regla de disponibilidad, se revisa el servicio. Si cambia una consulta, se modifica el repositorio.
+Los tres patrones se integran en la arquitectura de presentación, lógica de negocio y datos. Las sesiones siguen siendo individuales, los cambios relacionados se guardan mediante transacciones y los avisos se envían después de confirmar el guardado.
 
-Esta separación añade archivos, pero ayuda a ubicar los cambios. Usaremos solo las partes necesarias para los módulos definidos.
+Esta organización facilita separar responsabilidades y probar cada parte. Su funcionamiento se comprobará cuando exista la aplicación.
 
-Los patrones apoyan RNF07 —separación de responsabilidades— y facilitan las pruebas de RNF09. Su uso no garantiza por sí solo el rendimiento ni la cobertura: eso debe comprobarse cuando exista la aplicación.
-
-Ver [patrones seleccionados](patrones-de-diseno.md) y [arquitectura del sistema](arquitectura-del-sistema.md).
+Ver [patrones seleccionados](patrones-de-diseno.md) y [arquitectura](arquitectura-del-sistema.md).
