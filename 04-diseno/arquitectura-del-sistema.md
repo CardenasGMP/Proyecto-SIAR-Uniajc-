@@ -1,49 +1,53 @@
 # Arquitectura del sistema
 
-SIAR se organizará en capas: presentación, negocio y acceso a datos. Será una aplicación web con un servidor y una base de datos relacional. Esta es la propuesta de diseño; todavía no está implementada.
+SIAR usará una arquitectura **cliente-servidor de tres capas**, como plantea el documento del proyecto. El personal accederá desde el navegador y el servidor procesará las operaciones.
 
-## Responsabilidades
-
-| Parte | Responsabilidad |
-| --- | --- |
-| Vistas | Mostrar formularios, pedidos, mesas y reportes según el rol. |
-| Controladores | Recibir solicitudes, comprobar los datos de entrada y devolver respuestas. |
-| Servicios | Revisar permisos y coordinar las operaciones de cada módulo. |
-| Clases del dominio | Representar usuarios, pedidos, reservas y demás entidades; aplicar sus reglas y cálculos. |
-| Repositorios | Consultar y guardar datos. |
-| Base de datos | Conservar la información, las relaciones y los valores únicos. |
+| Capa | Qué hará | Componentes |
+| --- | --- | --- |
+| Presentación | Mostrar formularios, mesas, pedidos y reportes según el rol. | Vistas en el navegador. |
+| Lógica de negocio | Validar datos y permisos; aplicar reglas y coordinar operaciones. | Controladores, fachadas, servicios y clases del dominio. |
+| Datos | Consultar y guardar información, conservando sus relaciones. | Repositorios y base de datos relacional. |
 
 ## Organización
 
 ```mermaid
 flowchart TB
-    V["Vistas en el navegador"] --> C["Controladores"]
+    V["Presentación: vistas"] --> C["Controladores"]
     subgraph S["Servidor"]
-        C --> SE["Servicios"]
-        SE --> D["Clases del dominio"]
-        SE --> R["Repositorios"]
+        subgraph N["Lógica de negocio"]
+            C --> F["Fachadas y servicios"]
+            F --> D["Clases del dominio"]
+        end
+        subgraph A["Datos"]
+            R["Repositorios"] --> BD[("Base de datos")]
+        end
+        F --> R
     end
-    R --> BD[("Base de datos relacional")]
 ```
 
-Las flechas indican quién usa a quién. Las vistas reciben las respuestas mediante los controladores y no acceden directamente a la base de datos.
+Las flechas muestran quién usa a quién. Las respuestas regresan a la presentación; el navegador no consulta directamente la base de datos.
 
-## Funcionamiento
+## Aplicación de los patrones
 
-Los servicios se organizarán por usuarios, menú, mesas, pedidos, inventario, facturación, reservas y consultas. Reportes y dashboard usarán los datos existentes, sin guardar copias de cada resumen.
+- **Singleton:** una instancia de configuración general por proceso del servidor.
+- **Facade:** un punto de entrada para coordinar pedidos o facturación.
+- **Observer:** avisar de cambios confirmados para actualizar las vistas autorizadas.
 
-Por ejemplo, al pagar, el servicio de facturación verifica que el usuario sea cajero, que la factura no esté pagada y que el importe sea correcto. Después guarda el pago, cambia el pedido a Facturado y registra la operación. Estos cambios se confirman juntos; si alguno falla, se deshacen. La mesa se libera por separado.
+Los servicios y repositorios organizan el trabajo dentro de las capas. Los patrones seleccionados para el proyecto son Singleton, Facade y Observer.
 
-## Reglas que debe cuidar el diseño
+## Ejemplo: registrar un pago
 
-- Validar sesión y permisos en el servidor para cada operación.
-- Proteger contraseñas con hash y no incluirlas en respuestas ni registros.
-- Evitar pagos duplicados, reservas cruzadas y dos pedidos sin liberar en una mesa.
-- Comprobar el estado vigente antes de guardar cambios simultáneos.
-- Registrar entradas y salidas de inventario manualmente, sin permitir saldo negativo.
+El cajero confirma el pago. La fachada de facturación coordina la validación del rol, la factura y el importe. El servicio guarda el pago, el estado Facturado y su registro de auditoría en una transacción: se confirma todo o no se guarda nada. Después se notifica el cambio. Liberar la mesa es una operación aparte.
 
-Se usarán transacciones y restricciones de la base de datos para conservar cambios completos y evitar duplicados. Las validaciones que consultan y actualizan disponibilidad deberán coordinarse dentro de la misma operación.
+## Reglas principales
 
-Las tecnologías, el alojamiento y los detalles de configuración se elegirán antes de programar. Las metas de rendimiento y disponibilidad se comprobarán con las pruebas previstas.
+- Verificar sesión y permisos en el servidor; mantener cada sesión separada.
+- Proteger contraseñas con hash y conservar el historial.
+- Evitar pagos repetidos, reservas cruzadas y dos pedidos sin liberar en una mesa.
+- Comprobar el estado vigente al recibir cambios simultáneos.
+- Registrar el inventario manualmente, sin permitir saldo negativo.
+- Generar reportes y dashboard mediante consultas a los datos existentes.
 
-Este diseño desarrolla RNF07 y sigue los [requisitos](../02-ingenieria-de-requerimientos/03-requerimientos-funcionales.md), los [requisitos de calidad](../02-ingenieria-de-requerimientos/04-requerimientos-no-funcionales.md) y el [modelo de datos](../03-modelado/modelo_entidad_relacion.md).
+La propuesta cumple la separación pedida por RNF07. Las tecnologías y el mecanismo para enviar actualizaciones al navegador se elegirán antes de programar. El rendimiento y la disponibilidad se comprobarán con pruebas.
+
+Ver [patrones](patrones-de-diseno.md), [requisitos](../02-ingenieria-de-requerimientos/03-requerimientos-funcionales.md) y [modelo de datos](../03-modelado/modelo_entidad_relacion.md).
