@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#173f35">
+  <title>SIAR · Mesas del restaurante</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-plan" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M12 20V4m-7 7 7-7 7 7"/></symbol>
+    <symbol id="icon-people" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 4v3"/></symbol>
+    <symbol id="icon-reset" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 9M3 4v6h6"/></symbol>
+    <symbol id="icon-pointer" viewBox="0 0 24 24"><path d="m5 3 14 9-7 1-3 7-4-17Z"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">Ir al plano de mesas</a>
+  <div class="app-layout">
+    <aside class="sidebar" aria-label="Sección actual">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">s.</span><div><strong>SIAR</strong><span>Tu restaurante, en orden</span></div></div>
+      <p class="nav-caption">RESTAURANTE</p>
+      <div class="nav-current"><svg class="icon"><use href="#icon-plan"/></svg><span>Plano de mesas</span><span class="nav-dot" aria-hidden="true"></span></div>
+      <div class="sidebar-bottom"><span class="outline-tag">INTERFAZ DE PRUEBA</span><p>Un vistazo a cada mesa.<br>Todo en un mismo lugar.</p><span class="sidebar-signature">Proyecto SIAR</span></div>
+    </aside>
+
+    <main id="main">
+      <header class="topbar"><span>Restaurante <span class="breadcrumb-separator">/</span> <strong>Mesas</strong></span><span class="demo-label"><span aria-hidden="true"></span>Datos de ejemplo</span></header>
+      <div class="page-content">
+        <div class="page-heading"><div><p class="eyebrow">ORGANIZA LA ATENCIÓN</p><h1>Mesas del restaurante</h1><p class="intro">Selecciona una mesa y consulta su disponibilidad.</p></div><button class="button button-light" id="reset-demo" type="button"><svg class="icon"><use href="#icon-reset"/></svg>Reiniciar vista</button></div>
+
+        <section class="summary" aria-label="Resumen del piso actual">
+          <div class="summary-item"><span class="summary-label">Mesas del piso</span><strong id="total-count">12</strong></div>
+          <div class="summary-item"><span class="summary-label"><i class="status-dot available"></i>Disponibles</span><strong id="available-count">—</strong></div>
+          <div class="summary-item"><span class="summary-label"><i class="status-dot occupied"></i>Ocupadas</span><strong id="occupied-count">—</strong></div>
+          <div class="summary-description">Elige el piso.<br>Encuentra la mesa.</div>
+        </section>
+
+        <div class="workspace">
+          <section class="plan-panel" aria-labelledby="plan-title">
+            <div class="panel-heading"><div><h2 id="plan-title">Primer piso</h2><p id="floor-description">Salón principal</p></div><div class="floor-switch" role="group" aria-label="Seleccionar piso"><button type="button" data-floor="1" aria-pressed="true">Piso 1</button><button type="button" data-floor="2" aria-pressed="false">Piso 2</button></div></div>
+            <div class="plan-legend" aria-label="Colores de las mesas"><span><i class="status-dot available"></i>Disponible</span><span><i class="status-dot occupied"></i>Ocupada</span><span class="selected-legend"><i></i>Seleccionada</span></div>
+            <p class="mobile-hint">Desliza el plano para ver todas las mesas.</p>
+            <div class="plan-scroll" role="region" aria-label="Plano desplazable del restaurante" tabindex="0">
+              <div class="floor-plan">
+                <svg class="floor-drawing" viewBox="0 0 800 580" aria-hidden="true">
+                  <defs><pattern id="floor-tiles" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#e5e7e0" stroke-width="0.7"/></pattern></defs>
+                  <path d="M160 40H575V250H744V540H160Z" fill="#f9faf6"/>
+                  <path d="M160 40H575V250H744V540H160Z" fill="url(#floor-tiles)"/>
+                  <path d="M160 355V40H575V250H744V540H160V425" fill="none" stroke="#b7c1b7" stroke-width="4" stroke-linejoin="round"/>
+                  <path d="M160 425H226M160 355A70 70 0 0 1 230 425" fill="none" stroke="#b7c1b7" stroke-width="1.5"/>
+                </svg>
+                <span class="room-label">ÁREA DE MESAS</span>
+                <span class="entry-label">Entrada</span>
+                <button id="stairs-button" class="stairs-button" type="button"><svg class="stairs-arrow icon"><use href="#icon-arrow"/></svg><span id="stairs-label">Subir al<br>piso 2</span><span class="stair-lines" aria-hidden="true"></span></button>
+                <div id="tables-layer" role="group" aria-label="Mesas del primer piso"></div>
+              </div>
+            </div>
+            <div class="plan-footer"><span id="floor-footer">Piso 1 de 2</span><span>Haz clic en una mesa para ver el detalle.</span></div>
+          </section>
+
+          <aside class="detail-panel" aria-labelledby="detail-title">
+            <div class="detail-header"><h2 id="detail-title">Detalle de la mesa</h2><svg class="icon"><use href="#icon-plan"/></svg></div>
+            <div id="empty-detail" class="empty-detail"><div class="empty-illustration" aria-hidden="true"><svg class="icon"><use href="#icon-pointer"/></svg></div><h3>¿Qué mesa revisamos?</h3><p>Selecciona una mesa del plano para ver su capacidad y su estado.</p></div>
+            <div id="selected-detail" hidden>
+              <div class="detail-table-number"><span>MESA</span><strong id="selected-number"></strong></div>
+              <span id="selected-status" class="status-label"></span>
+              <dl class="table-facts"><div><dt>Ubicación</dt><dd id="selected-floor"></dd></div><div><dt>Capacidad</dt><dd><svg class="icon"><use href="#icon-people"/></svg><span id="selected-capacity"></span></dd></div></dl>
+              <p id="selected-description" class="detail-description"></p>
+              <button id="toggle-status" class="button button-primary" type="button"></button>
+              <p class="simulation-note">Prueba el cambio de estado de esta mesa.</p>
+            </div>
+            <div class="detail-help"><strong>El color te guía</strong><p>Verde: la mesa está disponible.<br>Rojo: la mesa está ocupada.</p></div>
+          </aside>
+        </div>
+        <footer class="page-footer"><span>SIAR · Gestión del restaurante</span><span>Plano de referencia</span></footer>
+      </div>
+    </main>
+  </div>
+  <p id="announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+  <noscript><p class="noscript-message">Activa JavaScript para ver las mesas y cambiar de piso.</p></noscript>
+</body>
+</html>

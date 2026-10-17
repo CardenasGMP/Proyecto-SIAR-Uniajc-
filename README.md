@@ -37,3 +37,9 @@ Ingeniería de Sistemas
 - [Arquitectura de sistemas](04-diseno/arquitectura-del-sistema.md)
 - [Patrones de diseño seleccionado](04-diseno/patrones-de-diseno.md)
 - [Justificación](04-diseno/justificacion-de-patrones.md)
+
+## INTERFAZ
+
+- [Interfaz de mesas](interfaz/README.md): plano del restaurante en HTML, CSS y JavaScript.
+- Para probarla, descarga el repositorio y abre `interfaz/index.html` en el navegador.
+
