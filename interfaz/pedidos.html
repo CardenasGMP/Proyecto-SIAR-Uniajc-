@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIAR · Pedidos</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/modulos.css">
+<script src="js/interfaz.js" defer>
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Ir al contenido</a>
+<div class="app-layout">    <aside class="sidebar" aria-label="Sección actual">
+      <div class="brand">
+<span class="brand-mark" aria-hidden="true">s.</span>
+<div>
+<strong>SIAR</strong>
+<span>Tu restaurante, en orden</span>
+</div>
+</div>
+      <p class="nav-caption">RESTAURANTE</p>
+<nav class="module-nav" aria-label="Navegación principal">
+<a href="index.html">Mesas</a>
+<a href="pedidos.html" aria-current="page">Pedidos</a>
+<a href="cocina.html">Cocina</a>
+<a href="inventario.html">Inventario</a>
+<a href="facturacion.html">Facturación</a>
+</nav>
+      <div class="sidebar-bottom">
+<span class="outline-tag">INTERFAZ DE PRUEBA</span>
+<p>Un vistazo a cada mesa.<br>Todo en un mismo lugar.</p>
+<span class="sidebar-signature">Proyecto SIAR</span>
+</div>
+    </aside>
+
+<main id="main">
+<header class="topbar">
+<span>Restaurante / <strong>Pedidos</strong>
+</span>
+<span class="demo-label">Datos de ejemplo</span>
+</header>
+<div class="page-content">
+<div class="page-heading">
+<div>
+<p class="eyebrow">GESTIÓN DEL RESTAURANTE</p>
+<h1>Pedidos</h1>
+<p class="intro">Organiza lo que pide cada mesa y consulta su estado.</p>
+</div>
+</div>
+<p class="preview-note">Vista de la interfaz · Las acciones de negocio aún no guardan ni cambian datos.</p>
+<div class="toolbar">
+<button type="button" class="button button-light" data-open="nuevo-pedido">+ Nuevo pedido</button>
+<a class="button button-light" href="cocina.html">Ver cocina →</a>
+</div>
+<section class="module-panel">
+<h2>Pedidos del salón</h2>
+<div class="data-scroll" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Pedido / cliente</th>
+<th scope="col">Mesa</th>
+<th scope="col">Estado</th>
+<th scope="col">Total de ejemplo</th>
+<th scope="col">Acciones</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#001 · Cliente de ejemplo</td>
+<td>01</td>
+<td>
+<span class="badge">Pendiente</span>
+</td>
+<td>$ 42.000</td>
+<td>
+<button type="button" class="button button-light" data-open="editar-pedido">Editar</button> <button type="button" class="button button-light" data-demo="">Enviar a cocina</button> <button type="button" class="button button-light" data-demo="">Cancelar pedido</button>
+</td>
+</tr>
+<tr>
+<td>#002 · Cliente de ejemplo</td>
+<td>04</td>
+<td>
+<span class="badge">En preparación</span>
+</td>
+<td>$ 28.000</td>
+<td>
+<button type="button" class="button button-light" data-open="detalle-pedido">Ver detalle</button>
+</td>
+</tr>
+<tr>
+<td>#003 · Cliente de ejemplo</td>
+<td>07</td>
+<td>
+<span class="badge">Listo</span>
+</td>
+<td>$ 35.000</td>
+<td>
+<button type="button" class="button button-light" data-demo="">Marcar entregado</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<p class="muted">Estados del pedido: Pendiente · En preparación · Listo · Entregado · Facturado.</p>
+<footer class="page-footer">SIAR · Gestión del restaurante</footer>
+</div>
+</main>
+</div>
+<dialog id="nuevo-pedido" aria-labelledby="nuevo-pedido-title">
+<div class="dialog-top">
+<h2 id="nuevo-pedido-title">Nuevo pedido</h2>
+<button type="button" class="button button-light" data-close="">Cerrar</button>
+</div>
+<p class="muted">Completa los campos para ver el formulario. Los datos todavía no se guardan.</p>
+<form class="form-grid">
+<label>Cliente (opcional)<input type="text" value="">
+</label>
+<label>Mesa<select>
+<option>Mesa 01 · Piso 1</option>
+<option>Mesa 02 · Piso 1</option>
+<option>Mesa 13 · Piso 2</option>
+</select>
+</label>
+<label>Producto<select>
+<option>Hamburguesa de la casa</option>
+<option>Pasta con pollo</option>
+<option>Limonada natural</option>
+</select>
+</label>
+<label>Cantidad<input type="number" value="1">
+</label>
+<label class="full">Observaciones<textarea placeholder="Ejemplo: sin cebolla">
+</textarea>
+</label>
+<div class="full">
+<button type="button" class="button button-light" data-demo="">Agregar producto</button>
+</div>
+<section class="module-panel">
+<h2>Productos del pedido</h2>
+<p class="muted">Aquí aparecerán los productos cuando implementemos la lógica.</p>
+</section>
+<div class="actions full">
+<button type="button" class="button button-light" data-demo="">Guardar pedido</button>
+<button type="button" class="button button-light" data-close="">Cancelar</button>
+</div>
+</form>
+</dialog>
+<dialog id="editar-pedido" aria-labelledby="editar-pedido-title">
+<div class="dialog-top">
+<h2 id="editar-pedido-title">Editar pedido #001</h2>
+<button type="button" class="button button-light" data-close="">Cerrar</button>
+</div>
+<p class="muted">Completa los campos para ver el formulario. Los datos todavía no se guardan.</p>
+<form class="form-grid">
+<label>Cliente (opcional)<input type="text" value="">
+</label>
+<label>Mesa<select>
+<option>Mesa 01 · Piso 1</option>
+<option>Mesa 02 · Piso 1</option>
+<option>Mesa 13 · Piso 2</option>
+</select>
+</label>
+<label>Producto<select>
+<option>Hamburguesa de la casa</option>
+<option>Pasta con pollo</option>
+<option>Limonada natural</option>
+</select>
+</label>
+<label>Cantidad<input type="number" value="1">
+</label>
+<label class="full">Observaciones<textarea placeholder="Ejemplo: sin cebolla">
+</textarea>
+</label>
+<div class="full">
+<button type="button" class="button button-light" data-demo="">Agregar producto</button>
+</div>
+<section class="module-panel">
+<h2>Productos del pedido</h2>
+<p class="muted">Aquí aparecerán los productos cuando implementemos la lógica.</p>
+</section>
+<div class="actions full">
+<button type="button" class="button button-light" data-demo="">Guardar cambios</button>
+<button type="button" class="button button-light" data-close="">Cancelar</button>
+</div>
+</form>
+</dialog>
+<dialog id="detalle-pedido">
+<div class="dialog-top">
+<h2>Pedido #002 · Mesa 04</h2>
+<button type="button" class="button button-light" data-close="">Cerrar</button>
+</div>
+<p>1 pasta con pollo · $ 28.000</p>
+<p>Estado: En preparación</p>
+<p class="muted">Detalle de ejemplo.</p>
+</dialog>
+<p id="ui-message" class="toast" role="status" hidden>
+</p>
+</body>
+</html>

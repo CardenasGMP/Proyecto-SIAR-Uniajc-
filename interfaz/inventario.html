@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIAR · Inventario</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/modulos.css">
+<script src="js/interfaz.js" defer>
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Ir al contenido</a>
+<div class="app-layout">    <aside class="sidebar" aria-label="Sección actual">
+      <div class="brand">
+<span class="brand-mark" aria-hidden="true">s.</span>
+<div>
+<strong>SIAR</strong>
+<span>Tu restaurante, en orden</span>
+</div>
+</div>
+      <p class="nav-caption">RESTAURANTE</p>
+<nav class="module-nav" aria-label="Navegación principal">
+<a href="index.html">Mesas</a>
+<a href="pedidos.html">Pedidos</a>
+<a href="cocina.html">Cocina</a>
+<a href="inventario.html" aria-current="page">Inventario</a>
+<a href="facturacion.html">Facturación</a>
+</nav>
+      <div class="sidebar-bottom">
+<span class="outline-tag">INTERFAZ DE PRUEBA</span>
+<p>Un vistazo a cada mesa.<br>Todo en un mismo lugar.</p>
+<span class="sidebar-signature">Proyecto SIAR</span>
+</div>
+    </aside>
+
+<main id="main">
+<header class="topbar">
+<span>Restaurante / <strong>Inventario</strong>
+</span>
+<span class="demo-label">Datos de ejemplo</span>
+</header>
+<div class="page-content">
+<div class="page-heading">
+<div>
+<p class="eyebrow">GESTIÓN DEL RESTAURANTE</p>
+<h1>Inventario</h1>
+<p class="intro">Revisa los insumos y prepara el registro de entradas y salidas.</p>
+</div>
+</div>
+<p class="preview-note">Vista de la interfaz · Las acciones de negocio aún no guardan ni cambian datos.</p>
+<div class="toolbar">
+<button type="button" class="button button-light" data-open="nuevo-insumo">+ Nuevo insumo</button>
+<button type="button" class="button button-light" data-open="movimiento">Registrar movimiento</button>
+</div>
+<section class="module-panel">
+<h2>Insumos del restaurante</h2>
+<div class="data-scroll" tabindex="0">
+<table>
+<thead>
+<tr>
+<th scope="col">Insumo</th>
+<th scope="col">Categoría</th>
+<th scope="col">Existencia</th>
+<th scope="col">Mínimo</th>
+<th scope="col">Estado</th>
+<th scope="col">Acciones</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Carne de hamburguesa</td>
+<td>Proteínas</td>
+<td>24 unidades</td>
+<td>10 unidades</td>
+<td>
+<span class="badge">Disponible</span>
+</td>
+<td>
+<button type="button" class="button button-light" data-open="editar-insumo">Editar</button>
+</td>
+</tr>
+<tr>
+<td>Pan de hamburguesa</td>
+<td>Panadería</td>
+<td>8 unidades</td>
+<td>12 unidades</td>
+<td>
+<span class="badge">Stock bajo</span>
+</td>
+<td>
+<button type="button" class="button button-light" data-open="editar-insumo">Editar</button>
+</td>
+</tr>
+<tr>
+<td>Limón</td>
+<td>Frutas</td>
+<td>5 kg</td>
+<td>2 kg</td>
+<td>
+<span class="badge">Disponible</span>
+</td>
+<td>
+<button type="button" class="button button-light" data-open="editar-insumo">Editar</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<p class="muted">Las cantidades son ejemplos. El descuento automático por pedidos se trabajará después.</p>
+<footer class="page-footer">SIAR · Gestión del restaurante</footer>
+</div>
+</main>
+</div>
+<dialog id="nuevo-insumo" aria-labelledby="nuevo-insumo-title">
+<div class="dialog-top">
+<h2 id="nuevo-insumo-title">Nuevo insumo</h2>
+<button type="button" class="button button-light" data-close="">Cerrar</button>
+</div>
+<p class="muted">Completa los campos para ver el formulario. Los datos todavía no se guardan.</p>
+<form class="form-grid">
+<label>Nombre del insumo<input type="text" value="">
+</label>
+<label>Categoría<select>
+<option>Proteínas</option>
+<option>Panadería</option>
+<option>Frutas</option>
+<option>Otros</option>
+</select>
+</label>
+<label>Unidad<select>
+<option>Unidades</option>
+<option>kg</option>
+<option>litros</option>
+</select>
+</label>
+<label>Existencia inicial<input type="number" value="0">
+</label>
+<label>Cantidad mínima<input type="number" value="0">
+</label>
+<div class="actions full">
+<button type="button" class="button button-light" data-demo="">Guardar insumo</button>
+<button type="button" class="button button-light" data-close="">Cancelar</button>
+</div>
+</form>
+</dialog>
+<dialog id="editar-insumo" aria-labelledby="editar-insumo-title">
+<div class="dialog-top">
+<h2 id="editar-insumo-title">Editar insumo</h2>
+<button type="button" class="button button-light" data-close="">Cerrar</button>
+</div>
+<p class="muted">Completa los campos para ver el formulario. Los datos todavía no se guardan.</p>
+<form class="form-grid">
+<label>Nombre del insumo<input type="text" value="">
+</label>
+<label>Categoría<select>
+<option>Proteínas</option>
+<option>Panadería</option>
+<option>Frutas</option>
+<option>Otros</option>
+</select>
+</label>
+<label>Unidad<select>
+<option>Unidades</option>
+<option>kg</option>
+<option>litros</option>
+</select>
+</label>
+<label>Existencia inicial<input type="number" value="0">
+</label>
+<label>Cantidad mínima<input type="number" value="0">
+</label>
+<div class="actions full">
+<button type="button" class="button button-light" data-demo="">Guardar cambios</button>
+<button type="button" class="button button-light" data-close="">Cancelar</button>
+</div>
+</form>
+</dialog>
+<dialog id="movimiento" aria-labelledby="movimiento-title">
+<div class="dialog-top">
+<h2 id="movimiento-title">Registrar movimiento</h2>
+<button type="button" class="button button-light" data-close="">Cerrar</button>
+</div>
+<p class="muted">Completa los campos para ver el formulario. Los datos todavía no se guardan.</p>
+<form class="form-grid">
+<label>Insumo<select>
+<option>Carne de hamburguesa</option>
+<option>Pan de hamburguesa</option>
+<option>Limón</option>
+</select>
+</label>
+<label>Tipo de movimiento<select>
+<option>Entrada</option>
+<option>Salida</option>
+</select>
+</label>
+<label>Cantidad<input type="number" value="1">
+</label>
+<label>Motivo<input type="text" value="">
+</label>
+<div class="actions full">
+<button type="button" class="button button-light" data-demo="">Registrar movimiento</button>
+<button type="button" class="button button-light" data-close="">Cancelar</button>
+</div>
+</form>
+</dialog>
+<p id="ui-message" class="toast" role="status" hidden>
+</p>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIAR · Cocina</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/modulos.css">
+<script src="js/interfaz.js" defer>
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Ir al contenido</a>
+<div class="app-layout">    <aside class="sidebar" aria-label="Sección actual">
+      <div class="brand">
+<span class="brand-mark" aria-hidden="true">s.</span>
+<div>
+<strong>SIAR</strong>
+<span>Tu restaurante, en orden</span>
+</div>
+</div>
+      <p class="nav-caption">RESTAURANTE</p>
+<nav class="module-nav" aria-label="Navegación principal">
+<a href="index.html">Mesas</a>
+<a href="pedidos.html">Pedidos</a>
+<a href="cocina.html" aria-current="page">Cocina</a>
+<a href="inventario.html">Inventario</a>
+<a href="facturacion.html">Facturación</a>
+</nav>
+      <div class="sidebar-bottom">
+<span class="outline-tag">INTERFAZ DE PRUEBA</span>
+<p>Un vistazo a cada mesa.<br>Todo en un mismo lugar.</p>
+<span class="sidebar-signature">Proyecto SIAR</span>
+</div>
+    </aside>
+
+<main id="main">
+<header class="topbar">
+<span>Restaurante / <strong>Cocina</strong>
+</span>
+<span class="demo-label">Datos de ejemplo</span>
+</header>
+<div class="page-content">
+<div class="page-heading">
+<div>
+<p class="eyebrow">GESTIÓN DEL RESTAURANTE</p>
+<h1>Cocina</h1>
+<p class="intro">Consulta los pedidos pendientes y los que están listos para entregar.</p>
+</div>
+</div>
+<p class="preview-note">Vista de la interfaz · Las acciones de negocio aún no guardan ni cambian datos.</p>
+<div class="kanban">
+<section class="module-panel">
+<h2>Pendiente</h2>
+<article class="order-card">
+<span class="eyebrow">PEDIDO #001</span>
+<h3>Mesa 01</h3>
+<p>2 hamburguesas de la casa</p>
+<p class="muted">Sin observaciones</p>
+<button type="button" class="button button-light" data-demo="">Iniciar preparación</button>
+</article>
+</section>
+<section class="module-panel">
+<h2>En preparación</h2>
+<article class="order-card">
+<span class="eyebrow">PEDIDO #002</span>
+<h3>Mesa 04</h3>
+<p>1 pasta con pollo</p>
+<p class="muted">Sin observaciones</p>
+<button type="button" class="button button-light" data-demo="">Marcar listo</button>
+</article>
+</section>
+<section class="module-panel">
+<h2>Listo</h2>
+<article class="order-card">
+<span class="eyebrow">PEDIDO #003</span>
+<h3>Mesa 07</h3>
+<p>1 plato del día y 1 limonada</p>
+<p class="muted">Sin observaciones</p>
+<button type="button" class="button button-light" data-demo="">Marcar entregado</button>
+</article>
+</section>
+</div>
+<p class="muted">Los botones de estado se conectarán al pedido en el siguiente paso.</p>
+<footer class="page-footer">SIAR · Gestión del restaurante</footer>
+</div>
+</main>
+</div>
+<p id="ui-message" class="toast" role="status" hidden>
+</p>
+</body>
+</html>

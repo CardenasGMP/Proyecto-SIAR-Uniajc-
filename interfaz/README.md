@@ -1,31 +1,37 @@
-# Interfaz de mesas de SIAR
+# Interfaz de SIAR
 
-Primera pantalla del restaurante, basada en el boceto del plano de mesas. Está hecha con HTML, CSS y JavaScript, sin librerías ni instalación de paquetes.
+Abre `index.html` con doble clic. No requiere instalar paquetes ni usar un servidor.
 
-## Cómo abrirla
+## Pantallas
 
-1. Descarga o clona el repositorio.
-2. Entra en la carpeta `interfaz`.
-3. Abre `index.html` en el navegador, con doble clic. También puedes usar Live Server en Visual Studio Code.
+- Mesas: plano original, cambio de piso y estados de ejemplo.
+- Pedidos: listado, formulario para crear y editar, selección de mesa y productos.
+- Cocina: columnas Pendiente, En preparación y Listo.
+- Inventario: insumos, formulario de registro y movimientos.
+- Facturación: datos del cliente, medio de pago y vista previa.
 
-## Qué puedes probar
+## Alcance actual
 
-- Consultar el plano en forma de L, con 12 mesas por piso.
-- Ver las mesas disponibles en verde y las ocupadas en rojo. Cada mesa también muestra su estado por escrito.
-- Cambiar de piso con la flecha de las escaleras o con los botones Piso 1 y Piso 2.
-- Seleccionar una mesa para ver su número, capacidad y estado.
-- Marcar una mesa como ocupada o liberarla. El color y los contadores se actualizan.
-- Reiniciar los datos de ejemplo con el botón Reiniciar vista.
-- Usar los controles con el teclado. En pantallas pequeñas, el plano se desplaza horizontalmente para conservar el tamaño de las mesas.
+Solo interfaz. La navegación y las ventanas funcionan. Los botones de guardar, enviar, cancelar, cambiar estados de pedidos, cobrar y emitir muestran un aviso: todavía no realizan la operación. Los formularios no guardan datos. La factura y los importes son ejemplos sin validez fiscal. Los impuestos se definirán al desarrollar la lógica.
+
+El plano de mesas conserva su simulación anterior. No está conectado a pedidos. No hay servidor, autenticación ni base de datos. El segundo piso conserva una distribución provisional.
+
+El documento del proyecto pide Pedidos, Inventario y Facturación y el flujo Cliente → Pedido → Cocina → Factura. Inventario aparece como entregable, pero el PDF no detalla sus RF: los formularios de insumos y movimientos son una propuesta inicial.
 
 ## Archivos
 
-- `index.html`: estructura de la pantalla y plano.
-- `css/styles.css`: colores, distribución y adaptación a celulares.
-- `js/app.js`: mesas de ejemplo, selección, cambio de piso y cambios de estado.
+- `index.html`, `pedidos.html`, `cocina.html`, `inventario.html`, `facturacion.html`: contenido de las pantallas.
+- `css/styles.css`: diseño original del plano.
+- `css/modulos.css`: diseño de navegación, tablas y formularios.
+- `js/app.js`: simulación anterior de mesas.
+- `js/interfaz.js`: abrir y cerrar ventanas y mostrar avisos. No contiene lógica de negocio.
 
-## Datos de ejemplo
+## Próximos pasos de lógica
 
-El primer piso sigue la distribución de 12 mesas del boceto. El segundo usa provisionalmente el mismo plano. Los estados y las capacidades son ejemplos y se pueden ajustar en `createDemoTables()` dentro de `js/app.js`. Las posiciones se definen en el arreglo `positions`.
+1. Leer los campos de un pedido.
+2. Validar los datos y agregar productos.
+3. Guardar el pedido y cambiar sus estados.
+4. Registrar entradas y salidas de inventario.
+5. Calcular valores de la factura y registrar pagos.
 
-Esta entrega es solo la interfaz. No tiene autenticación, servidor ni conexión a una base de datos. Los cambios permanecen mientras la página esté abierta y se reinician al recargarla. Todavía no registra pedidos, pagos ni reservas reales.
+Cada paso se trabajará por separado, explicando cada línea antes de avanzar. Esta interfaz no completa por sí sola los módulos funcionales ni las pruebas exigidas en el proyecto.
